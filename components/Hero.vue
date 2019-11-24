@@ -37,21 +37,6 @@ export default {
       dropTimeout: undefined
     }
   },
-  mounted() {
-    document.onpaste = function(event) {
-      const items = (event.clipboardData || event.originalEvent.clipboardData)
-        .items
-      for (let i = 0; i < items.length; i++) {
-        const item = items[i]
-        if (item.type.includes('image')) {
-          const file = item.getAsFile()
-          Object.assign(file, { paste: true })
-          // eslint-disable-next-line no-console
-          console.log('@@@ FILEDOSTUM', file)
-        }
-      }
-    }
-  },
   methods: {
     show() {
       this.$modal.show('registrationModal')

@@ -32,30 +32,6 @@ export default {
       complete: [],
       showModal: this.$route.meta.showModal
     }
-  },
-  watch: {
-    '$route.meta'({ showModal }) {
-      // eslint-disable-next-line no-console
-      console.log('showModal', showModal)
-      if (showModal) {
-        this.$modal.show('uploadModal')
-      } else {
-        this.$modal.hide('uploadModal')
-      }
-      this.showModal = showModal
-    }
-  },
-  methods: {
-    vProgress(file, progress, bytesSent) {
-      this.progress = [file, progress, bytesSent]
-      // eslint-disable-next-line no-console
-      console.log(this.progress)
-    },
-    vComplete(response) {
-      this.complete = [response]
-      // eslint-disable-next-line no-console
-      console.log('@@@ COMPLETED', JSON.parse(response.xhr.response))
-    }
   }
 }
 </script>

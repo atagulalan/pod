@@ -5,6 +5,7 @@
 </template>
 
 <script>
+/*
 export default {
   mounted() {
     if (!this.$store.state.localStorage.user.initialized) {
@@ -23,6 +24,7 @@ export default {
     }
   }
 }
+*/
 </script>
 
 <style>
