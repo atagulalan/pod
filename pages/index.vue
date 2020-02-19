@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <RegistrationModal />
-    <Hero :v-progress="vProgress" :v-complete="vComplete" />
+    <Hero />
   </div>
 </template>
 

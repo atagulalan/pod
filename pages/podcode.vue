@@ -11,7 +11,7 @@
       >
         <Draggable v-for="item in items1" :key="item.id">
           <div class="draggable-item">
-            <div :style="item.style" class="cmd">{{ item.data }}</div>
+            <div :style="item.style" class="cmd">{{ item.text }}</div>
             <div :style="item.style" class="deger dontshow" />
           </div>
         </Draggable>
@@ -19,8 +19,8 @@
     </div>
     <div class="codeWrapper">
       <div class="lineNumbers">
-        <div v-for="(item, index) in items2" :key="item.id" class="item">
-          {{ index + 1 }}
+        <div v-for="item in items2" :key="item.id" class="item">
+          {{ item.lineNumber }}
         </div>
       </div>
       <Container
@@ -32,7 +32,7 @@
       >
         <Draggable v-for="(item, index) in items2" :key="item.id">
           <div class="draggable-item">
-            <div :style="item.style" class="cmd">{{ item.data }}</div>
+            <div :style="item.style" class="cmd">{{ item.text }}</div>
             <div
               :style="item.style"
               :class="
@@ -85,7 +85,8 @@ const commands = {
   },
   JMP: {
     text: 'dön',
-    color: '#FFD95C'
+    color: '#FFD95C',
+    return: true
   },
   JMZ: {
     text: 'sıfırsa dön',
@@ -110,10 +111,12 @@ export default {
     return {
       items1: generateItems(Object.keys(commands).length, (i) => ({
         id: 'command' + i,
-        data: commands[Object.keys(commands)[i]].text,
+        data: Object.keys(commands)[i],
+        text: commands[Object.keys(commands)[i]].text,
         style: 'background:' + commands[Object.keys(commands)[i]].color,
         show: commands[Object.keys(commands)[i]].show,
-        value: 0
+        value: 0,
+        return: commands[Object.keys(commands)[i]].return
       })),
       items2: [],
       activeItem: null

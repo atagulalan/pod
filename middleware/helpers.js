@@ -14,7 +14,28 @@ export const applyDrag = (arr, dragResult, uniq) => {
 
   if (addedIndex !== null) {
     result.splice(addedIndex, 0, itemToAdd)
+    if (itemToAdd.return && removedIndex === null) {
+      result.splice(addedIndex + 1, 0, {
+        ...itemToAdd,
+        id: 'cr' + uniq,
+        text: '',
+        style: 'height:56px;width:56px;background:#FFD95C',
+        notALine: true
+      })
+    }
   }
+
+  let lineNumber = 1
+  for (let i = 0; i < result.length; i++) {
+    if (!result[i].notALine) {
+      result[i].lineNumber = lineNumber
+      lineNumber++
+    }
+  }
+
+  result.map((el) => {
+    return el.addedIndex
+  })
 
   return result
 }
