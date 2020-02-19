@@ -20,9 +20,9 @@
         :required="required"
         :maxlength="maxlength"
         :type="type"
+        placeholder=" "
         @focus="focusInput()"
         @blur="blurInput()"
-        placeholder=" "
       />
       <label :for="name">
         {{ placeholder }}<span v-if="error && required">*</span>

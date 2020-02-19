@@ -3,7 +3,7 @@
     <div id="wrapper">
       <div class="inner">
         <logo />
-        <a @click="show" href="#" class="login">
+        <a href="#" class="login" @click="show">
           <Icon :size="24" i="entrance" stroke="#fff" />
           Giriş Yap
         </a>

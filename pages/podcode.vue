@@ -26,16 +26,15 @@
       <Container
         :get-child-payload="getChildPayload2"
         :remove-on-drop-out="true"
-        @drop="onDrop('items2', $event)"
         :drag-handle-selector="'.cmd'"
         group-name="1"
+        @drop="onDrop('items2', $event)"
       >
         <Draggable v-for="(item, index) in items2" :key="item.id">
           <div class="draggable-item">
             <div :style="item.style" class="cmd">{{ item.data }}</div>
             <div
               :style="item.style"
-              @click="setActive(index)"
               :class="
                 [
                   'deger',
@@ -43,6 +42,7 @@
                   index === activeItem ? 'active' : ''
                 ].join(' ')
               "
+              @click="setActive(index)"
             >
               {{ item.value }}
             </div>

@@ -1,8 +1,8 @@
 <template>
   <div
     :style="center ? 'margin:0 auto;' : ''"
-    @click="toggleValue()"
     class="checkboxWrapper"
+    @click="toggleValue()"
   >
     <input
       :name="name"
