@@ -19,8 +19,28 @@
     </div>
     <div class="codeWrapper">
       <div class="lineNumbers">
-        <div v-for="item in items2" :key="item.id" class="item">
+        <div
+          v-for="item in items2"
+          :key="item.id"
+          class="item"
+          @mouseover="item.return ? (hover = item.value) : -1"
+          @mouseleave="hover = -1"
+        >
           {{ item.lineNumber }}
+        </div>
+      </div>
+      <div class="returnSymbols">
+        <div
+          v-for="item in items2"
+          :key="item.id"
+          class="item"
+          :class="hover === item.value ? 'hover' : ''"
+          @mouseover="item.return ? (hover = item.value) : -1"
+          @mouseleave="hover = -1"
+        >
+          <span v-if="item.return || item.notALine">
+            <div :class="`shape i${item.value}`"></div>
+          </span>
         </div>
       </div>
       <Container
@@ -31,7 +51,11 @@
         @drop="onDrop('items2', $event)"
       >
         <Draggable v-for="(item, index) in items2" :key="item.id">
-          <div class="draggable-item">
+          <div
+            class="draggable-item"
+            @mouseover="item.return ? (hover = item.value) : -1"
+            @mouseleave="hover = -1"
+          >
             <div :style="item.style" class="cmd">{{ item.text }}</div>
             <div
               :style="item.style"
@@ -90,7 +114,8 @@ const commands = {
   },
   JMZ: {
     text: 'sıfırsa dön',
-    color: '#FCB040'
+    color: '#FCB040',
+    return: true
   },
   CPY: {
     text: 'yere kopyala',
@@ -119,7 +144,8 @@ export default {
         return: commands[Object.keys(commands)[i]].return
       })),
       items2: [],
-      activeItem: null
+      activeItem: null,
+      hover: -1
     }
   },
   methods: {
@@ -208,15 +234,67 @@ export default {
       height: 62px;
     }
   }
+  .returnSymbols {
+    position: absolute;
+    left: 50px;
+    top: 0;
+    width: 50px;
+    height: auto;
+    z-index: 3;
+    line-height: 62px;
+    text-align: center;
+    color: gray;
+    font-family: 'Patrick Hand', cursive;
+    .item {
+      font-size: 18pt;
+      width: 50px;
+      height: 62px;
+      position: relative;
+      .shape {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        left: 10px;
+        top: 15px;
+        background-size: contain;
+        @for $i from 1 through 14 {
+          &.i#{$i} {
+            background-image: url('/img/symbols/#{$i}.png');
+          }
+        }
+      }
+      &:before {
+        content: '';
+        background: #f3f3f3;
+        border: 2px solid grey;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        display: block;
+        left: 5px;
+        top: 10px;
+        position: absolute;
+        z-index: -1;
+        opacity: 0;
+        transition: 0.3s opacity;
+      }
+      &.hover {
+        &:before {
+          opacity: 1;
+        }
+      }
+    }
+  }
   .smooth-dnd-container {
     background: transparent;
     min-height: 100%;
     padding: 0px;
-    margin-left: 50px;
+    margin-left: 100px;
   }
 }
 
 .draggable-item {
+  height: 62px;
   .cmd,
   .deger {
     text-align: left;
