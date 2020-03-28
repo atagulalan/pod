@@ -41,7 +41,8 @@ export const applyDrag = (arr, dragResult, uniq) => {
         text: '',
         style: 'height:56px;width:56px;' + itemToAdd.style,
         notALine: true,
-        value: returnLength
+        value: returnLength,
+        data: 'CME'
       })
     }
   }

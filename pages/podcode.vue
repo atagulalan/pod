@@ -20,12 +20,13 @@
     <div class="codeWrapper">
       <div class="lineNumbers">
         <div
-          v-for="item in items2"
+          v-for="(item, realLine) in items2"
           :key="item.id"
           class="item"
           @mouseover="item.return ? (hover = item.value) : -1"
           @mouseleave="hover = -1"
         >
+          <div v-if="realLine === lineNumber" class="arrow"></div>
           {{ item.lineNumber }}
         </div>
       </div>
@@ -81,6 +82,44 @@
       <button @click="degerAta(4)">4</button>
       <button @click="degerAta(5)">5</button>
       <button @click="degerAta(6)">6</button>
+      <button @click="run()">RUN</button>
+      <button @click="step()">STEP</button>
+      <button @click="reset()">RESET</button>
+      <button @click="clear()">CLEAR</button>
+    </div>
+    <div>lineNumber {{ lineNumber }}</div>
+    <div class="game">
+      <div id="hand">
+        HAND
+        <span class="box">{{ onHand }}</span>
+      </div>
+      <div id="inputbox">
+        INPUT
+        <span
+          v-for="(item, idx) in inputSection"
+          :key="'i' + idx"
+          class="box"
+          >{{ item }}</span
+        >
+      </div>
+      <div id="middlebox">
+        MIDDLE
+        <span
+          v-for="(item, idx) in middleSection"
+          :key="'m' + idx"
+          class="box"
+          >{{ item }}</span
+        >
+      </div>
+      <div id="outputbox">
+        OUTPUT
+        <span
+          v-for="(item, idx) in outputSection"
+          :key="'o' + idx"
+          class="box"
+          >{{ item }}</span
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -88,6 +127,44 @@
 <script>
 import { Container, Draggable } from 'vue-smooth-dnd'
 import { applyDrag, generateItems } from '../middleware/helpers'
+
+class PodCode {
+  constructor(code) {
+    this.code = code
+  }
+
+  removeSpecial(e) {
+    this.code = this.code.replace(/[^A-Za-z0-9 ]/g, '')
+    return this
+  }
+
+  onlyOneSpace(e) {
+    this.code = this.code.replace(/\s\s+/g, ' ')
+    return this
+  }
+
+  removeComments(e) {
+    this.code = this.code.replace(/--.*--/g, ' ')
+    return this
+  }
+
+  breakLines(e) {
+    this.code = this.code.replace(/([A-Z][A-Z][A-Z])/g, '\n$1')
+    return this
+  }
+
+  trim(e) {
+    this.code = this.code.trim()
+    return this
+  }
+
+  validate(e) {
+    // tüm işlemler gerçekleştirildikten sonra
+    // her satırın okunup okunamadığını kontrol
+    // et.
+  }
+}
+
 const commands = {
   INP: {
     text: 'giris',
@@ -144,8 +221,17 @@ export default {
         return: commands[Object.keys(commands)[i]].return
       })),
       items2: [],
+      codeString: '',
       activeItem: null,
-      hover: -1
+      hover: -1,
+      lineNumber: 0,
+      onHand: null,
+      jumpBacks: {},
+      inputSection: [4, 4, 7, 6, 6, 6, 1, 1],
+      middleSection: [],
+      outputSection: [],
+      winCondition: [4, 4, 7, 6, 6, 6, 1, 1],
+      sanitizedArray: []
     }
   },
   methods: {
@@ -162,7 +248,27 @@ export default {
         this.activeItem = null
       }
       this[collection] = applyDrag(this[collection], dropResult, uniqueCounter)
+      this.getTextFromCollection(this[collection])
       uniqueCounter++
+    },
+    getTextFromCollection(collection) {
+      this.codeString = collection
+        .map((el) => {
+          return el.data + ' ' + el.value
+        })
+        .join('\n')
+
+      this.sanitizedArray = new PodCode(this.codeString)
+        .removeSpecial()
+        .onlyOneSpace()
+        .removeComments()
+        .breakLines()
+        .trim()
+        .code.split('\n')
+
+      this.reset()
+
+      console.log(this.codeString)
     },
     getChildPayload1(index) {
       return this.items1[index]
@@ -180,8 +286,140 @@ export default {
     degerAta(deger) {
       if (this.activeItem !== null) {
         this.items2[this.activeItem].value = deger
+        this.getTextFromCollection(this.items2)
         this.activeItem = null
       }
+    },
+    clear() {
+      this.items2 = []
+      this.reset()
+    },
+    reset() {
+      this.lineNumber = 0
+      this.onHand = null
+      this.jumpBacks = {}
+      // Set jumpbacks before launch
+      this.sanitizedArray.forEach((el, idx) => {
+        if (el.split(' ')[0] === 'CME') {
+          this.jumpBacks[el.split(' ')[1]] = idx
+        }
+      })
+    },
+    error(exception) {
+      console.log(`ERROR AT LINE ${this.lineNumber} BECAUSE ${exception}`)
+    },
+    run() {
+      this.reset()
+      this.nextLine(this.sanitizedArray)
+    },
+    step() {
+      this.nextLine(this.sanitizedArray, true)
+    },
+    nextLine(arr, dont) {
+      if (arr[this.lineNumber] === undefined) {
+        console.log('bitti')
+        return
+      }
+      if (
+        JSON.stringify(this.winCondition) ===
+          JSON.stringify(this.outputSection) &&
+        this.inputSection.length === 0
+      ) {
+        console.log('bravo')
+        return
+      }
+      const commandAndValue = arr[this.lineNumber].split(' ')
+      const next = function(newLineNumber) {
+        if (!isNaN(newLineNumber)) {
+          this.lineNumber = newLineNumber
+        } else {
+          this.lineNumber = this.lineNumber + 1
+        }
+
+        // document.getElementById('line').style.top = lineNumber * 18 + 'px'
+        // document.getElementById('hand').textContent = onHand
+        console.log(
+          'Durum:',
+          this.lineNumber,
+          this.onHand,
+          this.jumpBacks,
+          this.inputSection,
+          this.middleSection,
+          this.outputSection
+        )
+
+        if (!dont) {
+          this.nextLine(arr)
+        }
+      }.bind(this)
+      const fns = {
+        CME(e) {
+          next()
+        },
+        INP: () => {
+          console.log('Kutuyu alıyorum')
+          this.onHand = this.inputSection.shift()
+          if (!this.onHand) {
+            this.error('Alacak hiçbir kutu yok')
+          } else {
+            next()
+          }
+        },
+        OUT: () => {
+          console.log('Kutuyu Veriyorum')
+          if (this.onHand) {
+            this.outputSection.push(this.onHand)
+            this.onHand = null
+            next()
+          } else {
+            this.error('Ellerim bomboş')
+          }
+        },
+        CPY: (e) => {
+          console.log('Kopyalıyorum')
+          this.middleSection[e] = this.onHand
+          next()
+        },
+        SUB: (e) => {
+          if (this.onHand !== undefined) {
+            console.log('Çıkartıyorum')
+            this.onHand -= this.middleSection[e]
+            next()
+          } else {
+            this.error()
+          }
+        },
+        ADD: (e) => {
+          if (this.onHand !== null) {
+            console.log('Ekliyorum')
+            this.onHand += this.middleSection[e]
+            next()
+          } else {
+            this.error()
+          }
+        },
+        JPZ: (e) => {
+          if (this.onHand === 0) {
+            fns.JMP(e)
+          } else {
+            next()
+          }
+        },
+        JMP: (e) => {
+          console.log('Atlıyorum:', e)
+          console.log(this.jumpBacks[e])
+          next(this.jumpBacks[e])
+        },
+        GET: (e) => {
+          if (this.middleSection[e] !== undefined) {
+            this.onHand = this.middleSection[e]
+            next()
+          } else {
+            this.error()
+          }
+        }
+      }
+      fns[commandAndValue[0]](commandAndValue[1])
     }
   }
 }
@@ -209,6 +447,18 @@ export default {
   }
 }
 
+.game {
+  .box {
+    width: 30px;
+    height: 30px;
+    background: #ccc;
+    margin: 5px;
+    display: inline-block;
+    line-height: 30px;
+    text-align: center;
+  }
+}
+
 .codeWrapper {
   margin-left: 10px;
   width: 400px;
@@ -228,10 +478,21 @@ export default {
     text-align: center;
     color: gray;
     font-family: 'Patrick Hand', cursive;
+    margin-left: 20px;
     .item {
       font-size: 18pt;
       width: 50px;
       height: 62px;
+      position: relative;
+      .arrow {
+        position: absolute;
+        width: 25px;
+        height: 31px;
+        left: -20px;
+        top: 12.5px;
+        background-image: url('/img/playButton.png');
+        background-size: contain;
+      }
     }
   }
   .returnSymbols {
