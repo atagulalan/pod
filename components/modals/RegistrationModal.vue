@@ -74,8 +74,10 @@ export default {
 
   .regModal {
     .v--modal {
-      border-radius: 20px;
-      box-shadow: 0 20px 100px -40px rgba(0, 0, 0, 0.5);
+      box-shadow: none;
+      background-image: url('/img/popup.svg');
+      background-size: cover;
+      background-color: transparent;
     }
     h1 {
       font-size: 18px;

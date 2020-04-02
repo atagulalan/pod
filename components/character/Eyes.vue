@@ -1,0 +1,32 @@
+<template>
+  <g id="Eyes" class="hvr-bob">
+    <g class="look-around">
+      <path
+        class="eye"
+        d="M264.2,251.1L264.2,251.1c-10.2,0-18.5,8.3-18.5,18.5c0,10.2,8.3,18.5,18.5,18.5h0c10.2,0,18.5-8.3,18.5-18.5
+		C282.7,259.4,274.4,251.1,264.2,251.1z"
+      />
+
+      <ellipse
+        transform="matrix(0.9732 -0.2298 0.2298 0.9732 -52.7897 85.9365)"
+        class="eye"
+        cx="342.6"
+        cy="269.7"
+        rx="18.5"
+        ry="18.5"
+      />
+    </g>
+  </g>
+</template>
+
+<script>
+export default {
+  props: {}
+}
+</script>
+
+<style lang="scss">
+.eye {
+  fill: #383838;
+}
+</style>
