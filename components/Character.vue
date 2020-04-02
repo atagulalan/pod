@@ -9,26 +9,20 @@
       viewBox="0 0 512 512"
       style="enable-background:new 0 0 512 512;"
       xml:space="preserve"
+      width="300px"
+      height="300px"
     >
       <Shoes />
       <LeftHand />
       <Body />
       <RightHand />
       <Head />
-      <EyeBrows />
-      <Hair />
-      <Glasses />
-      <Eyes />
     </svg>
   </div>
 </template>
 
 <script>
-import Hair from '~/components/character/Hair.vue'
-import EyeBrows from '~/components/character/EyeBrows.vue'
 import Head from '~/components/character/Head.vue'
-import Glasses from '~/components/character/Glasses.vue'
-import Eyes from '~/components/character/Eyes.vue'
 import Body from '~/components/character/Body.vue'
 import LeftHand from '~/components/character/LeftHand.vue'
 import RightHand from '~/components/character/RightHand.vue'
@@ -36,11 +30,7 @@ import Shoes from '~/components/character/Shoes.vue'
 
 export default {
   components: {
-    Hair,
-    EyeBrows,
     Head,
-    Glasses,
-    Eyes,
     Body,
     LeftHand,
     RightHand,

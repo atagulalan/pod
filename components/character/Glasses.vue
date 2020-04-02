@@ -1,15 +1,20 @@
 <template>
-  <g id="Glasses" class="hvr-bob"></g>
+  <component :is="componentLoader" class="hvr-bob" />
 </template>
 
 <script>
 export default {
-  props: {}
+  props: {
+    type: {
+      type: String,
+      default: '0'
+    }
+  },
+  computed: {
+    componentLoader() {
+      return () =>
+        import(`~/static/img/character/glasses/${this.type}.svg?inline`)
+    }
+  }
 }
 </script>
-
-<style lang="scss">
-.eye {
-  fill: #383838;
-}
-</style>

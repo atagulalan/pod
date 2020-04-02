@@ -19,7 +19,10 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+#Body {
+  animation-delay: -1.3s;
+}
 .shirt {
   fill: #ff5b71;
 }

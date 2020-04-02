@@ -1,5 +1,5 @@
 <template>
-  <g id="Hair" class="hvr-bob">
+  <g id="Hair">
     <path
       class="hair2"
       d="M413.1,71.9L413.1,71.9c-7.2-28.6-36.3-45.9-64.8-38.6L183.5,75.1c-54.3,13.8-87.1,68.9-73.4,123.2l1.2,4.6
@@ -19,7 +19,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .hair1 {
   fill: #ff6485;
 }

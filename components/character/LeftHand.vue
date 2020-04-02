@@ -14,8 +14,11 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.eye {
-  fill: #383838;
+<style lang="scss" scoped>
+#Left_Hand {
+  animation-delay: -0.3s;
+}
+.foreskin {
+  fill: #fce6de;
 }
 </style>

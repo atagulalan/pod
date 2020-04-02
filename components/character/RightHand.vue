@@ -14,7 +14,10 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+#Right_Hand {
+  animation-delay: -0.3s;
+}
 .foreskin {
   fill: #fcf1eb;
 }
