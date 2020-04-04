@@ -55,6 +55,7 @@ export default {
   methods: {
     toggleValue() {
       this.value = !this.value
+      this.$emit('input', this.value)
     }
   }
 }

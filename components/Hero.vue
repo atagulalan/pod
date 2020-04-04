@@ -1,12 +1,19 @@
 <template>
-  <div :class="['heroWrapper', dragging ? 'dragging' : '']" @drop="handleDrop">
+  <div :class="['heroWrapper']">
     <div id="wrapper">
       <div class="inner">
         <logo />
-        <a href="#" class="login" @click="show">
-          <Icon :size="24" i="entrance" stroke="#fff" />
-          Giriş Yap
-        </a>
+        <span v-if="$store.state.localStorage.user.id.username">
+          Günaydın, {{ $store.state.localStorage.user.id.username }}
+          <a href="#" class="login" @click="logout">
+            <Icon :size="24" i="exit" stroke="#fff" />Çıkış Yap
+          </a>
+        </span>
+        <span v-else>
+          <a href="#" class="login" @click="show">
+            <Icon :size="24" i="entrance" stroke="#fff" />Giriş Yap
+          </a>
+        </span>
       </div>
     </div>
   </div>
@@ -31,22 +38,26 @@ export default {
       default: () => {}
     }
   },
-  data() {
-    return {
-      dragging: false,
-      dropTimeout: undefined
+  computed: {
+    loaded() {
+      return this.$store.state.localStorage && this.$store.state.sessionStorage
     }
   },
   methods: {
+    async logout() {
+      const logoutResult = await this.$axios.$post(
+        'http://localhost:5000/api/auth/logout'
+      )
+      console.log(logoutResult)
+      if (logoutResult.success) {
+        this.$store.commit('localStorage/resetUser')
+      }
+    },
     show() {
       this.$modal.show('registrationModal')
     },
     hide() {
       this.$modal.hide('registrationModal')
-    },
-    handleDrop(e) {
-      e.preventDefault()
-      this.dragging = false
     }
   }
 }

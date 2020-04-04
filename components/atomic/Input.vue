@@ -14,15 +14,17 @@
     >
       <Icon v-if="leading" :i="leading" :size="24" class="leading" />
       <input
-        v-model="message"
         :name="name"
         :disabled="disabled"
         :required="required"
         :maxlength="maxlength"
         :type="type"
         placeholder=" "
+        :value="value"
+        @input="updateValue($event.target.value)"
         @focus="focusInput()"
         @blur="blurInput()"
+        @keypress.enter="submit"
       />
       <label :for="name">
         {{ placeholder }}<span v-if="error && required">*</span>
@@ -94,6 +96,14 @@ export default {
     width: {
       type: Number,
       default: 350
+    },
+    value: {
+      type: String,
+      default: ''
+    },
+    submit: {
+      type: Function,
+      default: () => {}
     }
   },
   data() {
@@ -103,6 +113,9 @@ export default {
     }
   },
   methods: {
+    updateValue(value) {
+      this.$emit('input', value)
+    },
     focusInput() {
       this.focus = true
     },

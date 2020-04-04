@@ -46,6 +46,10 @@ export default {
       rgba(111, 153, 65, 1) 100%
     );
 
+    &:hover {
+      filter: brightness(1.1);
+    }
+
     svg {
       stroke: #fff;
     }
