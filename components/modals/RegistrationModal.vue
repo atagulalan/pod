@@ -43,6 +43,11 @@
         <div class="subText">
           Hesabın yok mu?
           <span class="link" @click="toggleRegister('register')">Kayıt Ol</span>
+          <div>
+            <span class="link" @click="toggleRegister('forgotPass')"
+              >Şifremi Unuttum</span
+            >
+          </div>
         </div>
       </span>
 
@@ -57,6 +62,8 @@
           leading="envelope"
           name="email"
           placeholder="E-Posta"
+          :error="registerMailError"
+          :helper="registerMailError ? 'E-Posta adresiniz hatalı' : ''"
           type="email"
           center
         />
@@ -65,6 +72,8 @@
           leading="lock"
           name="pass"
           placeholder="Şifre"
+          :error="registerPassError"
+          :helper="registerPassError ? 'Şifreniz 6 karakterden az olamaz' : ''"
           type="password"
           center
         />
@@ -73,15 +82,17 @@
           leading="lock"
           name="passAgain"
           placeholder="Şifre (Tekrar)"
+          :error="registerPassAgainError"
+          :helper="registerPassAgainError ? 'Şifreniz eşleşmiyor' : ''"
           type="password"
           center
         />
         <div class="checkboxes">
-          <Checkbox v-model="registerRemember" name="remember"
+          <Checkbox v-model="registerRemember" name="remember" :default="false"
             >Kullanım koşullarını kabul ediyorum</Checkbox
           >
         </div>
-        <Button center style="margin-top:10px" @click="sendRegisterRequest()">
+        <Button center style="margin-top:10px" :click="sendRegisterRequest">
           <Icon :size="24" i="entrance" stroke="#fff" stroke-width="1.5" />Kayıt
           Ol
         </Button>
@@ -90,6 +101,38 @@
           <span class="link" @click="toggleRegister('login')">Giriş Yap</span>
         </div>
       </span>
+
+      <!-- FORGOT -->
+      <span
+        v-if="modalType === 'forgotPass'"
+        key="forgotPass"
+        class="modalInnerWrapper"
+      >
+        <h1 class="active">Şifremi Unuttum</h1>
+        <Input
+          v-model="forgotPassMail"
+          leading="envelope"
+          name="email"
+          placeholder="E-Posta"
+          :error="forgotPassError"
+          :helper="forgotPassError ? 'E-Posta adresiniz hatalı' : ''"
+          type="email"
+          center
+        />
+        <div class="subText">
+          <span v-if="this.forgotPassMailResult" class="link"
+            >Sıfırlama bağlantısı E-Posta adresine gönderildi</span
+          >
+        </div>
+        <Button center :click="sendForgotPassRequest">
+          <Icon :size="24" i="send" stroke="#fff" stroke-width="1.5" />Gönder
+        </Button>
+        <div class="subText">
+          Hesabın var mı?
+          <span class="link" @click="toggleRegister('login')">Giriş Yap</span>
+        </div>
+      </span>
+      <!-- -->
     </modal>
   </div>
 </template>
@@ -113,14 +156,20 @@ export default {
       modalType: 'login',
       loginMail: '',
       loginPass: '',
+      loginMailError: false,
+      loginPassError: false,
       loginRemember: false,
+      info: '',
       registerMail: '',
       registerPass: '',
       registerPassAgain: '',
+      registerMailError: false,
+      registerPassError: false,
+      registerPassAgainError: false,
       registerRemember: false,
-      loginMailError: false,
-      loginPassError: false,
-      info: ''
+      forgotPassMail: '',
+      forgotPassError: false,
+      forgotPassMailResult: ''
     }
   },
   computed: {
@@ -151,9 +200,42 @@ export default {
       this.loginMailError = !checkMail(this.loginMail)
       this.loginPassError = this.loginPass.length < 6
 
-      if (!this.loginMailError && this.loginPass.length >= 6) {
+      if (!this.loginMailError && !this.loginPassError) {
         this.fetchSomething(this.loginMail, this.loginPass)
       }
+    },
+    sendRegisterRequest() {
+      this.registerMailError = !checkMail(this.registerMail)
+      this.registerPassError = this.registerPass.length < 6
+      this.registerPassAgainError = this.registerPass !== this.registerPassAgain
+
+      if (
+        !this.registerMailError &&
+        !this.loginPassError &&
+        !this.registerPassAgainError &&
+        this.registerRemember
+      ) {
+        this.registerUser(this.registerMail, this.registerPass)
+      }
+    },
+    async registerUser(email, pass) {
+      const registerResult = await this.$axios.$post(
+        'http://localhost:5000/api/auth/register',
+        { email, pass }
+      )
+
+      if (registerResult.succes) {
+      }
+    },
+    sendForgotPassRequest() {
+      this.forgotPassError = !checkMail(this.forgotPassMail)
+      if (!this.forgotPassError) {
+        if (this.checkForgotPassMail(this.forgotPassMail))
+          this.forgotPassMailResult = true
+      }
+    },
+    checkForgotPassMail(email) {
+      return true
     },
     toggleRegister(type) {
       this.modalType = type
