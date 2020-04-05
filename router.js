@@ -16,24 +16,26 @@ export function createRouter() {
         path: '/',
         component: Home,
         meta: {
-          showModal: false
+          showResetPassModal: false
+        }
+      },
+      {
+        name: 'ResetPass',
+        path: '/resetPass/:token',
+        component: Home,
+        meta: {
+          showResetPassModal: true
         }
       },
       {
         name: 'PodCode',
         path: '/code',
-        component: PodCode,
-        meta: {
-          showModal: false
-        }
+        component: PodCode
       },
       {
         name: 'Store',
         path: '/store',
-        component: Store,
-        meta: {
-          showModal: false
-        }
+        component: Store
       }
     ]
   })

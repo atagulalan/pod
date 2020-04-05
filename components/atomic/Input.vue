@@ -118,7 +118,7 @@ export default {
   },
   methods: {
     updateValue(value) {
-      this.$emit('resolveError', this.errorHandler)
+      this.$emit('resolveError', this.errorHandler, '')
       this.$emit('input', value)
     },
     focusInput() {

@@ -65,7 +65,7 @@ export default {
   methods: {
     toggleValue() {
       this.value = !this.value
-      this.$emit('resolveError', this.errorHandler)
+      this.$emit('resolveError', this.errorHandler, false)
       this.$emit('input', this.value)
     }
   }

@@ -14,7 +14,6 @@ export const mutations = {
     state.user = user
   },
   resetUser(state) {
-    console.log('asddoaksşlfksajdşkajf')
     state.user = {
       initialized: false,
       id: {

@@ -3,8 +3,8 @@
     <div id="wrapper">
       <div class="inner">
         <logo />
-        <span v-if="$store.state.localStorage.user.id.username">
-          Günaydın, {{ $store.state.localStorage.user.id.username }}
+        <span v-if="$store.state.localStorage.user.id.email">
+          Günaydın, {{ $store.state.localStorage.user.id.email }}
           <a href="#" class="login" @click="logout">
             <Icon :size="24" i="exit" stroke="#fff" />Çıkış Yap
           </a>

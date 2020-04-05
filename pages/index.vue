@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <RegistrationModal />
+    <ResetPassModal />
     <Hero />
   </div>
 </template>
@@ -8,18 +9,26 @@
 <script>
 import Hero from '~/components/Hero.vue'
 import RegistrationModal from '~/components/modals/RegistrationModal.vue'
+import ResetPassModal from '~/components/modals/ResetPassModal.vue'
 
 export default {
   components: {
     Hero,
-    RegistrationModal
+    RegistrationModal,
+    ResetPassModal
   },
   data() {
     return {
       progress: [],
-      complete: [],
-      showModal: this.$route.meta.showModal
+      complete: []
     }
+  },
+  mounted() {
+    this.$nextTick(function() {
+      if (this.$route.meta.showResetPassModal) {
+        this.$modal.show('resetPassModal')
+      }
+    })
   },
   head() {
     return {

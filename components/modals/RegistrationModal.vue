@@ -6,6 +6,7 @@
       class="regModal"
       width="680"
       height="auto"
+      @before-close="beforeClose"
     >
       <span v-if="modalType === 'login'" key="login" class="modalInnerWrapper">
         <h1 class="active">Hesabına giriş yap</h1>
@@ -15,9 +16,9 @@
           name="email"
           placeholder="E-Posta"
           type="email"
-          :error="loginMailError"
+          :error="!!loginMailError"
           error-handler="loginMailError"
-          :helper="loginMailError ? 'E-Posta adresiniz hatalı' : ''"
+          :helper="loginMailError"
           center
           :submit="sendLoginRequest"
           @resolveError="resolveError"
@@ -29,9 +30,9 @@
           placeholder="Şifre"
           type="password"
           :submit="sendLoginRequest"
-          :error="loginPassError"
+          :error="!!loginPassError"
           error-handler="loginPassError"
-          :helper="loginPassError ? 'Şifreniz 6 karakterden az olamaz' : ''"
+          :helper="loginPassError"
           center
           @resolveError="resolveError"
         />
@@ -66,10 +67,11 @@
           leading="envelope"
           name="email"
           placeholder="E-Posta"
-          :error="registerMailError"
+          :error="!!registerMailError"
           error-handler="registerMailError"
-          :helper="registerMailError ? 'E-Posta adresiniz hatalı' : ''"
+          :helper="registerMailError"
           type="email"
+          :submit="sendRegisterRequest"
           center
           @resolveError="resolveError"
         />
@@ -78,10 +80,11 @@
           leading="lock"
           name="pass"
           placeholder="Şifre"
-          :error="registerPassError"
+          :error="!!registerPassError"
           error-handler="registerPassError"
-          :helper="registerPassError ? 'Şifreniz 6 karakterden az olamaz' : ''"
+          :helper="registerPassError"
           type="password"
+          :submit="sendRegisterRequest"
           center
           @resolveError="resolveError"
         />
@@ -90,9 +93,10 @@
           leading="lock"
           name="passAgain"
           placeholder="Şifre (Tekrar)"
-          :error="registerPassAgainError"
+          :error="!!registerPassAgainError"
           error-handler="registerPassAgainError"
-          :helper="registerPassAgainError ? 'Şifreniz eşleşmiyor' : ''"
+          :submit="sendRegisterRequest"
+          :helper="registerPassAgainError"
           type="password"
           center
           @resolveError="resolveError"
@@ -131,17 +135,21 @@
           leading="envelope"
           name="email"
           placeholder="E-Posta"
-          :error="forgotPassError"
-          :helper="forgotPassError ? 'E-Posta adresiniz hatalı' : ''"
+          :error="!!forgotPassError"
+          :helper="forgotPassError"
           type="email"
           center
         />
         <div class="subText">
-          <span v-if="forgotPassMailResult" class="link"
+          <span v-if="forgotPassSent" class="link"
             >Sıfırlama bağlantısı E-Posta adresine gönderildi</span
           >
         </div>
-        <Button center @click="sendForgotPassRequest">
+        <Button
+          center
+          :loading="forgotPassLoading"
+          @click="sendForgotPassRequest"
+        >
           <Icon
             style="margin-right:5px"
             :size="24"
@@ -179,21 +187,22 @@ export default {
       modalType: 'login',
       loginMail: '',
       loginPass: '',
-      loginMailError: false,
-      loginPassError: false,
+      loginMailError: '',
+      loginPassError: '',
       loginRemember: false,
       info: '',
       registerMail: '',
       registerPass: '',
       registerPassAgain: '',
-      registerMailError: false,
-      registerPassError: false,
-      registerPassAgainError: false,
+      registerMailError: '',
+      registerPassError: '',
+      registerPassAgainError: '',
       registerRememberError: false,
       registerRemember: false,
       forgotPassMail: '',
-      forgotPassError: false,
-      forgotPassMailResult: ''
+      forgotPassError: '',
+      forgotPassSent: false,
+      forgotPassLoading: false
     }
   },
   computed: {
@@ -203,35 +212,72 @@ export default {
   },
   methods: {
     async login(email, pass) {
-      const loginResult = await this.$axios.$post(
-        'http://localhost:5000/api/auth/login',
-        { email, pass }
-      )
-
-      if (loginResult.success) {
-        this.$store.commit('localStorage/setUser', {
-          initialized: true,
-          id: {
-            username: loginResult.data.username,
-            email: loginResult.data.email
-          },
-          anonymous: false
+      await this.$axios
+        .$post('http://localhost:5000/api/auth/login', { email, pass })
+        .then((response) => {
+          if (response.success) {
+            this.$store.commit('localStorage/setUser', {
+              initialized: true,
+              id: {
+                username: response.data.username,
+                email: response.data.email
+              },
+              anonymous: false
+            })
+            this.$modal.hide('registrationModal')
+          }
         })
-        this.$modal.hide('registrationModal')
-      }
+        .catch((error) => {
+          console.log(error)
+          this.loginMailError = ' '
+          this.loginPassError = 'E-posta veya şifre uyuşmuyor'
+        })
     },
     async register(email, pass) {
-      const registerResult = await this.$axios.$post(
-        'http://localhost:5000/api/auth/register',
-        { email, pass }
-      )
-
-      if (registerResult.succes) {
-      }
+      await this.$axios
+        .$post('http://localhost:5000/api/auth/register', { email, pass })
+        .then((response) => {
+          if (response.success) {
+            this.$store.commit('localStorage/setUser', {
+              initialized: true,
+              id: {
+                username: response.data.username,
+                email: response.data.email
+              },
+              anonymous: false
+            })
+            this.$modal.hide('registrationModal')
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.registerMailError = 'Bu e-posta daha önceden kullanılmış'
+        })
+    },
+    async forgotPass(email) {
+      await this.$axios
+        .$post('http://localhost:5000/api/auth/forgotPass', { email })
+        .then((response) => {
+          console.log(response)
+          if (response.success) {
+            this.forgotPassError = ''
+            this.forgotPassSent = true
+          }
+          this.forgotPassLoading = false
+        })
+        .catch((error) => {
+          console.log(error)
+          this.forgotPassSent = false
+          this.forgotPassError = 'Böyle bir e-posta adresi bulunamadı'
+          this.forgotPassLoading = false
+        })
     },
     sendLoginRequest() {
       this.loginMailError = !checkMail(this.loginMail)
-      this.loginPassError = this.loginPass.length < 6
+        ? 'E-Posta adresiniz hatalı'
+        : ''
+      this.loginPassError =
+        this.loginPass.length < 6 ? 'Şifreniz 6 karakterden az olamaz' : ''
 
       if (!this.loginMailError && !this.loginPassError) {
         this.login(this.loginMail, this.loginPass)
@@ -239,8 +285,14 @@ export default {
     },
     sendRegisterRequest() {
       this.registerMailError = !checkMail(this.registerMail)
-      this.registerPassError = this.registerPass.length < 6
-      this.registerPassAgainError = this.registerPass !== this.registerPassAgain
+        ? 'E-Posta adresiniz hatalı'
+        : ''
+      this.registerPassError =
+        this.registerPass.length < 6 ? 'Şifreniz 6 karakterden az olamaz' : ''
+      this.registerPassAgainError =
+        this.registerPass !== this.registerPassAgain
+          ? 'Şifreniz eşleşmiyor'
+          : ''
       this.registerRememberError = !this.registerRemember
 
       if (
@@ -254,19 +306,21 @@ export default {
     },
     sendForgotPassRequest() {
       this.forgotPassError = !checkMail(this.forgotPassMail)
+        ? 'E-Posta adresiniz hatalı'
+        : ''
       if (!this.forgotPassError) {
-        if (this.checkForgotPassMail(this.forgotPassMail))
-          this.forgotPassMailResult = true
+        this.forgotPassLoading = true
+        this.forgotPass(this.forgotPassMail)
       }
-    },
-    checkForgotPassMail(email) {
-      return true
     },
     toggleRegister(type) {
       this.modalType = type
     },
-    resolveError(errorHandler) {
-      this[errorHandler] = false
+    resolveError(errorHandler, newValue) {
+      this[errorHandler] = newValue
+    },
+    beforeClose() {
+      this.modalType = 'login'
     }
   }
 }
