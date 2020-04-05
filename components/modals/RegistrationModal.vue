@@ -16,9 +16,11 @@
           placeholder="E-Posta"
           type="email"
           :error="loginMailError"
+          error-handler="loginMailError"
           :helper="loginMailError ? 'E-Posta adresiniz hatalı' : ''"
           center
           :submit="sendLoginRequest"
+          @resolveError="resolveError"
         />
         <Input
           v-model="loginPass"
@@ -28,15 +30,17 @@
           type="password"
           :submit="sendLoginRequest"
           :error="loginPassError"
+          error-handler="loginPassError"
           :helper="loginPassError ? 'Şifreniz 6 karakterden az olamaz' : ''"
           center
+          @resolveError="resolveError"
         />
         <div class="checkboxes">
           <Checkbox v-model="loginRemember" name="remember" :default="true"
             >Beni hatırla</Checkbox
           >
         </div>
-        <Button center style="margin-top:10px" :click="sendLoginRequest">
+        <Button center style="margin-top:10px" @click="sendLoginRequest">
           <Icon :size="24" i="entrance" stroke="#fff" stroke-width="1.5" />Giriş
           Yap
         </Button>
@@ -63,9 +67,11 @@
           name="email"
           placeholder="E-Posta"
           :error="registerMailError"
+          error-handler="registerMailError"
           :helper="registerMailError ? 'E-Posta adresiniz hatalı' : ''"
           type="email"
           center
+          @resolveError="resolveError"
         />
         <Input
           v-model="registerPass"
@@ -73,9 +79,11 @@
           name="pass"
           placeholder="Şifre"
           :error="registerPassError"
+          error-handler="registerPassError"
           :helper="registerPassError ? 'Şifreniz 6 karakterden az olamaz' : ''"
           type="password"
           center
+          @resolveError="resolveError"
         />
         <Input
           v-model="registerPassAgain"
@@ -83,16 +91,25 @@
           name="passAgain"
           placeholder="Şifre (Tekrar)"
           :error="registerPassAgainError"
+          error-handler="registerPassAgainError"
           :helper="registerPassAgainError ? 'Şifreniz eşleşmiyor' : ''"
           type="password"
           center
+          @resolveError="resolveError"
         />
         <div class="checkboxes">
-          <Checkbox v-model="registerRemember" name="remember" :default="false"
+          <Checkbox
+            v-model="registerRemember"
+            name="remember"
+            :default="false"
+            :required="true"
+            :error="registerRememberError"
+            error-handler="registerRememberError"
+            @resolveError="resolveError"
             >Kullanım koşullarını kabul ediyorum</Checkbox
           >
         </div>
-        <Button center style="margin-top:10px" :click="sendRegisterRequest">
+        <Button center style="margin-top:10px" @click="sendRegisterRequest">
           <Icon :size="24" i="entrance" stroke="#fff" stroke-width="1.5" />Kayıt
           Ol
         </Button>
@@ -120,12 +137,18 @@
           center
         />
         <div class="subText">
-          <span v-if="this.forgotPassMailResult" class="link"
+          <span v-if="forgotPassMailResult" class="link"
             >Sıfırlama bağlantısı E-Posta adresine gönderildi</span
           >
         </div>
-        <Button center :click="sendForgotPassRequest">
-          <Icon :size="24" i="send" stroke="#fff" stroke-width="1.5" />Gönder
+        <Button center @click="sendForgotPassRequest">
+          <Icon
+            style="margin-right:5px"
+            :size="24"
+            i="send"
+            stroke="#fff"
+            stroke-width="1.5"
+          />Gönder
         </Button>
         <div class="subText">
           Hesabın var mı?
@@ -166,6 +189,7 @@ export default {
       registerMailError: false,
       registerPassError: false,
       registerPassAgainError: false,
+      registerRememberError: false,
       registerRemember: false,
       forgotPassMail: '',
       forgotPassError: false,
@@ -178,7 +202,7 @@ export default {
     }
   },
   methods: {
-    async fetchSomething(email, pass) {
+    async login(email, pass) {
       const loginResult = await this.$axios.$post(
         'http://localhost:5000/api/auth/login',
         { email, pass }
@@ -196,35 +220,36 @@ export default {
         this.$modal.hide('registrationModal')
       }
     },
-    sendLoginRequest() {
-      this.loginMailError = !checkMail(this.loginMail)
-      this.loginPassError = this.loginPass.length < 6
-
-      if (!this.loginMailError && !this.loginPassError) {
-        this.fetchSomething(this.loginMail, this.loginPass)
-      }
-    },
-    sendRegisterRequest() {
-      this.registerMailError = !checkMail(this.registerMail)
-      this.registerPassError = this.registerPass.length < 6
-      this.registerPassAgainError = this.registerPass !== this.registerPassAgain
-
-      if (
-        !this.registerMailError &&
-        !this.loginPassError &&
-        !this.registerPassAgainError &&
-        this.registerRemember
-      ) {
-        this.registerUser(this.registerMail, this.registerPass)
-      }
-    },
-    async registerUser(email, pass) {
+    async register(email, pass) {
       const registerResult = await this.$axios.$post(
         'http://localhost:5000/api/auth/register',
         { email, pass }
       )
 
       if (registerResult.succes) {
+      }
+    },
+    sendLoginRequest() {
+      this.loginMailError = !checkMail(this.loginMail)
+      this.loginPassError = this.loginPass.length < 6
+
+      if (!this.loginMailError && !this.loginPassError) {
+        this.login(this.loginMail, this.loginPass)
+      }
+    },
+    sendRegisterRequest() {
+      this.registerMailError = !checkMail(this.registerMail)
+      this.registerPassError = this.registerPass.length < 6
+      this.registerPassAgainError = this.registerPass !== this.registerPassAgain
+      this.registerRememberError = !this.registerRemember
+
+      if (
+        !this.registerMailError &&
+        !this.loginPassError &&
+        !this.registerPassAgainError &&
+        !this.registerRememberError
+      ) {
+        this.register(this.registerMail, this.registerPass)
       }
     },
     sendForgotPassRequest() {
@@ -239,6 +264,9 @@ export default {
     },
     toggleRegister(type) {
       this.modalType = type
+    },
+    resolveError(errorHandler) {
+      this[errorHandler] = false
     }
   }
 }

@@ -3,7 +3,7 @@
     :style="`width:${width};` + (center ? 'text-align:center;' : '')"
     class="buttonWrapper"
   >
-    <button @click="click">
+    <button @click="emitClick">
       <slot />
     </button>
   </div>
@@ -23,6 +23,11 @@ export default {
     click: {
       type: Function,
       default: () => {}
+    }
+  },
+  methods: {
+    emitClick(...params) {
+      this.$emit('click', this.click)
     }
   }
 }

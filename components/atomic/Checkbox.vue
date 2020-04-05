@@ -1,7 +1,7 @@
 <template>
   <div
     :style="center ? 'margin:0 auto;' : ''"
-    class="checkboxWrapper"
+    :class="['checkboxWrapper', error ? 'error' : '']"
     @click="toggleValue()"
   >
     <input
@@ -14,7 +14,9 @@
     <label :for="name">
       <span />
       <div class="background" />
-      <div class="label"><slot /></div>
+      <div class="label">
+        <slot />
+      </div>
     </label>
   </div>
 </template>
@@ -45,6 +47,14 @@ export default {
     default: {
       type: Boolean,
       default: false
+    },
+    error: {
+      type: Boolean,
+      default: false
+    },
+    errorHandler: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -55,6 +65,7 @@ export default {
   methods: {
     toggleValue() {
       this.value = !this.value
+      this.$emit('resolveError', this.errorHandler)
       this.$emit('input', this.value)
     }
   }
@@ -65,6 +76,16 @@ export default {
 .checkboxWrapper {
   transition: 0.4s opacity, 0.4s transform;
   display: inline-block;
+
+  &.error {
+    input[type='checkbox'] + label > span,
+    input[type='checkbox'] + label:hover > span {
+      border: 1px solid #b00020;
+    }
+    input[type='checkbox'] + label > .label {
+      color: #b00020;
+    }
+  }
 
   @keyframes shrink-bounce {
     0% {

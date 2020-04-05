@@ -104,6 +104,10 @@ export default {
     submit: {
       type: Function,
       default: () => {}
+    },
+    errorHandler: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -114,6 +118,7 @@ export default {
   },
   methods: {
     updateValue(value) {
+      this.$emit('resolveError', this.errorHandler)
       this.$emit('input', value)
     },
     focusInput() {
