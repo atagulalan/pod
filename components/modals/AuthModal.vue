@@ -55,30 +55,6 @@ export default {
 </script>
 
 <style lang="scss">
-/* Enter and leave animations can use different */
-/* durations and timing functions.              */
-.slide-fade-enter-active {
-  transition: all 0s ease;
-}
-.slide-fade-leave-active {
-  transition: all 0s;
-}
-
-.slide-fade-enter-to {
-  transition-delay: 0s;
-}
-
-.slide-fade-leave-to {
-  transform: translateX(-10px);
-  opacity: 0;
-}
-
-.slide-fade-enter
-/* .slide-fade-leave-active below version 2.1.8 */ {
-  transform: translateX(10px);
-  opacity: 0;
-}
-
 .modalInnerWrapper {
   position: relative;
   display: block;
