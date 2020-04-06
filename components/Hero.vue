@@ -22,6 +22,7 @@
 <script>
 import Icon from '~/components/atomic/Icon.vue'
 import Logo from '~/components/atomic/Logo.vue'
+import { logout } from '~/middleware/auth-service'
 
 export default {
   components: {
@@ -38,26 +39,13 @@ export default {
       default: () => {}
     }
   },
-  computed: {
-    loaded() {
-      return this.$store.state.localStorage && this.$store.state.sessionStorage
-    }
-  },
   methods: {
-    async logout() {
-      const logoutResult = await this.$axios.$post(
-        'http://localhost:5000/api/auth/logout'
-      )
-      console.log(logoutResult)
-      if (logoutResult.success) {
-        this.$store.commit('localStorage/resetUser')
-      }
-    },
+    logout,
     show() {
-      this.$modal.show('registrationModal')
+      this.$modal.show('authModal')
     },
     hide() {
-      this.$modal.hide('registrationModal')
+      this.$modal.hide('authModal')
     }
   }
 }

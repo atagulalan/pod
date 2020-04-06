@@ -126,7 +126,7 @@
 
 <script>
 import { Container, Draggable } from 'vue-smooth-dnd'
-import { applyDrag, generateItems } from '../middleware/helpers'
+import { applyDrag, generateItems } from '~/middleware/helpers'
 
 class PodCode {
   constructor(code) {

@@ -42,7 +42,7 @@ export default {
     }
   },
   methods: {
-    emitClick(...params) {
+    emitClick() {
       if (!this.loading) {
         this.$emit('click', this.click)
       }
