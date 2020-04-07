@@ -65,8 +65,8 @@ body {
 
 .parallax {
   overflow: hidden overlay !important;
-  -webkit-perspective: 300px;
   perspective: 300px;
+  background: #c345ff;
 
   &.debug {
     .group {
@@ -122,21 +122,20 @@ body {
 .vuebar-element {
   height: 100vh;
   width: 100%;
-  background: #dfe9fe;
 }
 
 .vb {
   &.vb-dragging-phantom {
     .vb-dragger {
       .vb-dragger-styler {
-        background-color: #6f9941;
+        background-color: rgba(0, 0, 0, 0.4);
       }
     }
   }
   &.vb-dragging {
     .vb-dragger {
       .vb-dragger-styler {
-        background-color: #6f9941;
+        background-color: rgba(0, 0, 0, 0.4);
         margin: 0 1.5px;
         height: 100%;
       }
@@ -170,7 +169,7 @@ body {
     }
     &:hover {
       .vb-dragger-styler {
-        background-color: #6f9941;
+        background-color: rgba(0, 0, 0, 0.4);
         margin: 0 1.5px;
         height: 100%;
       }

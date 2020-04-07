@@ -54,20 +54,34 @@
 	<path fill="none" stroke="#1A2E35" stroke-miterlimit="10" d="M2212.6,276.9H-14.6c-12.1,0-21.9-9.8-21.9-21.9v0
 		c0-12.1,9.8-21.9,21.9-21.9h2227.3c12.1,0,21.9,9.8,21.9,21.9v0C2234.5,267.1,2224.7,276.9,2212.6,276.9z"/>
 	<g>
-		<rect x="1968.5" y="171.6" fill="#FF4F5B" width="56.5" height="56.5"/>
+		<rect x="2000" y="171.6" class="fall" fill="#FF4F5B" width="56.5" height="56.5"/>
 	</g>
 	<g>
-		<rect x="1728.8" y="171.6" fill="#FF4F5B" width="56.5" height="56.5"/>
+		<rect x="1750" y="171.6" class="box" fill="#FF4F5B" width="56.5" height="56.5"/>
 	</g>
 	<g>
-		<rect x="1486.9" y="171.6" fill="#FF4F5B" width="56.5" height="56.5"/>
+		<rect x="1500" y="171.6" class="box" fill="#FF4F5B" width="56.5" height="56.5"/>
 	</g>
 	<g>
-		
-			<rect x="2288.1" y="261.5" transform="matrix(0.6606 0.7507 -0.7507 0.6606 1003.6068 -1640.5551)" fill="#FF4F5B" width="56.5" height="56.5"/>
+		<rect x="1250" y="171.6" class="box" fill="#FF4F5B" width="56.5" height="56.5"/>
 	</g>
-	<g>
-		<rect x="2409.6" y="322.1" fill="#FF4F5B" width="56.5" height="56.5"/>
+		<g>
+		<rect x="1000" y="171.6" class="box" fill="#FF4F5B" width="56.5" height="56.5"/>
+	</g>
+		<g>
+		<rect x="750" y="171.6" class="box" fill="#FF4F5B" width="56.5" height="56.5"/>
+	</g>
+		<g>
+		<rect x="500" y="171.6" class="box" fill="#FF4F5B" width="56.5" height="56.5"/>
+	</g>
+		<g>
+		<rect x="250" y="171.6" class="box" fill="#FF4F5B" width="56.5" height="56.5"/>
+	</g>
+			<g>
+		<rect x="0" y="171.6" class="box" fill="#FF4F5B" width="56.5" height="56.5"/>
+	</g>
+			<g>
+		<rect x="-250" y="171.6" class="box" fill="#FF4F5B" width="56.5" height="56.5"/>
 	</g>
 	<rect x="2338.2" y="378.6" fill="#1A2E35" width="1520.8" height="45.4"/>
 	<g>
@@ -89,17 +103,24 @@
 	<circle fill="#1A2E35" cx="1083.5" cy="255" r="12.9"/>
 	<circle fill="#1A2E35" cx="1205" cy="255" r="12.9"/>
 	<g>
-		<rect x="2571.6" y="322.1" fill="#FF4F5B" width="56.5" height="56.5"/>
+		<rect x="2320" y="322.1" class="bottomBox" fill="#FF4F5B" width="56.5" height="56.5"/>
 	</g>
 	<g>
-		<rect x="2752.6" y="322.1" fill="#FF4F5B" width="56.5" height="56.5"/>
+		<rect x="2570" y="322.1" class="bottomBox" fill="#FF4F5B" width="56.5" height="56.5"/>
 	</g>
 	<g>
-		<rect x="1191.6" y="172.1" fill="#FF4F5B" width="56.5" height="56.5"/>
+		<rect x="2820" y="322.1" class="bottomBox" fill="#FF4F5B" width="56.5" height="56.5"/>
 	</g>
 	<g>
-		<rect x="987.6" y="172.1" fill="#FF4F5B" width="56.5" height="56.5"/>
+		<rect x="3070" y="322.1" class="bottomBox" fill="#FF4F5B" width="56.5" height="56.5"/>
 	</g>
+	<g>
+		<rect x="3320" y="322.1" class="bottomBox" fill="#FF4F5B" width="56.5" height="56.5"/>
+	</g>
+	<g>
+		<rect x="3570" y="322.1" class="bottomBox" fill="#FF4F5B" width="56.5" height="56.5"/>
+	</g>
+
 	<circle fill="#1A2E35" cx="352.5" cy="255" r="12.9"/>
 	<circle fill="#1A2E35" cx="474" cy="255" r="12.9"/>
 	<circle fill="#1A2E35" cx="595.5" cy="255" r="12.9"/>

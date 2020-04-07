@@ -6,14 +6,14 @@
           <div class="layer m0">
             <div class="middle">
               <div class="imageWithText">
-                <div class="redPlant"></div>
+                <div class="redPlant hvr-bob"></div>
                 <div class="text">
                   <h1>Bilgisayar mı?<br />Çocuk Oyuncağı!</h1>
                   <p>
                     Bilgisayarların nasıl bilgiyi saydığını öğrenin,<br />hem de
                     eğlenceli bir şekilde!
                   </p>
-                  <Button size="big" background="#9CCC66">
+                  <Button size="big" background="#9CCC66" @click="show">
                     <Icon
                       :size="48"
                       i="video"
@@ -42,7 +42,7 @@
         <div id="platou" class="group">
           <div class="layer m-150">
             <div class="ceiling">
-              <div class="middle" style="width: 100%;">
+              <div class="middle" style="width: 100%;max-width:1200px;">
                 <h2>
                   Sürekli tekrarlanan işleri<br />robotlar yapsa nasıl olurdu?
                 </h2>
@@ -77,11 +77,80 @@
           </div>
         </div>
 
-        <div id="ada" class="group">
-          <div class="layer m0" style="margin-top: -270px; background:red">
-            <div class="middle">Base Layer</div>
+        <div id="ada" class="group" style="margin-top: -270px;">
+          <div class="layer m-60">
+            <div class="adaWrapper">
+              <div class="ada hvr-bob">
+                <component :is="ada"></component>
+              </div>
+            </div>
           </div>
-          <div class="layer m-100"></div>
+          <div class="layer m0" style="background:#F7FAFC">
+            <div class="room">
+              <div class="middle">
+                <div class="text">
+                  <h1>Ada ile tanışın.</h1>
+                  <p>
+                    Bilgisayarların dünyasına olan yolculuğunuzun en iyi şekilde
+                    geçmesi için programlandı.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div
+              class="roomFloor"
+              :style="`transform: scaleY(${roomFloorScale});`"
+            ></div>
+          </div>
+        </div>
+
+        <div id="price" class="group">
+          <div
+            class="layer m0"
+            style="overflow:hidden;    box-shadow: inset 0px 10px 0px 0px #f7fafc;"
+          >
+            <div class="text">
+              <h1>Tamamen ücretsiz.</h1>
+              <p>
+                Sonsuza kadar ücretsizdir ve ücretsiz kalacaktır.
+              </p>
+            </div>
+            <div class="coinWrapper">
+              <div class="coin">
+                <div class="coin__front"></div>
+                <div class="coin__edge">
+                  <div v-for="index in 80" :key="index"></div>
+                </div>
+                <div class="coin__back"></div>
+              </div>
+            </div>
+            <div class="coinFloor"></div>
+          </div>
+        </div>
+
+        <div id="gonow" class="group">
+          <div class="layer m100">
+            <div class="middle">
+              <div class="text">
+                <h1>Şimdi başla!</h1>
+                <p>
+                  Bilgisayarların dünyasına ilk adımını at.
+                </p>
+                <Button size="big" background="#C345FF" @click="show">
+                  <Icon
+                    :size="48"
+                    i="entrance"
+                    stroke="#fff"
+                    stroke-width="1.5"
+                  />
+                  Giriş Yap
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div class="layer m200">
+            <div class="yellowTree"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -112,12 +181,16 @@ export default {
   },
   data: () => {
     return {
-      platouHeight: 60
+      platouHeight: 100,
+      roomFloorScale: 1
     }
   },
   computed: {
     machine() {
       return () => import(`~/static/img/home/machines.svg?inline`)
+    },
+    ada() {
+      return () => import(`~/static/img/home/ada.svg?inline`)
     }
   },
   mounted() {
@@ -138,13 +211,32 @@ export default {
     hide() {
       this.$modal.hide('authModal')
     },
+    getPos(el) {
+      let lx = 0
+      let ly = 0
+      for (
+        lx, ly;
+        el != null;
+        lx += el.offsetLeft, ly += el.offsetTop, el = el.offsetParent
+      );
+      return { x: lx, y: ly }
+    },
     handleScroll() {
-      console.log(document.querySelector('.parallax').scrollTop)
-      // Your scroll handling here
-      if (document.querySelector('.parallax').scrollTop > 800) {
-        this.platouHeight =
-          60 - (document.querySelector('.parallax').scrollTop - 800) / 13
-      }
+      const vh = Math.max(
+        document.documentElement.clientHeight,
+        window.innerHeight || 0
+      )
+      const parallax = document.querySelector('.parallax')
+      const pinkBush = document.querySelector('.pinkBushes')
+      const groundZero = this.getPos(pinkBush).y
+      // This is a hack. i cannot reproduce height distortion of ground in css.
+      // So i just flatten the height over scroll.
+      this.platouHeight = ((groundZero - parallax.scrollTop) / vh) * 100
+
+      /* --------------------- */
+      const roomFloor = document.querySelector('.roomFloor')
+      const floorZero = this.getPos(roomFloor).y
+      this.roomFloorScale = (floorZero - parallax.scrollTop) / vh
     }
   }
 }
@@ -164,6 +256,7 @@ export default {
         height: 528px;
         background: url('/img/home/red_leaves.svg');
         float: left;
+        margin-top: 5px;
       }
       .text {
         float: left;
@@ -199,7 +292,7 @@ export default {
       &:after {
         content: '';
         background: #d3f1fb;
-        height: 130vh;
+        height: calc(100vh - 451px);
         display: block;
         top: 100%;
         position: relative;
@@ -207,7 +300,6 @@ export default {
     }
   }
   .m600 {
-    background: #e0f8fa;
     .logo {
       position: relative;
       z-index: 2;
@@ -220,7 +312,8 @@ export default {
       left: 0;
       top: 0;
       width: 100%;
-      height: 240px;
+      height: 500px;
+      background: #e0f8fa;
 
       @keyframes cloud {
         0% {
@@ -279,6 +372,7 @@ export default {
       background-size: cover;
       position: absolute;
       top: 0px;
+      background-color: #d3f1fb;
       .bottom {
         display: block;
         width: 100%;
@@ -303,7 +397,7 @@ export default {
       background-position: center;
       background-size: cover;
       position: absolute;
-      top: 162px;
+      top: 180px;
     }
     .platou2 {
       width: 100%;
@@ -312,7 +406,7 @@ export default {
       background-position: center;
       background-size: cover;
       position: absolute;
-      top: -40px;
+      top: -20px;
     }
     .platou3 {
       width: 100%;
@@ -321,7 +415,7 @@ export default {
       background-position: center;
       background-size: cover;
       position: absolute;
-      top: -10px;
+      top: 40px;
     }
     .platou4 {
       width: 100%;
@@ -330,7 +424,7 @@ export default {
       background-position: center;
       background-size: cover;
       position: absolute;
-      top: 42px;
+      top: 45px;
     }
     .machine {
       width: 3840px;
@@ -338,6 +432,62 @@ export default {
       left: 50%;
       top: 20px;
       transform: translateX(-50%);
+
+      @keyframes box {
+        0% {
+          transform: translateX(50px);
+        }
+        100% {
+          transform: translateX(300px);
+        }
+      }
+
+      @keyframes fall {
+        0% {
+          transform: translateX(50px);
+        }
+        60% {
+          transform: translateX(200px) translateY(0px) rotateZ(0deg);
+        }
+        66% {
+          transform: translateX(260px) translateY(-40px) rotateZ(45deg);
+        }
+        90% {
+          transform: translateX(350px) translateY(55px) rotateZ(45deg);
+        }
+        96% {
+          transform: translateX(450px) translateY(32px) rotateZ(90deg);
+        }
+        100% {
+          transform: translateX(470px) translateY(32px) rotateZ(90deg);
+        }
+      }
+
+      @keyframes bottomBox {
+        0% {
+          transform: translateX(50px);
+        }
+        100% {
+          transform: translateX(300px);
+        }
+      }
+
+      .box,
+      .fall,
+      .bottomBox {
+        animation: linear infinite;
+        animation-duration: 3s;
+        transform-origin: center center;
+      }
+      .box {
+        animation-name: box;
+      }
+      .fall {
+        animation-name: fall;
+      }
+      .bottomBox {
+        animation-name: bottomBox;
+      }
     }
     .ceiling {
       background: url('/img/home/ceiling.svg');
@@ -372,31 +522,240 @@ export default {
   z-index: 7;
   height: 100vh;
   * {
+    .adaWrapper {
+      width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      .ada {
+        width: 23vh;
+        top: 40vh;
+        position: absolute;
+        right: 0;
+      }
+    }
+    .room {
+      height: 70vh;
+      position: relative;
+      .text {
+        width: 600px;
+        position: relative;
+        font-family: 'Quicksand', sans-serif;
+        color: #798f9c;
+        text-align: center;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, 0%);
+        h1 {
+          font-size: 75px;
+          line-height: 75px;
+          font-weight: 600;
+          margin-bottom: 40px;
+        }
+        p {
+          font-size: 38px;
+          font-weight: 400;
+          margin-bottom: 40px;
+        }
+      }
+    }
+    .roomFloor {
+      height: 30vh;
+      background: url('/img/home/roomFloor.svg');
+      background-position: center;
+      background-size: cover;
+      transform-origin: bottom;
+    }
   }
-  .deep {
-    background: rgb(184, 223, 101);
+}
+
+#price {
+  height: calc(40vh + 410px);
+  z-index: 8;
+  background: white;
+  .priceLayer {
+    background: white;
+    border-top: 5px solid #f7fafc;
+  }
+  * {
+    .text {
+      width: 1200px;
+      position: relative;
+      font-family: 'Quicksand', sans-serif;
+      color: #798f9c;
+      text-align: center;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      height: 40vh;
+      h1 {
+        font-size: 75px;
+        line-height: 75px;
+        font-weight: 600;
+        margin-bottom: 40px;
+      }
+      p {
+        font-size: 38px;
+        font-weight: 400;
+        margin-bottom: 40px;
+      }
+    }
+  }
+
+  .coinWrapper {
+    margin-top: 24px;
+    transform: translateX(-50%) translateZ(-300px) scale(1);
+    top: 40vh;
+    position: absolute;
+    left: 50%;
+    &:after {
+      content: '';
+      top: 100%;
+      width: 100%;
+      height: 37px;
+      background: url('/img/home/coinPlatform.svg');
+      background-position: center;
+      background-size: cover;
+      transform-origin: bottom;
+      position: absolute;
+      margin-top: 50px;
+    }
+  }
+
+  $coin-diameter: 265px;
+  $coin-thickness: 20px;
+  $coin-color: #ffcc01;
+  $coin: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyMi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4yIiBiYXNlUHJvZmlsZT0idGlueSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiDQoJIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8Zz4NCgk8Zz4NCgkJPGc+DQoJCQk8Y2lyY2xlIGZpbGw9IiNGRkQ3MTUiIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIvPg0KCQk8L2c+DQoJCTxnPg0KCQkJPGNpcmNsZSBmaWxsPSIjRkZDQzAxIiBjeD0iMjU2IiBjeT0iMjU2IiByPSIyMTcuMyIvPg0KCQk8L2c+DQoJPC9nPg0KCTxwYXRoIGZpbGw9IiNFNjlBMjQiIGQ9Ik0zNTEuNywxNzljMS43LTUuMywyLjYtMTAuOSwyLjYtMTYuOGMwLTI4LjgtMjEuNy01Mi41LTQ5LjYtNTUuNmMtMTAtMTUuMy0yNy4zLTI1LjUtNDctMjUuNQ0KCQljLTE5LjUsMC0zNi43LDEwLTQ2LjgsMjUuMmMtMjkuNiwxLjUtNTMuMiwyNi01My4yLDU2YzAsNS44LDAuOSwxMS41LDIuNiwxNi44Yy05LjksMTAuMS0xNi4xLDI0LTE2LjEsMzkuM2MwLDMwLjksMjUuMSw1Niw1Niw1Ng0KCQljMS45LDAsMy43LTAuMSw1LjUtMC4zYzQuMSwxMC4xLDExLjEsMTguOCwxOS45LDI1djEwMy4yYzAsNy4zLDUuOSwxMy4zLDEzLjMsMTMuM2gzNC4xYzcuMywwLDEzLjMtNS45LDEzLjMtMTMuM1YzMDEuMg0KCQljMTAuNC02LjIsMTguNi0xNS42LDIzLjItMjdjMC43LDAsMS41LDAuMSwyLjIsMC4xYzMwLjksMCw1Ni0yNS4xLDU2LTU2QzM2Ny44LDIwMywzNjEuNywxODkuMSwzNTEuNywxNzl6Ii8+DQo8L2c+DQo8L3N2Zz4NCg==);
+  $edge-faces: 80;
+  $edge-face-length: 3.14 * $coin-diameter/$edge-faces;
+  $turn-time: 8s;
+
+  .coin {
+    position: relative;
+    width: $coin-diameter;
+    height: $coin-diameter;
+    margin: 0px auto;
+    transform-style: preserve-3d;
+    animation: rotate3d $turn-time linear infinite;
+    transition: all 0.3s;
+  }
+
+  .coin__front,
+  .coin__back {
+    position: absolute;
+    width: $coin-diameter;
+    height: $coin-diameter;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: $coin-color;
+
+    &:after {
+      content: '';
+      position: absolute;
+      left: -$coin-diameter/2;
+      bottom: 100%;
+      display: block;
+      height: $coin-diameter/1.5;
+      width: $coin-diameter * 2;
+      background: #fff;
+      opacity: 0.3;
+      animation: shine linear $turn-time/2 infinite;
+    }
+  }
+
+  .coin__front {
+    background-image: $coin;
+    background-size: cover;
+    transform: translateZ($coin-thickness/2);
+  }
+  .coin__back {
+    background-image: $coin;
+    background-size: cover;
+    transform: translateZ(-$coin-thickness/2) rotateY(180deg);
+  }
+
+  .coin__edge {
+    @for $i from 1 through $edge-faces {
+      div:nth-child(#{$i}) {
+        position: absolute;
+        height: $edge-face-length;
+        width: $coin-thickness;
+        background: $coin-color;
+        transform: translateY(#{$coin-diameter/2-$edge-face-length/2})
+          translateX(#{$coin-diameter/2-$coin-thickness/2})
+          rotateZ(360deg / $edge-faces * $i + 90)
+          translateX(#{$coin-diameter/2})
+          rotateY(90deg);
+      }
+    }
+  }
+
+  @keyframes rotate3d {
+    0% {
+      transform: perspective(1000px) rotateY(0deg);
+    }
+
+    100% {
+      transform: perspective(1000px) rotateY(360deg);
+    }
+  }
+
+  @keyframes shine {
+    0%,
+    15% {
+      transform: translateY($coin-diameter * 2) rotate(-40deg);
+    }
+    50% {
+      transform: translateY(-$coin-diameter) rotate(-40deg);
+    }
+  }
+
+  .coinFloor {
+    width: 100%;
+    height: 34px;
+    background: #1a2e35;
+    position: absolute;
+    bottom: 0;
   }
 }
 
-#group5 {
-  z-index: -3; /* slide over group 4 and 6 */
-}
-#group5 .base {
-  background: rgb(214, 229, 100);
-}
+#gonow {
+  height: 100vh;
+  * {
+    .yellowTree {
+      width: 100%;
+      height: 100vh;
+      background: url('/img/home/yellowTree.svg');
+      background-position: center;
+      background-size: cover;
+      transform-origin: bottom;
+      position: absolute;
+      top: 10px;
+    }
 
-#group6 {
-  z-index: -4; /* slide under group 5 and 7 */
-}
-#group6 .back {
-  background: rgb(245, 235, 100);
-}
+    .text {
+      width: 600px;
+      margin-left: 600px;
+      text-align: left;
+      color: #ff9000;
+      h1 {
+        font-size: 75px;
+        line-height: 75px;
+        font-weight: 600;
+        margin-bottom: 40px;
+      }
+      p {
+        font-size: 38px;
+        font-weight: 400;
+        margin-bottom: 40px;
+      }
+    }
+  }
 
-#group7 {
-  z-index: -5; /* slide over group 7 */
-}
-#group7 .base {
-  background: rgb(255, 241, 100);
+  .m200 {
+    background: #ffed5b;
+  }
 }
 
 .middle {
