@@ -55,6 +55,7 @@ export default {
 
 body {
   background: #fcfcfc;
+  overflow: hidden;
 }
 
 /*

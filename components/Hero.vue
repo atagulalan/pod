@@ -72,7 +72,18 @@
           </div>
           <div class="layer m0">
             <div class="pinkBushes">
-              <div class="bottom" :style="`height: ${platouHeight}vh;`"></div>
+              <div
+                class="bottom"
+                :style="
+                  `height: ${
+                    platouHeight > 100
+                      ? 100
+                      : platouHeight < 0
+                      ? 0
+                      : platouHeight
+                  }vh;`
+                "
+              ></div>
             </div>
           </div>
         </div>
@@ -89,7 +100,7 @@
             <div class="room">
               <div class="middle">
                 <div class="text">
-                  <h1>Ada ile tanışın.</h1>
+                  <h1><span class="link">Ada</span> ile tanışın.</h1>
                   <p>
                     Bilgisayarların dünyasına olan yolculuğunuzun en iyi şekilde
                     geçmesi için programlandı.
@@ -105,10 +116,7 @@
         </div>
 
         <div id="price" class="group">
-          <div
-            class="layer m0"
-            style="overflow:hidden;    box-shadow: inset 0px 10px 0px 0px #f7fafc;"
-          >
+          <div class="layer m0 priceCeiling">
             <div class="text">
               <h1>Tamamen ücretsiz.</h1>
               <p>
@@ -226,12 +234,16 @@ export default {
         document.documentElement.clientHeight,
         window.innerHeight || 0
       )
+      const platouStart = 490
       const parallax = document.querySelector('.parallax')
       const pinkBush = document.querySelector('.pinkBushes')
-      const groundZero = this.getPos(pinkBush).y
+      const groundZero =
+        this.getPos(pinkBush).y + platouStart / (vh < 950 ? vh / 200 : vh / 100)
       // This is a hack. i cannot reproduce height distortion of ground in css.
       // So i just flatten the height over scroll.
-      this.platouHeight = ((groundZero - parallax.scrollTop) / vh) * 100
+      this.platouHeight =
+        ((groundZero - parallax.scrollTop) / (vh - platouStart)) *
+        (vh > 1250 ? 80 : 100)
 
       /* --------------------- */
       const roomFloor = document.querySelector('.roomFloor')
@@ -245,7 +257,7 @@ export default {
 <style lang="scss">
 #hero {
   height: 100vh;
-  .m0 {
+  & > * {
     .imageWithText {
       width: 1200px;
       margin-top: 100px;
@@ -280,8 +292,6 @@ export default {
         }
       }
     }
-  }
-  .m300 {
     .mountains {
       margin-top: 180px;
       width: 100%;
@@ -298,8 +308,6 @@ export default {
         position: relative;
       }
     }
-  }
-  .m600 {
     .logo {
       position: relative;
       z-index: 2;
@@ -430,10 +438,64 @@ export default {
       width: 3840px;
       position: absolute;
       left: 50%;
-      top: 20px;
+      top: -180px;
       transform: translateX(-50%);
 
+      @keyframes rotate1 {
+        0% {
+          transform: rotateZ(-30deg);
+        }
+        100% {
+          transform: rotateZ(30deg);
+        }
+      }
+
+      .leftTip,
+      .leftLevel1,
+      .leftLevel2,
+      .leftLevel3,
+      .rightTip,
+      .rightLevel1,
+      .rightLevel2,
+      .rightLevel3 {
+        animation: ease-in-out infinite alternate;
+        animation-name: rotate1;
+      }
+      .leftTip {
+        animation-duration: 2s;
+      }
+      .leftLevel1 {
+        animation-duration: 3s;
+      }
+      .leftLevel2 {
+        animation-duration: 5s;
+      }
+      .leftLevel3 {
+        animation-duration: 7s;
+      }
+      .rightTip {
+        animation-duration: 2s;
+      }
+      .rightLevel1 {
+        animation-duration: 3s;
+      }
+      .rightLevel2 {
+        animation-duration: 5s;
+      }
+      .rightLevel3 {
+        animation-duration: 7s;
+      }
+
       @keyframes box {
+        0% {
+          transform: translateX(50px);
+        }
+        100% {
+          transform: translateX(300px);
+        }
+      }
+
+      @keyframes bottomBox {
         0% {
           transform: translateX(50px);
         }
@@ -449,35 +511,25 @@ export default {
         60% {
           transform: translateX(200px) translateY(0px) rotateZ(0deg);
         }
-        66% {
-          transform: translateX(260px) translateY(-40px) rotateZ(45deg);
+        69% {
+          transform: translateX(228px) translateY(22px) rotateZ(49deg);
         }
         90% {
-          transform: translateX(350px) translateY(55px) rotateZ(45deg);
+          transform: translateX(330px) translateY(140px) rotateZ(49deg);
         }
-        96% {
-          transform: translateX(450px) translateY(32px) rotateZ(90deg);
-        }
-        100% {
-          transform: translateX(470px) translateY(32px) rotateZ(90deg);
-        }
-      }
-
-      @keyframes bottomBox {
-        0% {
-          transform: translateX(50px);
+        99% {
+          transform: translateX(367.5px) translateY(152px) rotateZ(90deg);
         }
         100% {
-          transform: translateX(300px);
+          transform: translateX(370px) translateY(152px) rotateZ(90deg);
         }
       }
-
       .box,
       .fall,
       .bottomBox {
         animation: linear infinite;
         animation-duration: 3s;
-        transform-origin: center center;
+        transform-origin: 2029.5px 200px;
       }
       .box {
         animation-name: box;
@@ -514,6 +566,7 @@ export default {
       line-height: 60px;
       color: #fefefe;
       font-weight: 500;
+      pointer-events: none;
     }
   }
 }
@@ -551,6 +604,20 @@ export default {
           line-height: 75px;
           font-weight: 600;
           margin-bottom: 40px;
+          .link {
+            position: relative;
+            &:after {
+              content: '';
+              width: 100%;
+              height: 6px;
+              border-radius: 50px;
+              background: #798f9c;
+              position: absolute;
+              left: 0;
+              top: 100%;
+              margin-top: -10px;
+            }
+          }
         }
         p {
           font-size: 38px;
@@ -570,12 +637,17 @@ export default {
 }
 
 #price {
-  height: calc(40vh + 410px);
-  z-index: 8;
+  height: 900px;
+  z-index: 7;
   background: white;
   .priceLayer {
     background: white;
     border-top: 5px solid #f7fafc;
+  }
+  .priceCeiling {
+    overflow: hidden;
+    box-shadow: inset 0px 1px 0px 0px #e8e8e8;
+    background: white;
   }
   * {
     .text {
@@ -588,7 +660,7 @@ export default {
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      height: 40vh;
+      height: 490px;
       h1 {
         font-size: 75px;
         line-height: 75px;
@@ -606,7 +678,7 @@ export default {
   .coinWrapper {
     margin-top: 24px;
     transform: translateX(-50%) translateZ(-300px) scale(1);
-    top: 40vh;
+    top: 490px;
     position: absolute;
     left: 50%;
     &:after {
@@ -767,91 +839,34 @@ export default {
   transform: translate(-50%, -50%);
 }
 
+@keyframes fadein {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  80% {
+    transform: translateY(0px);
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 .heroWrapper {
   width: 100%;
   height: auto;
   position: relative;
   z-index: 0;
-
-  @keyframes fadein {
-    0% {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    80% {
-      transform: translateY(0px);
-    }
-    100% {
-      opacity: 1;
-    }
-  }
+  animation: fadein 0.5s;
+  animation-delay: 0.2s;
+  animation-fill-mode: forwards;
+  opacity: 0;
 
   hr {
     border: 0;
     width: 100%;
     height: 5px;
     background: linear-gradient(135deg, #6f9941 0%, #787dd2 100%);
-  }
-
-  #wrapper {
-    height: 600px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #252821;
-    position: relative;
-    overflow: hidden;
-
-    .inner {
-      max-width: 500px;
-      text-align: center;
-      animation: fadein 0.5s;
-      animation-delay: 0.2s;
-      animation-fill-mode: forwards;
-      opacity: 0;
-    }
-
-    p {
-      padding: 20pt 0 50pt;
-      font-size: 18pt;
-      font-weight: 300;
-    }
-
-    .login {
-      color: #252821;
-      display: block;
-      padding: 10px 20px;
-      font-weight: 300;
-      font-size: 16pt;
-      z-index: 32;
-      position: relative;
-      transition: 0.3s filter;
-      width: 180px;
-      margin: 30px auto 0;
-      &:before {
-        content: '';
-        width: 100%;
-        left: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(111, 153, 65, 1) 0%,
-          rgba(111, 153, 65, 1) 100%
-        );
-        height: 3px;
-        position: absolute;
-        bottom: -20px;
-        transition: 0.2s bottom, 0.15s opacity;
-        opacity: 0;
-        pointer-events: none;
-      }
-      &:hover {
-        &:before {
-          bottom: -10px;
-          opacity: 1;
-        }
-      }
-    }
   }
 }
 </style>
