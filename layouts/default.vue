@@ -5,14 +5,16 @@
 </template>
 
 <script>
-/*
 export default {
   mounted() {
+    /*
     if (!this.$store.state.localStorage.user.initialized) {
       this.createAnonymousUser()
     }
+    */
   },
   methods: {
+    /*
     async createAnonymousUser() {
       const user = await this.$axios.$post('/api/u/anonymous')
       // eslint-disable-next-line no-console
@@ -22,9 +24,9 @@ export default {
         initialized: true
       })
     }
+    */
   }
 }
-*/
 </script>
 
 <style>
@@ -47,7 +49,7 @@ body.modal-open {
 *:after {
   box-sizing: border-box;
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Quicksand', sans-serif;
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */

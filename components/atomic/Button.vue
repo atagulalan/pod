@@ -1,9 +1,12 @@
 <template>
   <div
     :style="`width:${width};` + (center ? 'text-align:center;' : '')"
-    :class="['buttonWrapper', loading ? 'loading' : '']"
+    :class="['buttonWrapper', loading ? 'loading' : '', size]"
   >
-    <button @click="emitClick">
+    <button
+      :style="`color:${color};background:${background};`"
+      @click="emitClick"
+    >
       <Icon
         v-if="loading"
         :size="24"
@@ -39,6 +42,18 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    size: {
+      type: String,
+      default: 'normal'
+    },
+    color: {
+      type: String,
+      default: '#fff'
+    },
+    background: {
+      type: String,
+      default: 'rgba(111, 153, 65, 1)'
     }
   },
   methods: {
@@ -53,21 +68,23 @@ export default {
 
 <style lang="scss">
 .buttonWrapper {
-  @keyframes rotation {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(359deg);
+  &.big {
+    button {
+      font-size: 24pt;
+      font-weight: 600;
+      padding: 16pt 40pt;
     }
   }
 
-  .rotate {
-    animation: rotation 2s infinite linear;
+  &.huge {
+    button {
+      font-size: 36pt;
+      font-weight: 600;
+      padding: 24pt 40pt;
+    }
   }
 
   button {
-    color: #fff;
     font-weight: 500;
     border: 0;
     border-radius: 500px;
@@ -75,12 +92,6 @@ export default {
     font-size: 14pt;
     cursor: pointer;
     transition: 0.3s filter;
-    background: rgba(111, 153, 65, 1);
-    background: linear-gradient(
-      135deg,
-      rgba(111, 153, 65, 1) 0%,
-      rgba(111, 153, 65, 1) 100%
-    );
 
     &:hover {
       filter: brightness(1.1);

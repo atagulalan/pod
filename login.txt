@@ -1,0 +1,16 @@
+<div id="wrapper">
+  <div class="inner">
+    <logo />
+    <span v-if="$store.state.localStorage.user.id.email">
+      Günaydın, {{ $store.state.localStorage.user.id.email }}
+      <a href="#" class="login" @click="logout">
+        <Icon :size="24" i="exit" stroke="#fff" />Çıkış Yap
+      </a>
+    </span>
+    <span v-else>
+      <a href="#" class="login" @click="show">
+        <Icon :size="24" i="entrance" stroke="#fff" />Giriş Yap
+      </a>
+    </span>
+  </div>
+</div>

@@ -25,6 +25,11 @@ export default {
         rel: 'stylesheet',
         href:
           'https://fonts.googleapis.com/css?family=Patrick+Hand&display=swap&subset=latin-ext'
+      },
+      {
+        rel: 'stylesheet',
+        href:
+          'https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap'
       }
     ]
   },
@@ -40,7 +45,8 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    { src: '~plugins/modal.js', ssr: true }
+    { src: '~plugins/modal.js', ssr: true },
+    { src: '~plugins/scrollbar.js', ssr: true }
     //{ src: '~plugins/mixins.js', ssr: true }
   ],
   /*

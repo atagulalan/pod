@@ -28,6 +28,19 @@ export default {
 </script>
 
 <style>
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.rotate {
+  animation: rotation 2s infinite linear;
+}
+
 .icon {
   display: inline-block;
   vertical-align: middle;
