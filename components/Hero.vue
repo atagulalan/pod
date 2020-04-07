@@ -48,6 +48,7 @@
                 </h2>
               </div>
             </div>
+            <div class="string"></div>
           </div>
           <div class="layer m-140">
             <div class="machine">
@@ -70,43 +71,19 @@
             <div class="darkBushes"></div>
           </div>
           <div class="layer m0">
-            <div class="pinkBushes"></div>
+            <div class="pinkBushes">
+              <div class="bottom" :style="`height: ${platouHeight}vh;`"></div>
+            </div>
           </div>
         </div>
 
         <div id="ada" class="group">
-          <div class="layer m-150" style="margin-top: -340px;">
-            <div class="string"></div>
+          <div class="layer m0" style="margin-top: -270px; background:red">
+            <div class="middle">Base Layer</div>
           </div>
           <div class="layer m-100"></div>
-          <div class="layer m0">
-            <div class="middle">Base Layer</div>
-          </div>
-        </div>
-
-        <div id="group5" class="group">
-          <div class="layer m-90">
-            <div class="middle">Foreground Layer</div>
-          </div>
-          <div class="layer m0">
-            <div class="middle">Base Layer</div>
-          </div>
-        </div>
-        <div id="group6" class="group">
-          <div class="layer m300">
-            <div class="middle">Background Layer</div>
-          </div>
-          <div class="layer m0">
-            <div class="middle">Base Layer</div>
-          </div>
-        </div>
-        <div id="group7" class="group">
-          <div class="layer m0">
-            <div class="middle">Base Layer</div>
-          </div>
         </div>
       </div>
-      <!-- dragger will be automatically added here -->
     </div>
   </div>
 </template>
@@ -133,11 +110,25 @@ export default {
       default: () => {}
     }
   },
-
+  data: () => {
+    return {
+      platouHeight: 60
+    }
+  },
   computed: {
     machine() {
       return () => import(`~/static/img/home/machines.svg?inline`)
     }
+  },
+  mounted() {
+    document
+      .querySelector('.parallax')
+      .addEventListener('scroll', this.handleScroll)
+  },
+  beforeDestroy() {
+    document
+      .querySelector('.parallax')
+      .removeEventListener('scroll', this.handleScroll)
   },
   methods: {
     logout,
@@ -146,6 +137,14 @@ export default {
     },
     hide() {
       this.$modal.hide('authModal')
+    },
+    handleScroll() {
+      console.log(document.querySelector('.parallax').scrollTop)
+      // Your scroll handling here
+      if (document.querySelector('.parallax').scrollTop > 800) {
+        this.platouHeight =
+          60 - (document.querySelector('.parallax').scrollTop - 800) / 13
+      }
     }
   }
 }
@@ -153,7 +152,7 @@ export default {
 
 <style lang="scss">
 #hero {
-  z-index: 5;
+  height: 100vh;
   .m0 {
     .imageWithText {
       width: 1200px;
@@ -269,12 +268,8 @@ export default {
 }
 
 #platou {
-  z-index: 6; /* slide over group 2 and 4 */
-
-  & + .group {
-    margin-top: calc(-100vh + 660px);
-  }
-
+  z-index: 8;
+  height: 490px;
   & > * {
     .pinkBushes {
       width: 100%;
@@ -284,11 +279,9 @@ export default {
       background-size: cover;
       position: absolute;
       top: 0px;
-      &:after {
-        content: '';
+      .bottom {
         display: block;
         width: 100%;
-        height: 60vh;
         background: #b8d75f;
         top: 99%;
         position: absolute;
@@ -359,12 +352,6 @@ export default {
       color: #fefefe;
       font-weight: 500;
     }
-  }
-}
-
-#ada {
-  z-index: 7;
-  * {
     .string {
       background: url('/img/home/string.svg');
       background-position: center;
@@ -372,12 +359,19 @@ export default {
       height: 837px;
       width: 100%;
       position: absolute;
-      top: 0px;
+      top: 810px;
       font-size: 38px;
       line-height: 60px;
       color: #fefefe;
       font-weight: 500;
     }
+  }
+}
+
+#ada {
+  z-index: 7;
+  height: 100vh;
+  * {
   }
   .deep {
     background: rgb(184, 223, 101);

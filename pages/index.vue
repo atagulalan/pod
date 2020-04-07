@@ -64,8 +64,6 @@ body {
 */
 
 .parallax {
-  height: 500px; /* fallback for older browsers */
-  height: 100vh;
   overflow: hidden overlay !important;
   -webkit-perspective: 300px;
   perspective: 300px;
@@ -83,8 +81,7 @@ body {
 
   .group {
     position: relative;
-    height: 500px; /* fallback for older browsers */
-    height: 100vh;
+    width: 100%;
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
     .layer {
@@ -93,10 +90,7 @@ body {
       left: 0;
       right: 0;
       bottom: 0;
-      &.topHalf {
-        height: 50vh;
-        transform-origin: bottom;
-      }
+      transform-style: preserve-3d;
 
       @for $i from 1 through 400 {
         &.m-#{$i} {
