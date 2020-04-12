@@ -10,7 +10,7 @@
                 <div class="text">
                   <h1>Bilgisayar mı?<br />Çocuk Oyuncağı!</h1>
                   <p>
-                    Bilgisayarların nasıl bilgiyi saydığını öğrenin,<br />hem de
+                    Bilgisayarların nasıl bilgiyi saydığını öğrenin, hem de
                     eğlenceli bir şekilde!
                   </p>
                   <Button size="big" background="#9CCC66" @click="show">
@@ -44,7 +44,7 @@
             <div class="ceiling">
               <div class="middle" style="width: 100%; max-width: 1200px;">
                 <h2>
-                  Sürekli tekrarlanan işleri<br />robotlar yapsa nasıl olurdu?
+                  Sürekli tekrarlanan işleri robotlar yapsa nasıl olurdu?
                 </h2>
               </div>
             </div>
@@ -82,7 +82,7 @@
           </div>
         </div>
 
-        <div id="ada" class="group" style="margin-top: -270px;">
+        <div id="ada" class="group">
           <div class="layer m-60">
             <div class="adaWrapper">
               <div class="ada hvr-bob">
@@ -280,7 +280,8 @@ export default {
         p {
           font-size: 38px;
           font-weight: 400;
-          margin-bottom: 40px;
+          max-width: 820px;
+          margin: 0 auto 40px;
         }
       }
     }
@@ -553,6 +554,10 @@ export default {
       line-height: 60px;
       color: #fefefe;
       font-weight: 500;
+      h2 {
+        max-width: 800px;
+        margin: 0 auto;
+      }
     }
     .string {
       background: url('/img/home/string.svg');
@@ -574,6 +579,7 @@ export default {
 #ada {
   z-index: 7;
   height: 100vh;
+  margin-top: -270px;
   * {
     .adaWrapper {
       width: 1200px;
@@ -867,6 +873,254 @@ export default {
     width: 100%;
     height: 5px;
     background: linear-gradient(135deg, #6f9941 0%, #787dd2 100%);
+  }
+}
+
+@media only screen and (min-device-width: 768px) and (max-device-width: 1200px) {
+  .parallax {
+    width: calc(100% + 34px) !important;
+    margin-left: -17px;
+  }
+
+  .middle {
+    width: 100%;
+  }
+
+  #hero {
+    & > * {
+      .logo {
+        margin-top: 75px;
+      }
+      .imageWithText {
+        width: 100vw;
+        height: 600px;
+        margin-top: 100px;
+        margin-left: 17px;
+        .redPlant {
+          width: 133px;
+          height: 221px;
+          clear: both;
+          display: block;
+          margin: 5px auto;
+          float: none;
+        }
+        .text {
+          clear: both;
+          width: 125%;
+          height: 300px;
+          transform: none;
+          position: absolute;
+          left: 0;
+          transform: scale(0.8);
+          transform-origin: top left;
+          height: 480px;
+          margin-top: 20px;
+          top: 220px;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  #platou {
+    & > * {
+      .ceiling h2 {
+        font-size: 32pt;
+        line-height: 42px;
+        width: 100%;
+        padding: 0 30px;
+        max-width: 680px;
+      }
+      .machine {
+        margin-left: 55vw;
+      }
+    }
+  }
+
+  #ada {
+    margin-top: -200px;
+    * {
+      .room .text {
+        width: 100%;
+        margin-top: -100px;
+        h1 {
+          font-size: 48pt;
+          .link:after {
+            height: 4px;
+            margin-top: -5px;
+          }
+        }
+        p {
+          font-size: 28pt;
+          padding: 0 60px;
+        }
+      }
+      .adaWrapper {
+        width: 100%;
+        .ada {
+          top: 55vh;
+          position: absolute;
+          left: calc(50% - 100px);
+          width: 200px;
+        }
+      }
+    }
+  }
+
+  #price * {
+    .text {
+      width: 100%;
+      top: 40%;
+      h1 {
+        font-size: 48pt;
+      }
+      p {
+        font-size: 28pt;
+        padding: 0 60px;
+      }
+    }
+  }
+
+  #gonow * {
+    .text {
+      width: 100%;
+      margin-left: 0;
+      text-align: center;
+      p {
+        font-size: 28pt;
+        padding: 0 60px;
+      }
+      h1 {
+        font-size: 48pt;
+      }
+    }
+    .yellowTree {
+      background-position: 100%;
+    }
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  .parallax {
+    width: calc(100% + 34px) !important;
+    margin-left: -17px;
+  }
+
+  .middle {
+    width: 100%;
+  }
+
+  #hero {
+    & > * {
+      .logo {
+        margin-top: 50px;
+      }
+      .imageWithText {
+        width: 100vw;
+        height: 454px;
+        margin-top: 160px;
+        margin-left: 17px;
+        .redPlant {
+          width: 110px;
+          height: 183px;
+          clear: both;
+          display: block;
+          margin: 5px auto;
+          float: none;
+        }
+        .text {
+          clear: both;
+          width: 200%;
+          height: 300px;
+          transform: none;
+          position: absolute;
+          left: 0;
+          transform: scale(0.5);
+          transform-origin: top left;
+          height: 480px;
+          margin-top: 20px;
+          top: 173px;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  #platou {
+    h2 {
+      font-size: 32pt;
+      line-height: 42px;
+      width: 100%;
+      padding: 0 30px;
+    }
+    & > * .machine {
+      margin-left: 70vw;
+    }
+  }
+
+  #ada {
+    margin-top: -100px;
+    * {
+      .room .text {
+        width: 100%;
+        margin-top: -100px;
+        h1 {
+          font-size: 50px;
+          .link:after {
+            height: 4px;
+            margin-top: -5px;
+          }
+        }
+        p {
+          font-size: 18pt;
+          padding: 0 30px;
+        }
+      }
+      .adaWrapper {
+        width: 100%;
+        .ada {
+          top: 55vh;
+          position: absolute;
+          left: calc(50% - 55px);
+          width: 110px;
+        }
+      }
+    }
+  }
+
+  #price * {
+    .machine {
+      margin-left: 122vw;
+    }
+    .text {
+      width: 100%;
+      top: 40%;
+      h1 {
+        font-size: 48pt;
+      }
+      p {
+        font-size: 18pt;
+        padding: 0 30px;
+      }
+    }
+  }
+
+  #gonow * {
+    .text {
+      width: 100%;
+      margin-left: 0;
+      text-align: center;
+      p {
+        font-size: 18pt;
+        padding: 0 30px;
+      }
+      h1 {
+        font-size: 40px;
+      }
+    }
+    .yellowTree {
+      background-position: 100%;
+    }
   }
 }
 </style>
