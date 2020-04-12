@@ -3,6 +3,7 @@
     <g id="Head">
       <path
         class="foreskin"
+        :style="`fill: ${skinColor};`"
         d="M245,126.5h-9.2c-59.7,0-108.1,48.4-108.1,108.1v0c0,59.7,48.4,108.1,108.1,108.1h9.2
 		c59.7,0,108.1-48.4,108.1-108.1v0C353.1,174.9,304.7,126.5,245,126.5z"
       />
@@ -28,15 +29,26 @@ export default {
     EyeBrows,
     Glasses,
   },
-  props: {},
+  props: {
+    eyebrows: {
+      type: String,
+      default: '0',
+    },
+    glasses: {
+      type: String,
+      default: '0',
+    },
+    skinColor: {
+      type: String,
+      default: '#fff',
+    },
+  },
 }
 </script>
 
 <style lang="scss" scoped>
-.foreskin {
-  fill: #fce6de;
-}
 .ear {
-  fill: #efd6ce;
+  fill: #7f3e37;
+  opacity: 0.1;
 }
 </style>

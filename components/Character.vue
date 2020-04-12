@@ -9,14 +9,12 @@
       viewBox="0 0 512 512"
       style="enable-background: new 0 0 512 512;"
       xml:space="preserve"
-      width="300px"
-      height="300px"
     >
       <Shoes />
-      <LeftHand />
+      <LeftHand :skinColor="skinColor" />
       <Body />
-      <RightHand />
-      <Head />
+      <RightHand :skinColor="skinColor" />
+      <Head :skinColor="skinColor" eyebrows="0" glasses="0" />
     </svg>
   </div>
 </template>
@@ -35,6 +33,12 @@ export default {
     LeftHand,
     RightHand,
     Shoes,
+  },
+  props: {
+    skinColor: {
+      type: String,
+      default: '#fff',
+    },
   },
 }
 </script>
