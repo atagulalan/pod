@@ -72,12 +72,12 @@
           </div>
           <div class="layer m0">
             <div class="pinkBushes">
-              <div
-                class="bottom"
-                :style="`height: ${
-                  platouHeight > 100 ? 100 : platouHeight < 0 ? 0 : platouHeight
-                }vh;`"
-              ></div>
+              <div class="bottom" :style="`transform: scaleY(2);`">
+                <div
+                  class="paint"
+                  :style="`transform: scaleY(${paintScale});`"
+                ></div>
+              </div>
             </div>
           </div>
         </div>
@@ -183,7 +183,8 @@ export default {
   },
   data: () => {
     return {
-      platouHeight: 100,
+      platouScale: 1,
+      paintScale: 1,
       roomFloorScale: 1,
     }
   },
@@ -228,16 +229,13 @@ export default {
         document.documentElement.clientHeight,
         window.innerHeight || 0
       )
-      const platouStart = 490
+      const platouStart = 600
       const parallax = document.querySelector('.parallax')
       const pinkBush = document.querySelector('.pinkBushes')
-      const groundZero =
-        this.getPos(pinkBush).y + platouStart / (vh < 950 ? vh / 200 : vh / 100)
+      const groundZero = this.getPos(pinkBush).y + platouStart - vh / 2
       // This is a hack. i cannot reproduce height distortion of ground in css.
       // So i just flatten the height over scroll.
-      this.platouHeight =
-        ((groundZero - parallax.scrollTop) / (vh - platouStart)) *
-        (vh > 1250 ? 80 : 100)
+      this.paintScale = (groundZero - parallax.scrollTop) / vh / 1.5
 
       /* --------------------- */
       const roomFloor = document.querySelector('.roomFloor')
@@ -378,9 +376,17 @@ export default {
       .bottom {
         display: block;
         width: 100%;
-        background: #b8d75f;
-        top: 99%;
+        top: 177px;
         position: absolute;
+        transform-origin: top;
+        height: 100vh;
+        overflow: hidden;
+        .paint {
+          background: #b8d75f;
+          height: 100vh;
+          width: 100%;
+          transform-origin: top;
+        }
       }
     }
     .darkBushes {
