@@ -18,7 +18,7 @@
     </div>
     <Button center :loading="forgotPassLoading" @click="sendForgotPassRequest">
       <Icon
-        style="margin-right:5px"
+        style="margin-right: 5px;"
         :size="24"
         i="send"
         stroke="#fff"
@@ -43,14 +43,14 @@ export default {
   components: {
     Input,
     Button,
-    Icon
+    Icon,
   },
   data() {
     return {
       forgotPassMail: '',
       forgotPassError: '',
       forgotPassSent: false,
-      forgotPassLoading: false
+      forgotPassLoading: false,
     }
   },
   methods: {
@@ -65,7 +65,7 @@ export default {
         this.forgotPassLoading = true
         forgotPass(this.forgotPassMail)
       }
-    }
-  }
+    },
+  },
 }
 </script>

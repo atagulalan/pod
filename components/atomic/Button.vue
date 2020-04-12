@@ -24,45 +24,45 @@ import Icon from '~/components/atomic/Icon.vue'
 
 export default {
   components: {
-    Icon
+    Icon,
   },
   props: {
     width: {
       type: String,
-      default: 'auto'
+      default: 'auto',
     },
     center: {
       type: Boolean,
-      default: false
+      default: false,
     },
     click: {
       type: Function,
-      default: () => {}
+      default: () => {},
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     size: {
       type: String,
-      default: 'normal'
+      default: 'normal',
     },
     color: {
       type: String,
-      default: '#fff'
+      default: '#fff',
     },
     background: {
       type: String,
-      default: 'rgba(111, 153, 65, 1)'
-    }
+      default: 'rgba(111, 153, 65, 1)',
+    },
   },
   methods: {
     emitClick() {
       if (!this.loading) {
         this.$emit('click', this.click)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

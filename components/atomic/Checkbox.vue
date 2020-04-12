@@ -26,40 +26,40 @@ export default {
   props: {
     name: {
       type: String,
-      default: ''
+      default: '',
     },
     required: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     center: {
       type: Boolean,
-      default: false
+      default: false,
     },
     label: {
       type: String,
-      default: ''
+      default: '',
     },
     default: {
       type: Boolean,
-      default: false
+      default: false,
     },
     error: {
       type: Boolean,
-      default: false
+      default: false,
     },
     errorHandler: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
-      value: this.default
+      value: this.default,
     }
   },
   methods: {
@@ -67,8 +67,8 @@ export default {
       this.value = !this.value
       this.$emit('resolveError', this.errorHandler, false)
       this.$emit('input', this.value)
-    }
-  }
+    },
+  },
 }
 </script>
 

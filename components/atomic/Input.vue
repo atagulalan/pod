@@ -9,7 +9,7 @@
         leading ? 'leading' : '',
         trailing ? 'trailing' : '',
         focus ? 'focus' : '',
-        error ? 'error' : ''
+        error ? 'error' : '',
       ]"
     >
       <Icon v-if="leading" :i="leading" :size="24" class="leading" />
@@ -27,15 +27,15 @@
         @keypress.enter="submit"
       />
       <label :for="name">
-        {{ placeholder }}<span v-if="error && required">*</span>
+        {{ placeholder }}
+        <span v-if="error && required">*</span>
       </label>
       <Icon v-if="trailing" :i="trailing" :size="24" class="trailing" />
     </div>
-    <div v-if="helper" class="helper">
-      {{ helper }}
-    </div>
+    <div v-if="helper" class="helper">{{ helper }}</div>
     <div v-if="maxlength" class="max">
-      <span class="characters">{{ message ? message.length : 0 }}</span> /
+      <span class="characters">{{ message ? message.length : 0 }}</span>
+      /
       {{ maxlength }}
     </div>
   </div>
@@ -46,74 +46,74 @@ import Icon from '~/components/atomic/Icon.vue'
 
 export default {
   components: {
-    Icon
+    Icon,
   },
   props: {
     name: {
       type: String,
-      default: ''
+      default: '',
     },
     required: {
       type: Boolean,
-      default: false
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     error: {
       type: Boolean,
-      default: false
+      default: false,
     },
     center: {
       type: Boolean,
-      default: false
+      default: false,
     },
     placeholder: {
       type: String,
-      default: ''
+      default: '',
     },
     helper: {
       type: String,
-      default: ''
+      default: '',
     },
     type: {
       type: String,
-      default: ''
+      default: '',
     },
     maxlength: {
       type: String,
-      default: ''
+      default: '',
     },
     leading: {
       type: String,
-      default: ''
+      default: '',
     },
     trailing: {
       type: String,
-      default: ''
+      default: '',
     },
     width: {
       type: Number,
-      default: 350
+      default: 350,
     },
     value: {
       type: String,
-      default: ''
+      default: '',
     },
     submit: {
       type: Function,
-      default: () => {}
+      default: () => {},
     },
     errorHandler: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
       message: '',
-      focus: false
+      focus: false,
     }
   },
   methods: {
@@ -126,8 +126,8 @@ export default {
     },
     blurInput() {
       this.focus = false
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -220,6 +220,9 @@ export default {
     }
 
     &.leading {
+      svg {
+        pointer-events: none;
+      }
       input {
         padding-left: 48px;
       }

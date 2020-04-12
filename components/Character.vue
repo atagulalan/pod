@@ -7,7 +7,7 @@
       x="0px"
       y="0px"
       viewBox="0 0 512 512"
-      style="enable-background:new 0 0 512 512;"
+      style="enable-background: new 0 0 512 512;"
       xml:space="preserve"
       width="300px"
       height="300px"
@@ -34,8 +34,8 @@ export default {
     Body,
     LeftHand,
     RightHand,
-    Shoes
-  }
+    Shoes,
+  },
 }
 </script>
 

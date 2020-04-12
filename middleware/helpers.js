@@ -42,7 +42,7 @@ export const applyDrag = (arr, dragResult, uniq) => {
         style: 'height:56px;width:56px;' + itemToAdd.style,
         notALine: true,
         value: returnLength,
-        data: 'CME'
+        data: 'CME',
       })
     }
   }

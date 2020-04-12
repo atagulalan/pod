@@ -1,6 +1,11 @@
 <template>
   <div
-    style="display: flex; justify-content: stretch; margin-top: 50px; margin-right: 50px"
+    style="
+      display: flex;
+      justify-content: stretch;
+      margin-top: 50px;
+      margin-right: 50px;
+    "
   >
     <div class="baseWrapper">
       <Container
@@ -64,7 +69,7 @@
                 [
                   'deger',
                   item.show ? '' : 'dontshow',
-                  index === activeItem ? 'active' : ''
+                  index === activeItem ? 'active' : '',
                 ].join(' ')
               "
               @click="setActive(index)"
@@ -168,42 +173,42 @@ class PodCode {
 const commands = {
   INP: {
     text: 'giris',
-    color: '#F5855B'
+    color: '#F5855B',
   },
   OUT: {
     text: 'çıkış',
-    color: '#68BBB8'
+    color: '#68BBB8',
   },
   ADD: {
     text: 'ekle',
     color: '#00ADEF',
-    show: true
+    show: true,
   },
   SUB: {
     text: 'çıkart',
     color: '#0077AB',
-    show: true
+    show: true,
   },
   JMP: {
     text: 'dön',
     color: '#FFD95C',
-    return: true
+    return: true,
   },
   JMZ: {
     text: 'sıfırsa dön',
     color: '#FCB040',
-    return: true
+    return: true,
   },
   CPY: {
     text: 'yere kopyala',
     color: '#0B9444',
-    show: true
+    show: true,
   },
   GET: {
     text: 'yerden kopyala',
     color: '#056839',
-    show: true
-  }
+    show: true,
+  },
 }
 let uniqueCounter = 0
 export default {
@@ -218,7 +223,7 @@ export default {
         style: 'background:' + commands[Object.keys(commands)[i]].color,
         show: commands[Object.keys(commands)[i]].show,
         value: 0,
-        return: commands[Object.keys(commands)[i]].return
+        return: commands[Object.keys(commands)[i]].return,
       })),
       items2: [],
       codeString: '',
@@ -231,7 +236,7 @@ export default {
       middleSection: [],
       outputSection: [],
       winCondition: [4, 4, 7, 6, 6, 6, 1, 1],
-      sanitizedArray: []
+      sanitizedArray: [],
     }
   },
   methods: {
@@ -329,7 +334,7 @@ export default {
         return
       }
       const commandAndValue = arr[this.lineNumber].split(' ')
-      const next = function(newLineNumber) {
+      const next = function (newLineNumber) {
         if (!isNaN(newLineNumber)) {
           this.lineNumber = newLineNumber
         } else {
@@ -417,11 +422,11 @@ export default {
           } else {
             this.error()
           }
-        }
+        },
       }
       fns[commandAndValue[0]](commandAndValue[1])
-    }
-  }
+    },
+  },
 }
 </script>
 

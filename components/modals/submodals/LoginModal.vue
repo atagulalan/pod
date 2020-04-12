@@ -32,7 +32,7 @@
         >Beni hatırla</Checkbox
       >
     </div>
-    <Button center style="margin-top:10px" @click="sendLoginRequest">
+    <Button center style="margin-top: 10px;" @click="sendLoginRequest">
       <Icon :size="24" i="entrance" stroke="#fff" stroke-width="1.5" />Giriş Yap
     </Button>
     <div class="subText">
@@ -60,7 +60,7 @@ export default {
     Input,
     Button,
     Checkbox,
-    Icon
+    Icon,
   },
   data() {
     return {
@@ -68,7 +68,7 @@ export default {
       loginPass: '',
       loginMailError: '',
       loginPassError: '',
-      loginRemember: false
+      loginRemember: false,
     }
   },
   methods: {
@@ -88,7 +88,7 @@ export default {
     },
     resolveError(errorHandler, newValue) {
       this[errorHandler] = newValue
-    }
-  }
+    },
+  },
 }
 </script>

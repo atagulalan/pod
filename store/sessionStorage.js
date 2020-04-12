@@ -1,3 +1,3 @@
 export const state = () => ({
-  anyValues: 0
+  anyValues: 0,
 })

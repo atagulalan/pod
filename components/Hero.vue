@@ -42,7 +42,7 @@
         <div id="platou" class="group">
           <div class="layer m-150">
             <div class="ceiling">
-              <div class="middle" style="width: 100%;max-width:1200px;">
+              <div class="middle" style="width: 100%; max-width: 1200px;">
                 <h2>
                   Sürekli tekrarlanan işleri<br />robotlar yapsa nasıl olurdu?
                 </h2>
@@ -74,15 +74,9 @@
             <div class="pinkBushes">
               <div
                 class="bottom"
-                :style="
-                  `height: ${
-                    platouHeight > 100
-                      ? 100
-                      : platouHeight < 0
-                      ? 0
-                      : platouHeight
-                  }vh;`
-                "
+                :style="`height: ${
+                  platouHeight > 100 ? 100 : platouHeight < 0 ? 0 : platouHeight
+                }vh;`"
               ></div>
             </div>
           </div>
@@ -96,7 +90,7 @@
               </div>
             </div>
           </div>
-          <div class="layer m0" style="background:#F7FAFC">
+          <div class="layer m0" style="background: #f7fafc;">
             <div class="room">
               <div class="middle">
                 <div class="text">
@@ -175,22 +169,22 @@ export default {
   components: {
     LogoWithText,
     Button,
-    Icon
+    Icon,
   },
   props: {
     vProgress: {
       type: Function,
-      default: () => {}
+      default: () => {},
     },
     vComplete: {
       type: Function,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   data: () => {
     return {
       platouHeight: 100,
-      roomFloorScale: 1
+      roomFloorScale: 1,
     }
   },
   computed: {
@@ -199,7 +193,7 @@ export default {
     },
     ada() {
       return () => import(`~/static/img/home/ada.svg?inline`)
-    }
+    },
   },
   mounted() {
     document
@@ -249,8 +243,8 @@ export default {
       const roomFloor = document.querySelector('.roomFloor')
       const floorZero = this.getPos(roomFloor).y
       this.roomFloorScale = (floorZero - parallax.scrollTop) / vh
-    }
-  }
+    },
+  },
 }
 </script>
 

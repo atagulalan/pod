@@ -45,7 +45,7 @@
         </div>
         <Button center @click="sendResetPassRequest">
           <Icon
-            style="margin-right:5px"
+            style="margin-right: 5px;"
             :size="24"
             i="send"
             stroke="#fff"
@@ -68,7 +68,7 @@ export default {
   components: {
     Input,
     Button,
-    Icon
+    Icon,
   },
   data() {
     return {
@@ -76,13 +76,13 @@ export default {
       resetPassAgain: '',
       resetPassError: '',
       resetPassAgainError: '',
-      resetPassSuccess: false
+      resetPassSuccess: false,
     }
   },
   computed: {
     loaded() {
       return this.$store.state.localStorage && this.$store.state.sessionStorage
-    }
+    },
   },
   methods: {
     async reset(pass) {
@@ -125,8 +125,8 @@ export default {
 
     resolveError(errorHandler, newValue) {
       this[errorHandler] = newValue
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -13,17 +13,17 @@ export default {
   props: {
     i: {
       type: String,
-      default: ''
+      default: '',
     },
     color: {
       type: String,
-      default: '#252821'
+      default: '#252821',
     },
     size: {
       type: Number,
-      default: 10
-    }
-  }
+      default: 10,
+    },
+  },
 }
 </script>
 

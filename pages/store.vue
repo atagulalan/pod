@@ -9,13 +9,13 @@ import Character from '~/components/Character.vue'
 
 export default {
   components: {
-    Character
+    Character,
   },
   data() {
     return {
-      arraaaa: []
+      arraaaa: [],
     }
-  }
+  },
 }
 </script>
 

@@ -3,10 +3,10 @@ export const state = () => ({
     initialized: false,
     id: {
       name: '',
-      email: ''
+      email: '',
     },
-    anonymous: true
-  }
+    anonymous: true,
+  },
 })
 
 export const mutations = {
@@ -18,9 +18,9 @@ export const mutations = {
       initialized: false,
       id: {
         name: '',
-        email: ''
+        email: '',
       },
-      anonymous: true
+      anonymous: true,
     }
-  }
+  },
 }

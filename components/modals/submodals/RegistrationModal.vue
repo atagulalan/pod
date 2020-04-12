@@ -52,7 +52,7 @@
         >Kullanım koşullarını kabul ediyorum</Checkbox
       >
     </div>
-    <Button center style="margin-top:10px" @click="sendRegisterRequest">
+    <Button center style="margin-top: 10px;" @click="sendRegisterRequest">
       <Icon :size="24" i="entrance" stroke="#fff" stroke-width="1.5" />Kayıt Ol
     </Button>
     <div class="subText">
@@ -75,7 +75,7 @@ export default {
     Input,
     Button,
     Checkbox,
-    Icon
+    Icon,
   },
   data() {
     return {
@@ -86,7 +86,7 @@ export default {
       registerPassError: '',
       registerPassAgainError: '',
       registerRememberError: false,
-      registerRemember: false
+      registerRemember: false,
     }
   },
   methods: {
@@ -116,7 +116,7 @@ export default {
     },
     resolveError(errorHandler, newValue) {
       this[errorHandler] = newValue
-    }
-  }
+    },
+  },
 }
 </script>

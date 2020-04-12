@@ -16,28 +16,28 @@ export function createRouter() {
         path: '/',
         component: Home,
         meta: {
-          showResetPassModal: false
-        }
+          showResetPassModal: false,
+        },
       },
       {
         name: 'ResetPass',
         path: '/resetPass/:token',
         component: Home,
         meta: {
-          showResetPassModal: true
-        }
+          showResetPassModal: true,
+        },
       },
       {
         name: 'PodCode',
         path: '/code',
-        component: PodCode
+        component: PodCode,
       },
       {
         name: 'Store',
         path: '/store',
-        component: Store
-      }
-    ]
+        component: Store,
+      },
+    ],
   })
 
   return router

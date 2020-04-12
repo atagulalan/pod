@@ -14,7 +14,7 @@
     </g>
     <EyeBrows type="0" />
     <Hair />
-    <Glasses type="0" />
+    <Glasses type="1339" />
   </g>
 </template>
 
@@ -26,9 +26,9 @@ export default {
   components: {
     Hair,
     EyeBrows,
-    Glasses
+    Glasses,
   },
-  props: {}
+  props: {},
 }
 </script>
 

@@ -1,11 +1,11 @@
-export const authenticated = function({ store, redirect }) {
+export const authenticated = function ({ store, redirect }) {
   // If the user is not authenticated
   if (!store.state.authenticated) {
     return redirect('/login')
   }
 }
 
-export const logout = async function() {
+export const logout = async function () {
   console.log('aloo')
   const logoutResult = await this.$axios.$post(
     'http://localhost:5000/api/auth/logout'
@@ -16,7 +16,7 @@ export const logout = async function() {
   }
 }
 
-export const login = async function(email, pass) {
+export const login = async function (email, pass) {
   await this.$axios
     .$post('http://localhost:5000/api/auth/login', { email, pass })
     .then((response) => {
@@ -25,9 +25,9 @@ export const login = async function(email, pass) {
           initialized: true,
           id: {
             username: response.data.username,
-            email: response.data.email
+            email: response.data.email,
           },
-          anonymous: false
+          anonymous: false,
         })
         this.$modal.hide('authModal')
       }
@@ -39,7 +39,7 @@ export const login = async function(email, pass) {
     })
 }
 
-export const register = async function(email, pass) {
+export const register = async function (email, pass) {
   await this.$axios
     .$post('http://localhost:5000/api/auth/register', { email, pass })
     .then((response) => {
@@ -48,9 +48,9 @@ export const register = async function(email, pass) {
           initialized: true,
           id: {
             username: response.data.username,
-            email: response.data.email
+            email: response.data.email,
           },
-          anonymous: false
+          anonymous: false,
         })
         this.$modal.hide('authModal')
       }
@@ -61,7 +61,7 @@ export const register = async function(email, pass) {
     })
 }
 
-export const forgotPass = async function(email) {
+export const forgotPass = async function (email) {
   await this.$axios
     .$post('http://localhost:5000/api/auth/forgotPass', { email })
     .then((response) => {

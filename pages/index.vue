@@ -15,16 +15,16 @@ export default {
   components: {
     Hero,
     AuthModal,
-    ResetPassModal
+    ResetPassModal,
   },
   data() {
     return {
       progress: [],
-      complete: []
+      complete: [],
     }
   },
   mounted() {
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       if (this.$route.meta.showResetPassModal) {
         this.$modal.show('resetPassModal')
       }
@@ -38,11 +38,11 @@ export default {
           hid: 'description',
           name: 'description',
           content:
-            'Bilgisayarların nasıl bilgiyi saydığını öğrenin, hem de eğlenceli bir şekilde!'
-        }
-      ]
+            'Bilgisayarların nasıl bilgiyi saydığını öğrenin, hem de eğlenceli bir şekilde!',
+        },
+      ],
     }
-  }
+  },
 }
 </script>
 

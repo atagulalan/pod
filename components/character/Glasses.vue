@@ -7,14 +7,14 @@ export default {
   props: {
     type: {
       type: String,
-      default: '0'
-    }
+      default: '0',
+    },
   },
   computed: {
     componentLoader() {
       return () =>
         import(`~/static/img/character/glasses/${this.type}.svg?inline`)
-    }
-  }
+    },
+  },
 }
 </script>

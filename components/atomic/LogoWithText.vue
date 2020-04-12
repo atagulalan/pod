@@ -70,12 +70,12 @@ export default {
   props: {
     logoColor: {
       type: String,
-      default: '#6DA736'
+      default: '#6DA736',
     },
     textColor: {
       type: String,
-      default: '#798F9C'
-    }
-  }
+      default: '#798F9C',
+    },
+  },
 }
 </script>

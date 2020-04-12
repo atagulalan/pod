@@ -4,7 +4,7 @@
       name="authModal"
       transition="scale"
       class="regModal"
-      width="680"
+      width="1000"
       height="auto"
       @before-close="beforeClose"
     >
@@ -36,11 +36,11 @@ export default {
   components: {
     RegistrationModal,
     LoginModal,
-    ForgotPassModal
+    ForgotPassModal,
   },
   data() {
     return {
-      modalType: 'login'
+      modalType: 'login',
     }
   },
   methods: {
@@ -49,8 +49,8 @@ export default {
     },
     beforeClose() {
       this.modalType = 'login'
-    }
-  }
+    },
+  },
 }
 </script>
 
