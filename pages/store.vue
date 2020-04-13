@@ -79,12 +79,15 @@ export default {
       left: 50%;
       transform: translate(-50%, -50%);
       position: absolute;
-
       h1 {
         font-size: 96px;
         color: #505668;
         line-height: 120px;
         margin-bottom: 40px;
+        display: inline-block;
+      }
+      h1.titleRight {
+        float: right;
       }
       .storeModal {
         width: 100%;
@@ -123,6 +126,24 @@ export default {
           border-radius: 30px;
           border: 2px solid #d8d8d8;
           padding: 20px;
+        }
+      }
+      .store-decline {
+        float: right;
+        width: 60px;
+        height: 60px;
+        margin-right: 36px;
+        svg {
+          stroke: #ce3e5d;
+        }
+      }
+      .store-confirm {
+        float: right;
+        width: 60px;
+        height: 60px;
+        margin-right: 36px;
+        svg {
+          stroke: #9ccc66;
         }
       }
     }
