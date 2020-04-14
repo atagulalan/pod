@@ -44,7 +44,6 @@ export default {
 .icon {
   display: inline-block;
   vertical-align: middle;
-  stroke: black;
 }
 
 .icon use {

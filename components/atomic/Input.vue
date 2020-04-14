@@ -1,7 +1,7 @@
 <template>
   <div
     :class="['inputWrapper', error ? 'error' : '']"
-    :style="`width:${width}px;` + (center ? 'margin:0 auto;' : '')"
+    :style="`max-width:${width}px;` + (center ? 'margin:0 auto;' : '')"
   >
     <div
       :class="[

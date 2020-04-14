@@ -4,7 +4,7 @@
       name="resetPassModal"
       transition="scale"
       class="resModal"
-      width="680"
+      width="1000"
       height="auto"
       :click-to-close="false"
     >
@@ -103,6 +103,10 @@ export default {
 </script>
 
 <style lang="scss">
+.modalInnerWrapper {
+  position: relative;
+  height: 660px;
+}
 .resetPassModalWrapper {
   .scale-enter-active,
   .scale-leave-active {
@@ -153,6 +157,22 @@ export default {
       font-weight: 500;
       cursor: pointer;
     }
+  }
+}
+@media only screen and (max-width: 767px) {
+  .modalInnerWrapper {
+    height: auto;
+  }
+  .resetPassModalWrapper .resModal h1 {
+    padding-top: 0;
+  }
+  .resetPassModalWrapper .resModal .v--modal {
+    width: 100% !important;
+    height: 100vh !important;
+    left: 0 !important;
+    top: 0 !important;
+    transform: translate(0, 0);
+    background: white;
   }
 }
 </style>
