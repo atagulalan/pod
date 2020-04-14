@@ -83,7 +83,7 @@ export default {
         this.loginPass.length < 6 ? 'Şifreniz 6 karakterden az olamaz' : ''
 
       if (!this.loginMailError && !this.loginPassError) {
-        login(this.loginMail, this.loginPass)
+        login.bind(this)(this.loginMail, this.loginPass)
       }
     },
     resolveError(errorHandler, newValue) {

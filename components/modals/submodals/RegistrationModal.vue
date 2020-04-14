@@ -111,7 +111,7 @@ export default {
         !this.registerPassAgainError &&
         !this.registerRememberError
       ) {
-        register(this.registerMail, this.registerPass)
+        register.bind(this)(this.registerMail, this.registerPass)
       }
     },
     resolveError(errorHandler, newValue) {

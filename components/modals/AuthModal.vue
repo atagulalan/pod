@@ -3,26 +3,40 @@
     <modal
       name="authModal"
       transition="scale"
-      class="regModal"
+      class="authModal"
       width="1000"
       height="auto"
       @before-close="beforeClose"
     >
-      <LoginModal
-        v-if="modalType === 'login'"
-        key="login"
-        @toggleAuthModal="toggleAuthModal"
-      />
-      <RegistrationModal
-        v-if="modalType === 'register'"
-        key="register"
-        @toggleAuthModal="toggleAuthModal"
-      />
-      <ForgotPassModal
-        v-if="modalType === 'forgotPass'"
-        key="forgotPass"
-        @toggleAuthModal="toggleAuthModal"
-      />
+      <div
+        class="spacer"
+        :style="`height:${
+          modalType === 'login'
+            ? 730
+            : modalType === 'register'
+            ? 830
+            : modalType === 'forgotPass'
+            ? 600
+            : 0
+        }px`"
+      ></div>
+      <transition name="slide-fade">
+        <LoginModal
+          v-if="modalType === 'login'"
+          key="login"
+          @toggleAuthModal="toggleAuthModal"
+        />
+        <RegistrationModal
+          v-if="modalType === 'register'"
+          key="register"
+          @toggleAuthModal="toggleAuthModal"
+        />
+        <ForgotPassModal
+          v-if="modalType === 'forgotPass'"
+          key="forgotPass"
+          @toggleAuthModal="toggleAuthModal"
+        />
+      </transition>
     </modal>
   </div>
 </template>
@@ -55,12 +69,44 @@ export default {
 </script>
 
 <style lang="scss">
+/* Enter and leave animations can use different */
+/* durations and timing functions.              */
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-leave-active {
+  transition: all 0.3s;
+}
+
+.slide-fade-enter-to {
+  transition-delay: 0.3s;
+}
+
+.slide-fade-leave-to {
+  transform: translateX(-10px);
+  opacity: 0;
+}
+
+.slide-fade-enter
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+
+.spacer {
+  width: 1px;
+  display: block;
+  transition: 0.3s all;
+}
+
 .modalInnerWrapper {
-  position: relative;
   display: block;
   left: 0;
   top: 0;
   width: 100%;
+  transform: scale(1.5);
+  transform-origin: top;
+  position: absolute;
 }
 
 .authModalWrapper {
@@ -77,12 +123,14 @@ export default {
     transform: translateY(-50px);
   }
 
-  .regModal {
+  .authModal {
     .v--modal {
       box-shadow: none;
       background-image: url('/img/popup.svg');
       background-size: cover;
       background-color: transparent;
+      top: 50vh !important;
+      transform: translateY(-50%);
     }
     h1 {
       font-size: 18px;

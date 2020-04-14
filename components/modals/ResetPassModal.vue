@@ -8,7 +8,6 @@
       height="auto"
       :click-to-close="false"
     >
-      <!-- RESET -->
       <span class="modalInnerWrapper">
         <h1 class="active">Şifreyi Sıfırla</h1>
         <Input
@@ -38,10 +37,9 @@
           @resolveError="resolveError"
         />
         <div class="subText">
-          <span v-if="resetPassSuccess" class="link"
-            >Şifre sıfırlama başarılı. 5 saniye içinde
-            yönlendiriliyorsunuz...</span
-          >
+          <span v-if="resetPassSuccess" class="link">
+            Şifre sıfırlama başarılı. 5 saniye içinde yönlendiriliyorsunuz...
+          </span>
         </div>
         <Button center @click="sendResetPassRequest">
           <Icon
@@ -63,6 +61,7 @@
 import Icon from '~/components/atomic/Icon.vue'
 import Input from '~/components/atomic/Input.vue'
 import Button from '~/components/atomic/Button.vue'
+import { reset } from '~/middleware/auth-service'
 
 export default {
   components: {
@@ -85,33 +84,6 @@ export default {
     },
   },
   methods: {
-    async reset(pass) {
-      await this.$axios
-        .$put(
-          'http://localhost:5000/api/auth/resetpass?resetpassToken=' +
-            this.$route.params.token,
-          { pass }
-        )
-        .then((response) => {
-          console.log(response)
-          if (response.success) {
-            this.resetPassError = ''
-            this.resetPassAgainError = ''
-            this.resetPassSuccess = true
-            setTimeout(
-              () => {
-                this.$router.push('/')
-              },
-              5000,
-              this
-            )
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          this.resetPassError = 'Geçersiz sıfırlama isteği.'
-        })
-    },
     sendResetPassRequest() {
       this.resetPassError =
         this.resetPass.length < 6 ? 'Şifreniz 6 karakterden az olamaz' : ''
@@ -119,7 +91,7 @@ export default {
         this.resetPass !== this.resetPassAgain ? 'Şifreniz eşleşmiyor' : ''
 
       if (!this.resetPassError && !this.resetPassAgainError) {
-        this.reset(this.resetPass)
+        reset.bind(this)(this.resetPass)
       }
     },
 
@@ -131,38 +103,6 @@ export default {
 </script>
 
 <style lang="scss">
-/* Enter and leave animations can use different */
-/* durations and timing functions.              */
-.slide-fade-enter-active {
-  transition: all 0s ease;
-}
-.slide-fade-leave-active {
-  transition: all 0s;
-}
-
-.slide-fade-enter-to {
-  transition-delay: 0s;
-}
-
-.slide-fade-leave-to {
-  transform: translateX(-10px);
-  opacity: 0;
-}
-
-.slide-fade-enter
-/* .slide-fade-leave-active below version 2.1.8 */ {
-  transform: translateX(10px);
-  opacity: 0;
-}
-
-.modalInnerWrapper {
-  position: relative;
-  display: block;
-  left: 0;
-  top: 0;
-  width: 100%;
-}
-
 .resetPassModalWrapper {
   .scale-enter-active,
   .scale-leave-active {

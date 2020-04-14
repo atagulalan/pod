@@ -7,9 +7,7 @@ export const authenticated = function ({ store, redirect }) {
 
 export const logout = async function () {
   console.log('aloo')
-  const logoutResult = await this.$axios.$post(
-    'http://localhost:5000/api/auth/logout'
-  )
+  const logoutResult = await this.$axios.$post('/api/auth/logout')
   console.log(logoutResult)
   if (logoutResult.success) {
     this.$store.commit('localStorage/resetUser')
@@ -18,7 +16,7 @@ export const logout = async function () {
 
 export const login = async function (email, pass) {
   await this.$axios
-    .$post('http://localhost:5000/api/auth/login', { email, pass })
+    .$post('/api/auth/login', { email, pass })
     .then((response) => {
       if (response.success) {
         this.$store.commit('localStorage/setUser', {
@@ -41,7 +39,7 @@ export const login = async function (email, pass) {
 
 export const register = async function (email, pass) {
   await this.$axios
-    .$post('http://localhost:5000/api/auth/register', { email, pass })
+    .$post('/api/auth/register', { email, pass })
     .then((response) => {
       if (response.success) {
         this.$store.commit('localStorage/setUser', {
@@ -63,7 +61,7 @@ export const register = async function (email, pass) {
 
 export const forgotPass = async function (email) {
   await this.$axios
-    .$post('http://localhost:5000/api/auth/forgotPass', { email })
+    .$post('/api/auth/forgotPass', { email })
     .then((response) => {
       console.log(response)
       if (response.success) {
@@ -77,5 +75,31 @@ export const forgotPass = async function (email) {
       this.forgotPassSent = false
       this.forgotPassError = 'Böyle bir e-posta adresi bulunamadı'
       this.forgotPassLoading = false
+    })
+}
+
+export const reset = async function (pass) {
+  await this.$axios
+    .$put('/api/auth/resetpass?resetpassToken=' + this.$route.params.token, {
+      pass,
+    })
+    .then((response) => {
+      console.log(response)
+      if (response.success) {
+        this.resetPassError = ''
+        this.resetPassAgainError = ''
+        this.resetPassSuccess = true
+        setTimeout(
+          () => {
+            this.$router.push('/')
+          },
+          5000,
+          this
+        )
+      }
+    })
+    .catch((error) => {
+      console.log(error)
+      this.resetPassError = 'Geçersiz sıfırlama isteği.'
     })
 }

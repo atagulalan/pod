@@ -63,7 +63,7 @@ export default {
         : ''
       if (!this.forgotPassError) {
         this.forgotPassLoading = true
-        forgotPass(this.forgotPassMail)
+        forgotPass.bind(this)(this.forgotPassMail)
       }
     },
   },
