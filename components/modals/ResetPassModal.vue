@@ -103,10 +103,6 @@ export default {
 </script>
 
 <style lang="scss">
-.modalInnerWrapper {
-  position: relative;
-  height: 660px;
-}
 .resetPassModalWrapper {
   .scale-enter-active,
   .scale-leave-active {
@@ -137,6 +133,10 @@ export default {
       cursor: default;
       text-align: center;
     }
+    .modalInnerWrapper {
+      position: relative;
+      height: 660px;
+    }
   }
 
   .checkboxes {
@@ -160,7 +160,7 @@ export default {
   }
 }
 @media only screen and (max-width: 767px) {
-  .modalInnerWrapper {
+  .resetPassModalWrapper .resModal .modalInnerWrapper {
     height: auto;
   }
   .resetPassModalWrapper .resModal h1 {
