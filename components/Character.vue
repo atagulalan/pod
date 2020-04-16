@@ -10,11 +10,11 @@
       style="enable-background: new 0 0 512 512;"
       xml:space="preserve"
     >
-      <Shoes />
-      <LeftHand :skinColor="skinColor" />
-      <Body />
-      <RightHand :skinColor="skinColor" />
-      <Head :skinColor="skinColor" eyebrows="0" glasses="0" />
+      <Shoes :type="shoes" />
+      <LeftHand />
+      <Body :shirt="shirt" :shorts="shorts" />
+      <RightHand />
+      <Head :skinColor="skinColor" :eyes="eyes" :hair="hair" />
     </svg>
   </div>
 </template>
@@ -38,6 +38,26 @@ export default {
     skinColor: {
       type: String,
       default: '#fff',
+    },
+    eyes: {
+      type: String,
+      default: '0',
+    },
+    hair: {
+      type: String,
+      default: '0',
+    },
+    shirt: {
+      type: String,
+      default: '0',
+    },
+    shorts: {
+      type: String,
+      default: '0',
+    },
+    shoes: {
+      type: String,
+      default: '0',
     },
   },
 }

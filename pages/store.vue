@@ -1,13 +1,30 @@
 <template>
   <div class="storeWrapper">
-    <Character :skin-color="skinColor" />
-    <StoreList :skin-color="skinColor" :validate-item="validateItem" />
+    <style>
+      .skin {
+        fill: {{ skinColor }};
+      }
+    </style>
+    <Character
+      :skin-color="skinColor"
+      :eyes="eyes"
+      :hair="hair"
+      :shirt="shirt"
+      :shorts="shorts"
+      :shoes="shoes"
+    />
+    <StoreList
+      :items="items"
+      :skin-color="skinColor"
+      :validate-item="validateItem"
+    />
   </div>
 </template>
 
 <script>
 import Character from '~/components/Character.vue'
 import StoreList from '~/components/StoreList.vue'
+import { listItems } from '~/middleware/store'
 
 export default {
   components: {
@@ -17,7 +34,16 @@ export default {
   data() {
     return {
       skinColor: '#fce6de',
+      eyes: '0',
+      hair: '0',
+      shirt: '0',
+      shorts: '0',
+      shoes: '0',
+      items: [],
     }
+  },
+  mounted() {
+    listItems.bind(this)()
   },
   methods: {
     validateItem(type, item) {
@@ -25,6 +51,16 @@ export default {
       // TODO
       if (type === 'skin') {
         this.skinColor = item
+      } else if (type === 'eyes') {
+        this.eyes = item
+      } else if (type === 'hair') {
+        this.hair = item
+      } else if (type === 'shirt') {
+        this.shirt = item
+      } else if (type === 'shorts') {
+        this.shorts = item
+      } else if (type === 'shoes') {
+        this.shoes = item
       }
     },
   },
@@ -124,7 +160,7 @@ export default {
           height: 100%;
           float: left;
           border-radius: 30px;
-          border: 2px solid #d8d8d8;
+          background: url(/img/store.svg);
           padding: 20px;
         }
       }

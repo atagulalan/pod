@@ -1,5 +1,5 @@
 <template>
-  <component :is="componentLoader" id="Shoes" />
+  <component :is="componentLoader" class="hvr-bob" />
 </template>
 
 <script>
@@ -18,12 +18,12 @@ export default {
   watch: {
     type(newVal) {
       this.componentLoader = () =>
-        import(`~/static/img/character/shoes/${newVal}.svg?inline`)
+        import(`~/static/img/character/eyes/${newVal}.svg?inline`)
     },
   },
   mounted() {
     this.componentLoader = () =>
-      import(`~/static/img/character/shoes/${this.type}.svg?inline`)
+      import(`~/static/img/character/eyes/${this.type}.svg?inline`)
   },
 }
 </script>

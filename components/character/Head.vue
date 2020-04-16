@@ -2,8 +2,7 @@
   <g class="hvr-bob">
     <g id="Head">
       <path
-        class="foreskin"
-        :style="`fill: ${skinColor};`"
+        class="skin"
         d="M245,126.5h-9.2c-59.7,0-108.1,48.4-108.1,108.1v0c0,59.7,48.4,108.1,108.1,108.1h9.2
 		c59.7,0,108.1-48.4,108.1-108.1v0C353.1,174.9,304.7,126.5,245,126.5z"
       />
@@ -13,34 +12,27 @@
 		c2.4,8.2,10.9,12.9,19.1,10.5C181.2,271.2,186,262.7,183.6,254.5z"
       />
     </g>
-    <EyeBrows type="0" />
-    <Hair />
-    <Glasses type="1339" />
+    <Eyes :type="eyes" />
+    <Hair :type="hair" />
   </g>
 </template>
 
 <script>
 import Hair from '~/components/character/Hair.vue'
-import EyeBrows from '~/components/character/EyeBrows.vue'
-import Glasses from '~/components/character/Glasses.vue'
+import Eyes from '~/components/character/Eyes.vue'
 export default {
   components: {
     Hair,
-    EyeBrows,
-    Glasses,
+    Eyes,
   },
   props: {
-    eyebrows: {
+    eyes: {
       type: String,
       default: '0',
     },
-    glasses: {
+    hair: {
       type: String,
       default: '0',
-    },
-    skinColor: {
-      type: String,
-      default: '#fff',
     },
   },
 }

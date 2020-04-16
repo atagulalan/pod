@@ -6,7 +6,6 @@ export const authenticated = function ({ store, redirect }) {
 }
 
 export const logout = async function () {
-  console.log('aloo')
   const logoutResult = await this.$axios.$post('/api/auth/logout')
   console.log(logoutResult)
   if (logoutResult.success) {
@@ -21,6 +20,7 @@ export const login = async function (email, pass) {
       if (response.success) {
         this.$store.commit('localStorage/setUser', {
           initialized: true,
+          bearer: response.access_token,
           id: {
             username: response.data.username,
             email: response.data.email,

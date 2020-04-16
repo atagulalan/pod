@@ -1,29 +1,29 @@
 <template>
-  <g id="Hair">
-    <path
-      class="hair2"
-      d="M413.1,71.9L413.1,71.9c-7.2-28.6-36.3-45.9-64.8-38.6L183.5,75.1c-54.3,13.8-87.1,68.9-73.4,123.2l1.2,4.6
-		c7.6,29.8,37.9,47.9,67.7,40.3l155.6-39.4C392.7,189,427.8,130,413.1,71.9z"
-    />
-    <path
-      class="hair1"
-      d="M393.2,77L393.2,77c-7.2-28.6-36.3-45.9-64.8-38.6L183.5,75.1c-54.3,13.8-87.1,68.9-73.4,123.2l1.2,4.6
-		c7.6,29.8,37.9,47.9,67.7,40.3l135.7-34.4C372.7,194.1,407.9,135.1,393.2,77z"
-    />
-  </g>
+  <component :is="componentLoader" />
 </template>
 
 <script>
 export default {
-  props: {},
+  props: {
+    type: {
+      type: String,
+      default: '0',
+    },
+  },
+  data() {
+    return {
+      componentLoader: '',
+    }
+  },
+  watch: {
+    type(newVal) {
+      this.componentLoader = () =>
+        import(`~/static/img/character/hair/${newVal}.svg?inline`)
+    },
+  },
+  mounted() {
+    this.componentLoader = () =>
+      import(`~/static/img/character/hair/${this.type}.svg?inline`)
+  },
 }
 </script>
-
-<style lang="scss" scoped>
-.hair1 {
-  fill: #ff6485;
-}
-.hair2 {
-  fill: #ff94ab;
-}
-</style>

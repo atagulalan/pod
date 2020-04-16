@@ -40,11 +40,61 @@
           </div>
         </div>
         <div class="rightSelector">
-          <div v-if="modalType === 'hair'" class="hair"></div>
-          <div v-if="modalType === 'eyes'" class="eyes"></div>
-          <div v-if="modalType === 'shirt'" class="shirt"></div>
-          <div v-if="modalType === 'shorts'" class="shorts"></div>
-          <div v-if="modalType === 'shoes'" class="shoes"></div>
+          <div v-if="modalType === 'hair'" class="hair">
+            <div
+              v-for="(hair, i) in items.length
+                ? items.filter((el) => el.type === 'hair')
+                : []"
+              :key="'hair-' + i"
+              class="hairContainer"
+              :style="`background-image:url(/img/character/thumbnails/hair/${hair.key}.svg)`"
+              @click="validateItem('hair', hair.key)"
+            ></div>
+          </div>
+          <div v-if="modalType === 'eyes'" class="eyes">
+            <div
+              v-for="(eyes, i) in items.length
+                ? items.filter((el) => el.type === 'eyes')
+                : []"
+              :key="'eyes-' + i"
+              class="eyesContainer"
+              :style="`background-image:url(/img/character/thumbnails/eyes/${eyes.key}.svg)`"
+              @click="validateItem('eyes', eyes.key)"
+            ></div>
+          </div>
+          <div v-if="modalType === 'shirt'" class="shirt">
+            <div
+              v-for="(shirt, i) in items.length
+                ? items.filter((el) => el.type === 'shirt')
+                : []"
+              :key="'shirt-' + i"
+              class="shirtContainer"
+              :style="`background-image:url(/img/character/thumbnails/shirt/${shirt.key}.svg)`"
+              @click="validateItem('shirt', shirt.key)"
+            ></div>
+          </div>
+          <div v-if="modalType === 'shorts'" class="shorts">
+            <div
+              v-for="(shorts, i) in items.length
+                ? items.filter((el) => el.type === 'shorts')
+                : []"
+              :key="'shorts-' + i"
+              class="shortsContainer"
+              :style="`background-image:url(/img/character/thumbnails/shorts/${shorts.key}.svg)`"
+              @click="validateItem('shorts', shorts.key)"
+            ></div>
+          </div>
+          <div v-if="modalType === 'shoes'" class="shoes">
+            <div
+              v-for="(shoes, i) in items.length
+                ? items.filter((el) => el.type === 'shoes')
+                : []"
+              :key="'shoes-' + i"
+              class="shoesContainer"
+              :style="`background-image:url(/img/character/thumbnails/shoes/${shoes.key}.svg)`"
+              @click="validateItem('shoes', shoes.key)"
+            ></div>
+          </div>
           <div v-if="modalType === 'skin'" class="skin">
             <div
               v-for="(skin, i) in skins"
@@ -84,13 +134,15 @@ export default {
   props: {
     validateItem: {
       type: Function,
-      default: () => {
-        return false
-      },
+      default: () => false,
     },
     skinColor: {
       type: String,
       default: '#fff',
+    },
+    items: {
+      type: Array,
+      default: () => [],
     },
   },
   data() {
@@ -147,6 +199,56 @@ export default {
   margin: 15px;
   float: left;
   cursor: pointer;
+}
+
+.eyesContainer {
+  width: 150px;
+  height: 75px;
+  border-radius: 15px;
+  margin: 15px;
+  float: left;
+  cursor: pointer;
+  background-color: white;
+}
+
+.hairContainer {
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+  margin: 15px;
+  float: left;
+  cursor: pointer;
+  background-color: white;
+}
+
+.shirtContainer {
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+  margin: 15px;
+  float: left;
+  cursor: pointer;
+  background-color: white;
+}
+
+.shortsContainer {
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+  margin: 15px;
+  float: left;
+  cursor: pointer;
+  background-color: white;
+}
+
+.shoesContainer {
+  width: 150px;
+  height: 150px;
+  border-radius: 15px;
+  margin: 15px;
+  float: left;
+  cursor: pointer;
+  background-color: white;
 }
 
 .leftButtons {

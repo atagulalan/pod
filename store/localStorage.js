@@ -1,6 +1,7 @@
 export const state = () => ({
   user: {
     initialized: false,
+    bearer: '',
     id: {
       name: '',
       email: '',
@@ -16,6 +17,7 @@ export const mutations = {
   resetUser(state) {
     state.user = {
       initialized: false,
+      bearer: '',
       id: {
         name: '',
         email: '',
