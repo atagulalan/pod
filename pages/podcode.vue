@@ -1,12 +1,5 @@
 <template>
-  <div
-    style="
-      display: flex;
-      justify-content: stretch;
-      margin-top: 50px;
-      margin-right: 50px;
-    "
-  >
+  <div class="gameWrapper">
     <div class="baseWrapper">
       <Container
         :get-child-payload="getChildPayload1"
@@ -81,19 +74,30 @@
       </Container>
     </div>
     <div class="buttons">
-      <button @click="degerAta(1)">1</button>
-      <button @click="degerAta(2)">2</button>
-      <button @click="degerAta(3)">3</button>
-      <button @click="degerAta(4)">4</button>
-      <button @click="degerAta(5)">5</button>
-      <button @click="degerAta(6)">6</button>
+      <button @click="setValue(1)">1</button>
+      <button @click="setValue(2)">2</button>
+      <button @click="setValue(3)">3</button>
+      <button @click="setValue(4)">4</button>
+      <button @click="setValue(5)">5</button>
+      <button @click="setValue(6)">6</button>
       <button @click="run()">RUN</button>
       <button @click="step()">STEP</button>
       <button @click="reset()">RESET</button>
       <button @click="clear()">CLEAR</button>
+      <button @click="convert()">CONVERT</button>
+      <textarea
+        id
+        v-model="codeString"
+        name="get"
+        cols="15"
+        rows="10"
+        disabled
+      ></textarea>
+      <textarea id v-model="pasteCode" name="paste" cols="15" rows="10">
+      </textarea>
     </div>
-    <div>lineNumber {{ lineNumber }}</div>
     <div class="game">
+      <div>lineNumber {{ lineNumber }}</div>
       <div id="hand">
         HAND
         <span class="box">{{ onHand }}</span>
@@ -131,102 +135,17 @@
 
 <script>
 import { Container, Draggable } from 'vue-smooth-dnd'
-import { applyDrag, generateItems } from '~/middleware/helpers'
+import { applyDrag } from '~/middleware/helpers'
+import { baseCodes, commands, sanitizeCode, nextLine } from '~/middleware/code'
 
-class PodCode {
-  constructor(code) {
-    this.code = code
-  }
-
-  removeSpecial(e) {
-    this.code = this.code.replace(/[^A-Za-z0-9 ]/g, '')
-    return this
-  }
-
-  onlyOneSpace(e) {
-    this.code = this.code.replace(/\s\s+/g, ' ')
-    return this
-  }
-
-  removeComments(e) {
-    this.code = this.code.replace(/--.*--/g, ' ')
-    return this
-  }
-
-  breakLines(e) {
-    this.code = this.code.replace(/([A-Z][A-Z][A-Z])/g, '\n$1')
-    return this
-  }
-
-  trim(e) {
-    this.code = this.code.trim()
-    return this
-  }
-
-  validate(e) {
-    // tüm işlemler gerçekleştirildikten sonra
-    // her satırın okunup okunamadığını kontrol
-    // et.
-  }
-}
-
-const commands = {
-  INP: {
-    text: 'giris',
-    color: '#F5855B',
-  },
-  OUT: {
-    text: 'çıkış',
-    color: '#68BBB8',
-  },
-  ADD: {
-    text: 'ekle',
-    color: '#00ADEF',
-    show: true,
-  },
-  SUB: {
-    text: 'çıkart',
-    color: '#0077AB',
-    show: true,
-  },
-  JMP: {
-    text: 'dön',
-    color: '#FFD95C',
-    return: true,
-  },
-  JMZ: {
-    text: 'sıfırsa dön',
-    color: '#FCB040',
-    return: true,
-  },
-  CPY: {
-    text: 'yere kopyala',
-    color: '#0B9444',
-    show: true,
-  },
-  GET: {
-    text: 'yerden kopyala',
-    color: '#056839',
-    show: true,
-  },
-}
 let uniqueCounter = 0
 export default {
   name: 'Copy',
   components: { Container, Draggable },
   data() {
     return {
-      items1: generateItems(Object.keys(commands).length, (i) => ({
-        id: 'command' + i,
-        data: Object.keys(commands)[i],
-        text: commands[Object.keys(commands)[i]].text,
-        style: 'background:' + commands[Object.keys(commands)[i]].color,
-        show: commands[Object.keys(commands)[i]].show,
-        value: 0,
-        return: commands[Object.keys(commands)[i]].return,
-      })),
+      items1: baseCodes,
       items2: [],
-      codeString: '',
       activeItem: null,
       hover: -1,
       lineNumber: 0,
@@ -235,9 +154,26 @@ export default {
       inputSection: [4, 4, 7, 6, 6, 6, 1, 1],
       middleSection: [],
       outputSection: [],
-      winCondition: [4, 4, 7, 6, 6, 6, 1, 1],
+      winCondition: [4, 6, 1],
       sanitizedArray: [],
+      pasteCode: `CME 3
+CME 2
+INP 0
+CPY 0
+INP 0
+SUB 0
+JPZ 1
+JMP 2
+CME 1
+GET 0
+OUT 0
+JMP 3`,
     }
+  },
+  computed: {
+    codeString() {
+      return this.sanitizedArray.join('\n')
+    },
   },
   methods: {
     onDrop(collection, dropResult) {
@@ -257,23 +193,14 @@ export default {
       uniqueCounter++
     },
     getTextFromCollection(collection) {
-      this.codeString = collection
-        .map((el) => {
-          return el.data + ' ' + el.value
-        })
-        .join('\n')
-
-      this.sanitizedArray = new PodCode(this.codeString)
-        .removeSpecial()
-        .onlyOneSpace()
-        .removeComments()
-        .breakLines()
-        .trim()
-        .code.split('\n')
-
+      this.sanitizedArray = sanitizeCode(
+        collection
+          .map((el) => {
+            return el.data + ' ' + el.value
+          })
+          .join('\n')
+      )
       this.reset()
-
-      console.log(this.codeString)
     },
     getChildPayload1(index) {
       return this.items1[index]
@@ -288,12 +215,53 @@ export default {
         this.activeItem = null
       }
     },
-    degerAta(deger) {
+    setValue(deger) {
       if (this.activeItem !== null) {
         this.items2[this.activeItem].value = deger
         this.getTextFromCollection(this.items2)
         this.activeItem = null
       }
+    },
+    convert() {
+      // converts text to visual
+      console.log('converting to visuals')
+      this.sanitizedArray = sanitizeCode(this.pasteCode)
+      this.reset()
+      const results = []
+      const returns = []
+
+      let tempLineCounter = 1
+      this.sanitizedArray.forEach((el, i) => {
+        const [data, value] = el.split(' ')
+        if (data === 'JMP' || data === 'JPZ') {
+          returns[value] = data
+        }
+        results.push({
+          id: 'command' + i,
+          data,
+          text: commands[data].text,
+          style:
+            commands[data].style +
+            ';' +
+            (commands[data].color ? 'background:' + commands[data].color : ''),
+          show: commands[data].show,
+          value,
+          return: commands[data].return,
+          lineNumber: data === 'CME' ? '' : tempLineCounter++,
+        })
+      })
+
+      console.log(returns)
+
+      results.map((el) => {
+        if (el.data === 'CME') {
+          el.style =
+            el.style + ';background:' + commands[returns[el.value]].color
+          el.notALine = true
+        }
+      })
+
+      this.items2 = results
     },
     clear() {
       this.items2 = []
@@ -303,6 +271,9 @@ export default {
       this.lineNumber = 0
       this.onHand = null
       this.jumpBacks = {}
+      this.inputSection = [4, 4, 7, 6, 6, 6, 1, 1]
+      this.middleSection = []
+      this.outputSection = []
       // Set jumpbacks before launch
       this.sanitizedArray.forEach((el, idx) => {
         if (el.split(' ')[0] === 'CME') {
@@ -315,124 +286,24 @@ export default {
     },
     run() {
       this.reset()
-      this.nextLine(this.sanitizedArray)
+      nextLine.bind(this)(this.sanitizedArray)
     },
     step() {
-      this.nextLine(this.sanitizedArray, true)
-    },
-    nextLine(arr, dont) {
-      if (arr[this.lineNumber] === undefined) {
-        console.log('bitti')
-        return
-      }
-      if (
-        JSON.stringify(this.winCondition) ===
-          JSON.stringify(this.outputSection) &&
-        this.inputSection.length === 0
-      ) {
-        console.log('bravo')
-        return
-      }
-      const commandAndValue = arr[this.lineNumber].split(' ')
-      const next = function (newLineNumber) {
-        if (!isNaN(newLineNumber)) {
-          this.lineNumber = newLineNumber
-        } else {
-          this.lineNumber = this.lineNumber + 1
-        }
-
-        // document.getElementById('line').style.top = lineNumber * 18 + 'px'
-        // document.getElementById('hand').textContent = onHand
-        console.log(
-          'Durum:',
-          this.lineNumber,
-          this.onHand,
-          this.jumpBacks,
-          this.inputSection,
-          this.middleSection,
-          this.outputSection
-        )
-
-        if (!dont) {
-          this.nextLine(arr)
-        }
-      }.bind(this)
-      const fns = {
-        CME(e) {
-          next()
-        },
-        INP: () => {
-          console.log('Kutuyu alıyorum')
-          this.onHand = this.inputSection.shift()
-          if (!this.onHand) {
-            this.error('Alacak hiçbir kutu yok')
-          } else {
-            next()
-          }
-        },
-        OUT: () => {
-          console.log('Kutuyu Veriyorum')
-          if (this.onHand) {
-            this.outputSection.push(this.onHand)
-            this.onHand = null
-            next()
-          } else {
-            this.error('Ellerim bomboş')
-          }
-        },
-        CPY: (e) => {
-          console.log('Kopyalıyorum')
-          this.middleSection[e] = this.onHand
-          next()
-        },
-        SUB: (e) => {
-          if (this.onHand !== undefined) {
-            console.log('Çıkartıyorum')
-            this.onHand -= this.middleSection[e]
-            next()
-          } else {
-            this.error()
-          }
-        },
-        ADD: (e) => {
-          if (this.onHand !== null) {
-            console.log('Ekliyorum')
-            this.onHand += this.middleSection[e]
-            next()
-          } else {
-            this.error()
-          }
-        },
-        JPZ: (e) => {
-          if (this.onHand === 0) {
-            fns.JMP(e)
-          } else {
-            next()
-          }
-        },
-        JMP: (e) => {
-          console.log('Atlıyorum:', e)
-          console.log(this.jumpBacks[e])
-          next(this.jumpBacks[e])
-        },
-        GET: (e) => {
-          if (this.middleSection[e] !== undefined) {
-            this.onHand = this.middleSection[e]
-            next()
-          } else {
-            this.error()
-          }
-        },
-      }
-      fns[commandAndValue[0]](commandAndValue[1])
+      nextLine.bind(this)(this.sanitizedArray, true)
     },
   },
 }
 </script>
 
 <style lang="scss">
+.gameWrapper {
+  display: flex;
+  justify-content: stretch;
+  padding: 50px;
+  height: 100vh;
+}
+
 .baseWrapper {
-  margin-left: 50px;
   width: 230px;
   border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: 20px;
@@ -467,7 +338,7 @@ export default {
 .codeWrapper {
   margin-left: 10px;
   width: 400px;
-  max-height: 900px;
+  height: 100%;
   overflow: auto;
   position: relative;
   border: 2px solid rgba(0, 0, 0, 0.1);
@@ -482,7 +353,7 @@ export default {
     line-height: 62px;
     text-align: center;
     color: gray;
-    font-family: 'Patrick Hand', cursive;
+    font-family: 'Quicksand', sans-serif;
     margin-left: 20px;
     .item {
       font-size: 18pt;
@@ -510,7 +381,7 @@ export default {
     line-height: 62px;
     text-align: center;
     color: gray;
-    font-family: 'Patrick Hand', cursive;
+    font-family: 'Quicksand', sans-serif;
     .item {
       font-size: 18pt;
       width: 50px;
@@ -574,10 +445,10 @@ export default {
     margin: 3px 0;
     border-radius: 500px;
     color: white;
-    font-family: 'Patrick Hand', cursive;
+    font-family: 'Quicksand', sans-serif;
     font-size: 18pt;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: -1px;
     text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
     line-height: 50px;
     overflow: visible;

@@ -79,14 +79,6 @@ export const applyDrag = (arr, dragResult, uniq) => {
   return result
 }
 
-export const generateItems = (count, creator) => {
-  const result = []
-  for (let i = 0; i < count; i++) {
-    result.push(creator(i))
-  }
-  return result
-}
-
 export const checkMail = (mail) => {
   const regex = new RegExp(
     // eslint-disable-next-line no-useless-escape
