@@ -4,6 +4,7 @@
     :width="size"
     :height="size"
     :stroke="color"
+    :stroke-width="strokeWidth"
     class="icon"
   />
 </template>
@@ -22,6 +23,10 @@ export default {
     size: {
       type: Number,
       default: 10,
+    },
+    strokeWidth: {
+      type: [Number, String],
+      default: 1.5,
     },
   },
 }

@@ -40,60 +40,18 @@
           </div>
         </div>
         <div class="rightSelector">
-          <div v-if="modalType === 'hair'" class="hair">
-            <div
-              v-for="(hair, i) in items.length
-                ? items.filter((el) => el.type === 'hair')
-                : []"
-              :key="'hair-' + i"
-              class="hairContainer"
-              :style="`background-image:url(/img/character/thumbnails/hair/${hair.key}.svg)`"
-              @click="validateItem('hair', hair.key)"
-            ></div>
-          </div>
-          <div v-if="modalType === 'eyes'" class="eyes">
-            <div
-              v-for="(eyes, i) in items.length
-                ? items.filter((el) => el.type === 'eyes')
-                : []"
-              :key="'eyes-' + i"
-              class="eyesContainer"
-              :style="`background-image:url(/img/character/thumbnails/eyes/${eyes.key}.svg)`"
-              @click="validateItem('eyes', eyes.key)"
-            ></div>
-          </div>
-          <div v-if="modalType === 'shirt'" class="shirt">
-            <div
-              v-for="(shirt, i) in items.length
-                ? items.filter((el) => el.type === 'shirt')
-                : []"
-              :key="'shirt-' + i"
-              class="shirtContainer"
-              :style="`background-image:url(/img/character/thumbnails/shirt/${shirt.key}.svg)`"
-              @click="validateItem('shirt', shirt.key)"
-            ></div>
-          </div>
-          <div v-if="modalType === 'shorts'" class="shorts">
-            <div
-              v-for="(shorts, i) in items.length
-                ? items.filter((el) => el.type === 'shorts')
-                : []"
-              :key="'shorts-' + i"
-              class="shortsContainer"
-              :style="`background-image:url(/img/character/thumbnails/shorts/${shorts.key}.svg)`"
-              @click="validateItem('shorts', shorts.key)"
-            ></div>
-          </div>
-          <div v-if="modalType === 'shoes'" class="shoes">
-            <div
-              v-for="(shoes, i) in items.length
-                ? items.filter((el) => el.type === 'shoes')
-                : []"
-              :key="'shoes-' + i"
-              class="shoesContainer"
-              :style="`background-image:url(/img/character/thumbnails/shoes/${shoes.key}.svg)`"
-              @click="validateItem('shoes', shoes.key)"
-            ></div>
+          <div
+            v-for="part in ['hair', 'eyes', 'shirt', 'shorts', 'shoes']"
+            :key="part"
+            class="part"
+          >
+            <PartContainer
+              v-if="modalType === part"
+              :type="part"
+              :weared="weared"
+              :wear-item="wearItem"
+              :items="items"
+            />
           </div>
           <div v-if="modalType === 'skin'" class="skin">
             <div
@@ -101,7 +59,7 @@
               :key="'skin-' + i"
               class="skinContainer"
               :style="`background:${skin}`"
-              @click="validateItem('skin', skin)"
+              @click="wearItem('skin', skin)"
             ></div>
           </div>
         </div>
@@ -129,8 +87,9 @@
 
 <script>
 import Icon from '~/components/atomic/Icon.vue'
+import PartContainer from '~/components/store/PartContainer'
 export default {
-  components: { Icon },
+  components: { Icon, PartContainer },
   props: {
     validateItem: {
       type: Function,
@@ -149,6 +108,13 @@ export default {
     return {
       modalType: 'hair',
       totalCost: 9999,
+      weared: {
+        eyes: -1,
+        hair: -1,
+        shirt: -1,
+        shorts: -1,
+        shoes: -1,
+      },
       confirmPurchase: false,
       skins: [
         '#fce6de',
@@ -171,6 +137,11 @@ export default {
     }
   },
   methods: {
+    wearItem(type, key) {
+      if (this.validateItem(type, key)) {
+        this.weared[type] = key
+      }
+    },
     changeTo(type) {
       console.log(type)
       this.modalType = type
@@ -201,46 +172,10 @@ export default {
   cursor: pointer;
 }
 
-.eyesContainer {
-  width: 150px;
-  height: 75px;
-  border-radius: 15px;
-  margin: 15px;
-  float: left;
-  cursor: pointer;
-  background-color: white;
-}
-
-.hairContainer {
-  width: 150px;
-  height: 150px;
-  border-radius: 15px;
-  margin: 15px;
-  float: left;
-  cursor: pointer;
-  background-color: white;
-}
-
-.shirtContainer {
-  width: 150px;
-  height: 150px;
-  border-radius: 15px;
-  margin: 15px;
-  float: left;
-  cursor: pointer;
-  background-color: white;
-}
-
-.shortsContainer {
-  width: 150px;
-  height: 150px;
-  border-radius: 15px;
-  margin: 15px;
-  float: left;
-  cursor: pointer;
-  background-color: white;
-}
-
+.hairContainer,
+.eyesContainer,
+.shirtContainer,
+.shortsContainer,
 .shoesContainer {
   width: 150px;
   height: 150px;
@@ -248,7 +183,55 @@ export default {
   margin: 15px;
   float: left;
   cursor: pointer;
-  background-color: white;
+  background-image: url('/img/item.svg');
+  transition: 0.3s filter;
+  position: relative;
+  filter: drop-shadow(1px 1px 0px transparent)
+    drop-shadow(1px 1px 0px transparent) drop-shadow(-1px -1px 0px transparent)
+    drop-shadow(-1px -1px 0px transparent) drop-shadow(-1px 1px 0px transparent)
+    drop-shadow(-1px 1px 0px transparent) drop-shadow(1px -1px 0px transparent)
+    drop-shadow(1px -1px 0px transparent);
+  .selected {
+    content: '';
+    top: -10px;
+    right: -10px;
+    position: absolute;
+    transform: scale(0);
+    transition: 0.3s transform;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #87ceeb;
+    border: 4px solid white;
+    line-height: 40px;
+    text-align: center;
+  }
+  &.active {
+    filter: drop-shadow(1px 1px 0px skyblue) drop-shadow(1px 1px 0px skyblue)
+      drop-shadow(-1px -1px 0px skyblue) drop-shadow(-1px -1px 0px skyblue)
+      drop-shadow(-1px 1px 0px skyblue) drop-shadow(-1px 1px 0px skyblue)
+      drop-shadow(1px -1px 0px skyblue) drop-shadow(1px -1px 0px skyblue);
+    .selected {
+      transform: scale(1);
+    }
+  }
+  .hairItem,
+  .eyesItem,
+  .shirtItem,
+  .shortsItem,
+  .shoesItem {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+.eyesContainer {
+  width: 150px;
+  height: 75px;
+  .eyesItem {
+    width: 150px;
+    height: 75px;
+  }
 }
 
 .leftButtons {

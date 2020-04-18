@@ -62,6 +62,9 @@ export default {
       } else if (type === 'shoes') {
         this.shoes = item
       }
+
+      // TODO
+      return true
     },
   },
 }

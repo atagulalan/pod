@@ -12,8 +12,8 @@
 		c2.4,8.2,10.9,12.9,19.1,10.5C181.2,271.2,186,262.7,183.6,254.5z"
       />
     </g>
-    <Eyes :type="eyes" />
     <Hair :type="hair" />
+    <Eyes :type="eyes" />
   </g>
 </template>
 
