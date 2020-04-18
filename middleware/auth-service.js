@@ -91,7 +91,7 @@ export const reset = async function (pass) {
         this.resetPassSuccess = true
         setTimeout(
           () => {
-            this.$router.push('/')
+            this.$router.push('/login')
           },
           5000,
           this

@@ -28,6 +28,9 @@ export default {
       if (this.$route.meta.showResetPassModal) {
         this.$modal.show('resetPassModal')
       }
+      if (this.$route.meta.showLoginModal) {
+        this.$modal.show('authModal')
+      }
     })
   },
   head() {

@@ -17,6 +17,15 @@ export function createRouter() {
         component: Home,
         meta: {
           showResetPassModal: false,
+          showLoginModal: false,
+        },
+      },
+      {
+        name: 'Login',
+        path: '/login',
+        component: Home,
+        meta: {
+          showLoginModal: true,
         },
       },
       {

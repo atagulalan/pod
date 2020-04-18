@@ -46,7 +46,8 @@ export default {
    */
   plugins: [
     { src: '~plugins/modal.js', ssr: true },
-    { src: '~plugins/scrollbar.js', ssr: true }
+    { src: '~plugins/scrollbar.js', ssr: true },
+    { src: '~plugins/axios.js', ssr: false }
     //{ src: '~plugins/mixins.js', ssr: true }
   ],
   /*
