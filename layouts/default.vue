@@ -1,8 +1,18 @@
 <template>
   <div>
+    <AuthModal />
     <nuxt />
   </div>
 </template>
+
+<script>
+import AuthModal from '~/components/modals/AuthModal.vue'
+export default {
+  components: {
+    AuthModal,
+  },
+}
+</script>
 
 <style>
 /* Modal */

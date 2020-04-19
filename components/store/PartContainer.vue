@@ -5,11 +5,30 @@
         ? items.filter((el) => el.type === type)
         : []"
       :key="`${type}-${i}`"
-      :class="`${type}Container ${weared[type] === item.key ? 'active' : ''}`"
+      :class="`${type}Container ${weared[type] === item.key ? 'active' : ''} ${
+        !item.owned ? 'locked' : ''
+      }`"
       @click="wearItem(type, item.key)"
     >
       <div class="selected">
-        <Icon :size="30" i="ok" stroke="#fff" :stroke-width="4" />
+        <Icon
+          v-if="item.owned"
+          :size="30"
+          i="ok"
+          stroke="#fff"
+          :stroke-width="4"
+        />
+        <span v-else-if="weared[type] === item.key">
+          {{ item.cost }}
+        </span>
+        <Icon
+          v-else
+          :size="26"
+          i="lock"
+          stroke="#fff"
+          :stroke-width="3"
+          style="margin-bottom: 4px;"
+        />
       </div>
       <div
         :class="`${type}Item`"
@@ -36,6 +55,10 @@ export default {
       default: () => {},
     },
     items: {
+      type: Array,
+      default: () => [],
+    },
+    owned: {
       type: Array,
       default: () => [],
     },

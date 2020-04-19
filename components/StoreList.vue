@@ -9,7 +9,7 @@
         </div>
         <div class="coin__back"></div>
       </div>
-      <h1 class="titleRight">{{ totalCost }}</h1>
+      <h1 class="titleRight">{{ money }}</h1>
       <div class="storeModal">
         <div class="leftButtons">
           <div
@@ -48,9 +48,10 @@
             <PartContainer
               v-if="modalType === part"
               :type="part"
-              :weared="weared"
+              :weared="changed ? newWorn : weared"
               :wear-item="wearItem"
-              :items="items"
+              :owned="owned"
+              :items="computedItems"
             />
           </div>
           <div v-if="modalType === 'skin'" class="skin">
@@ -64,22 +65,12 @@
           </div>
         </div>
       </div>
-      <div>
-        <div
-          v-if="confirmPurchase === true"
-          class="store-decline"
-          @click="DeclinePurchase()"
-        >
-          <Icon :size="48" i="close" stroke="#fff" stroke-width="1.5" />
-        </div>
-        <div class="store-confirm" @click="Purchase(totalCost)">
-          <Icon
-            :size="48"
-            :i="confirmPurchase ? 'ok' : 'ok'"
-            stroke="red"
-            stroke-width="1.5"
-          />
-        </div>
+      <div class="buyWrapper">
+        <Button size="big" background="#C345FF" @click="purchase()">
+          <Icon :size="48" i="basket" stroke="#fff" stroke-width="1.5" />
+          <span v-if="totalCost === 0">Wear</span>
+          <span v-else>Buy ({{ totalCost }} Gold)</span>
+        </Button>
       </div>
     </div>
   </div>
@@ -87,11 +78,18 @@
 
 <script>
 import Icon from '~/components/atomic/Icon.vue'
+import Button from '~/components/atomic/Button.vue'
 import PartContainer from '~/components/store/PartContainer'
+import { wearItems } from '~/middleware/store'
+
 export default {
-  components: { Icon, PartContainer },
+  components: { Icon, PartContainer, Button },
   props: {
     validateItem: {
+      type: Function,
+      default: () => false,
+    },
+    updateStore: {
       type: Function,
       default: () => false,
     },
@@ -103,19 +101,30 @@ export default {
       type: Array,
       default: () => [],
     },
+    owned: {
+      type: Array,
+      default: () => [],
+    },
+    worn: {
+      type: Array,
+      default: () => [],
+    },
+    money: {
+      type: [Number, String],
+      default: 0,
+    },
   },
   data() {
     return {
       modalType: 'hair',
-      totalCost: 9999,
-      weared: {
+      newWorn: {
         eyes: -1,
         hair: -1,
         shirt: -1,
         shorts: -1,
         shoes: -1,
       },
-      confirmPurchase: false,
+      changed: false,
       skins: [
         '#fce6de',
         '#ffdcc5',
@@ -136,27 +145,62 @@ export default {
       ],
     }
   },
+  computed: {
+    computedItems() {
+      const results = {}
+      this.items.forEach((el) => {
+        // hair1, eyes1337 etc.
+        results[el.type + el.key] = el
+      })
+      this.owned.forEach((el) => (results[el.type + el.key].owned = true))
+      return Object.values(results)
+    },
+    weared() {
+      const result = {}
+      this.worn.forEach((el) => {
+        result[el.type] = el.key
+      })
+      return result
+    },
+    totalCost() {
+      const ha = this.changed ? this.newWorn : this.weared
+      let sum = 0
+      Object.keys(ha).forEach((key) => {
+        const selectedItem = this.items.find(
+          (item) => item.type === key && item.key === ha[key] && !item.owned
+        )
+        sum += selectedItem ? selectedItem.cost : 0
+      })
+      return sum
+    },
+  },
   methods: {
     wearItem(type, key) {
+      const neutralized = this.newWorn
+      Object.keys(this.newWorn).forEach((el) => {
+        if (neutralized[el] === -1) {
+          delete neutralized[el]
+        }
+      })
+
+      this.changed = true
+      this.newWorn = { ...this.weared, ...neutralized }
       if (this.validateItem(type, key)) {
-        this.weared[type] = key
+        this.newWorn[type] = key
       }
     },
     changeTo(type) {
       console.log(type)
       this.modalType = type
     },
-    Purchase(totalCost) {
-      if (!this.confirmPurchase) this.confirmPurchase = true
-      else {
-        console.log('Satin Alindi | Tutar : ', this.totalCost)
-        this.totalCost = 0
-        this.confirmPurchase = false
-      }
-    },
-    DeclinePurchase() {
-      console.log('Satin Alma Iptal Edildi | Tutar : ', this.totalCost)
-      this.confirmPurchase = false
+    purchase() {
+      console.log('Satin Alindi | Tutar : ', this.totalCost)
+      const worn = this.changed ? this.newWorn : this.weared
+      const wornArray = []
+      Object.keys(worn).forEach((key) => {
+        wornArray.push({ type: key, key: worn[key] })
+      })
+      wearItems.bind(this)(wornArray)
     },
   },
 }
@@ -206,6 +250,24 @@ export default {
     line-height: 40px;
     text-align: center;
   }
+  &.locked {
+    &.active {
+      filter: drop-shadow(1px 1px 0px #ffc107) drop-shadow(1px 1px 0px #ffc107)
+        drop-shadow(-1px -1px 0px #ffc107) drop-shadow(-1px -1px 0px #ffc107)
+        drop-shadow(-1px 1px 0px #ffc107) drop-shadow(-1px 1px 0px #ffc107)
+        drop-shadow(1px -1px 0px #ffc107) drop-shadow(1px -1px 0px #ffc107);
+      .selected {
+        transform: scale(1);
+      }
+    }
+    .selected {
+      background: #ffc107;
+      transform: scale(0.8);
+      color: white;
+      font-size: 24px;
+      font-weight: 700;
+    }
+  }
   &.active {
     filter: drop-shadow(1px 1px 0px skyblue) drop-shadow(1px 1px 0px skyblue)
       drop-shadow(-1px -1px 0px skyblue) drop-shadow(-1px -1px 0px skyblue)
@@ -232,6 +294,11 @@ export default {
     width: 150px;
     height: 75px;
   }
+}
+
+.buyWrapper {
+  float: right;
+  margin-top: 20px;
 }
 
 .leftButtons {

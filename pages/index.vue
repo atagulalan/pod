@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <AuthModal />
     <ResetPassModal />
     <Hero />
   </div>
@@ -8,13 +7,11 @@
 
 <script>
 import Hero from '~/components/Hero.vue'
-import AuthModal from '~/components/modals/AuthModal.vue'
 import ResetPassModal from '~/components/modals/ResetPassModal.vue'
 
 export default {
   components: {
     Hero,
-    AuthModal,
     ResetPassModal,
   },
   data() {
