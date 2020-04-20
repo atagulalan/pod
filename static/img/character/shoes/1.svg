@@ -1,17 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Generator: Adobe Illustrator 22.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
-  <g class="skin">
-    <path
-      class="shoe"
-      d="M201.7,439.6h-44.6c-9.6,0-17.4,7.8-17.4,17.4v9.6c0,9.6,7.8,17.4,17.4,17.4h67.2c6,0,10.9-4.9,10.9-10.9
-		C235.2,454.6,220.2,439.6,201.7,439.6z"
-    />
-    <path
-      class="shoe"
-      d="M314.6,439.6H270c-9.6,0-17.4,7.8-17.4,17.4v9.6c0,9.6,7.8,17.4,17.4,17.4h67.2c6,0,10.9-4.9,10.9-10.9
-		C348.1,454.6,333.1,439.6,314.6,439.6z"
-    />
-  </g>
+<g id="Left">
+	<g>
+		<defs>
+			<path id="AYAKKABI_1_" d="M201.7,439.6h-44.6c-9.6,0-17.4,7.8-17.4,17.4v9.6c0,9.6,7.8,17.4,17.4,17.4h67.2c6,0,10.9-4.9,10.9-10.9
+				C235.2,454.6,220.2,439.6,201.7,439.6z"/>
+		</defs>
+		<clipPath id="AYAKKABI_2_">
+			<use xlink:href="#AYAKKABI_1_"  style="overflow:visible;"/>
+		</clipPath>
+		<path style="clip-path:url(#AYAKKABI_2_);" d="M201.7,439.6h-44.6c-9.6,0-17.4,7.8-17.4,17.4v9.6c0,9.6,7.8,17.4,17.4,17.4h67.2
+			c6,0,10.9-4.9,10.9-10.9C235.2,454.6,220.2,439.6,201.7,439.6z"/>
+		<g style="clip-path:url(#AYAKKABI_2_);">
+			<polygon style="fill:#FF507E;" points="155.8,485.9 130.3,485.9 157.7,437.7 183.1,437.7 			"/>
+			<polygon style="fill:#3DC463;" points="185.8,485.9 160.3,485.9 187.7,437.7 213.1,437.7 			"/>
+			<polygon style="fill:#3E8CC1;" points="215.8,485.9 190.3,485.9 217.7,437.7 243.1,437.7 			"/>
+		</g>
+	</g>
+</g>
+<g id="Right">
+	<g>
+		<defs>
+			<path id="AYAKKABI_3_" d="M314.5,439.6h-44.6c-9.6,0-17.4,7.8-17.4,17.4v9.6c0,9.6,7.8,17.4,17.4,17.4h67.2c6,0,10.9-4.9,10.9-10.9
+				C348,454.6,333,439.6,314.5,439.6z"/>
+		</defs>
+		<clipPath id="AYAKKABI_4_">
+			<use xlink:href="#AYAKKABI_3_"  style="overflow:visible;"/>
+		</clipPath>
+		<path style="clip-path:url(#AYAKKABI_4_);" d="M314.5,439.6h-44.6c-9.6,0-17.4,7.8-17.4,17.4v9.6c0,9.6,7.8,17.4,17.4,17.4h67.2
+			c6,0,10.9-4.9,10.9-10.9C348,454.6,333,439.6,314.5,439.6z"/>
+		<g style="clip-path:url(#AYAKKABI_4_);">
+			<polygon style="fill:#FF507E;" points="268.5,485.9 243.1,485.9 270.4,437.7 295.9,437.7 			"/>
+			<polygon style="fill:#3DC463;" points="298.5,485.9 273.1,485.9 300.4,437.7 325.9,437.7 			"/>
+			<polygon style="fill:#3E8CC1;" points="328.5,485.9 303.1,485.9 330.4,437.7 355.9,437.7 			"/>
+		</g>
+	</g>
+</g>
 </svg>

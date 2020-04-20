@@ -41,7 +41,7 @@
         </div>
         <div class="rightSelector">
           <div
-            v-for="part in ['hair', 'eyes', 'shirt', 'shorts', 'shoes']"
+            v-for="part in ['hair', 'eyes', 'shirt', 'shorts', 'shoes', 'skin']"
             :key="part"
             class="part"
           >
@@ -54,22 +54,26 @@
               :items="computedItems"
             />
           </div>
-          <div v-if="modalType === 'skin'" class="skin">
-            <div
-              v-for="(skin, i) in skins"
-              :key="'skin-' + i"
-              class="skinContainer"
-              :style="`background:${skin}`"
-              @click="wearItem('skin', skin)"
-            ></div>
-          </div>
         </div>
       </div>
       <div class="buyWrapper">
-        <Button size="big" background="#C345FF" @click="purchase()">
-          <Icon :size="48" i="basket" stroke="#fff" stroke-width="1.5" />
-          <span v-if="totalCost === 0">Wear</span>
-          <span v-else>Buy ({{ totalCost }} Gold)</span>
+        <Button
+          size="big"
+          :background="wearingLoading === 2 ? '#9ccc66' : '#C345FF'"
+          :disabled="money < totalCost"
+          :loading="wearingLoading === 1"
+          @click="purchase()"
+        >
+          <Icon
+            :size="48"
+            :i="wearingLoading === 2 ? 'save' : 'basket'"
+            stroke="#fff"
+            stroke-width="1.5"
+          />
+          <span v-if="totalCost === 0">
+            {{ wearingLoading === 2 ? 'Kaydedildi' : 'Kuşan' }}
+          </span>
+          <span v-else>Satın Al ({{ totalCost }} Altın)</span>
         </Button>
       </div>
     </div>
@@ -80,16 +84,11 @@
 import Icon from '~/components/atomic/Icon.vue'
 import Button from '~/components/atomic/Button.vue'
 import PartContainer from '~/components/store/PartContainer'
-import { wearItems } from '~/middleware/store'
 
 export default {
   components: { Icon, PartContainer, Button },
   props: {
     validateItem: {
-      type: Function,
-      default: () => false,
-    },
-    updateStore: {
       type: Function,
       default: () => false,
     },
@@ -113,6 +112,14 @@ export default {
       type: [Number, String],
       default: 0,
     },
+    wearingLoading: {
+      type: Number,
+      default: 0,
+    },
+    wearItems: {
+      type: Function,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -123,26 +130,9 @@ export default {
         shirt: -1,
         shorts: -1,
         shoes: -1,
+        skin: -1,
       },
       changed: false,
-      skins: [
-        '#fce6de',
-        '#ffdcc5',
-        '#ffd7b4',
-        '#ffcbab',
-        '#ffc089',
-        '#ffaf7c',
-        '#df8e62',
-        '#c5815b',
-        '#ad735b',
-        '#774939',
-        '#603829',
-        '#442b26',
-        '#def9de',
-        '#f7d2f5',
-        '#fcd2d2',
-        '#e4def9',
-      ],
     }
   },
   computed: {
@@ -152,7 +142,11 @@ export default {
         // hair1, eyes1337 etc.
         results[el.type + el.key] = el
       })
-      this.owned.forEach((el) => (results[el.type + el.key].owned = true))
+      this.owned.forEach((el) => {
+        if (results[el.type + el.key]) {
+          results[el.type + el.key].owned = true
+        }
+      })
       return Object.values(results)
     },
     weared() {
@@ -200,27 +194,19 @@ export default {
       Object.keys(worn).forEach((key) => {
         wornArray.push({ type: key, key: worn[key] })
       })
-      wearItems.bind(this)(wornArray)
+      this.wearItems.bind(this)(wornArray)
     },
   },
 }
 </script>
 
 <style lang="scss">
-.skinContainer {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  margin: 15px;
-  float: left;
-  cursor: pointer;
-}
-
 .hairContainer,
 .eyesContainer,
 .shirtContainer,
 .shortsContainer,
-.shoesContainer {
+.shoesContainer,
+.skinContainer {
   width: 150px;
   height: 150px;
   border-radius: 15px;
@@ -281,9 +267,20 @@ export default {
   .eyesItem,
   .shirtItem,
   .shortsItem,
-  .shoesItem {
+  .shoesItem,
+  .skinItem {
     width: 150px;
     height: 150px;
+    background-size: 100px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+.skinContainer {
+  background: transparent;
+  .skinItem {
+    background-size: 150px;
   }
 }
 

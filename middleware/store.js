@@ -1,5 +1,6 @@
 export const wearItems = async function (willWear) {
   console.log('Buying an Item')
+  this.wearingLoading = 1
   await this.$axios
     .$post(
       '/api/store/wear',
@@ -14,7 +15,7 @@ export const wearItems = async function (willWear) {
       // TODO
       console.log(response)
       if (response.success) {
-        this.updateStore()
+        listItems.bind(this)()
         return true
       } else {
         return false
@@ -46,7 +47,18 @@ export const listItems = async function () {
         this.shoes = response.data.user.worn.find(
           (el) => el.type === 'shoes'
         ).key
+        this.skinColor = response.data.user.worn.find(
+          (el) => el.type === 'skin'
+        ).key
         this.loaded = true
+        this.wearingLoading = 2
+        setTimeout(
+          () => {
+            this.wearingLoading = 0
+          },
+          2000,
+          this
+        )
       }
     })
     .catch((error) => {

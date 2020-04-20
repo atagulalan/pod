@@ -5,16 +5,20 @@
   >
     <button
       :style="`color:${color};background:${background};`"
+      :disabled="disabled"
       @click="emitClick"
     >
-      <Icon
-        v-if="loading"
-        :size="24"
-        i="loading"
-        class="rotate"
-        stroke="#fff"
-      />
-      <slot v-else />
+      <div class="loadingIcon">
+        <Icon
+          :size="size === 'big' ? 44 : 24"
+          i="loading"
+          class="rotate"
+          stroke="#fff"
+        />
+      </div>
+      <span class="slot">
+        <slot />
+      </span>
     </button>
   </div>
 </template>
@@ -55,6 +59,10 @@ export default {
       type: String,
       default: 'rgba(111, 153, 65, 1)',
     },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     emitClick() {
@@ -84,21 +92,46 @@ export default {
     }
   }
 
+  &.loading {
+    button {
+      .loadingIcon {
+        opacity: 1;
+      }
+      .slot {
+        opacity: 0;
+      }
+    }
+  }
+
   button {
     font-weight: 500;
     border: 0;
     border-radius: 500px;
     padding: 8pt 40pt;
     font-size: 14pt;
+    position: relative;
     cursor: pointer;
-    transition: 0.3s filter;
+    transition: 0.3s filter, 0.3s background;
+
+    .loadingIcon {
+      opacity: 0;
+      position: absolute;
+      stroke: #fff;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: 0.3s all;
+    }
+
+    .slot {
+      transition: 0.3s all;
+    }
 
     &:hover {
       filter: brightness(1.1);
     }
-
-    svg {
-      stroke: #fff;
+    &:disabled {
+      filter: grayscale(1);
     }
   }
 }

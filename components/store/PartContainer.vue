@@ -6,13 +6,13 @@
         : []"
       :key="`${type}-${i}`"
       :class="`${type}Container ${weared[type] === item.key ? 'active' : ''} ${
-        !item.owned ? 'locked' : ''
+        !item.owned && item.cost !== 0 ? 'locked' : ''
       }`"
       @click="wearItem(type, item.key)"
     >
       <div class="selected">
         <Icon
-          v-if="item.owned"
+          v-if="item.owned || item.cost === 0"
           :size="30"
           i="ok"
           stroke="#fff"
@@ -32,7 +32,10 @@
       </div>
       <div
         :class="`${type}Item`"
-        :style="`background-image:url(/img/character/thumbnails/${type}/${item.key}.svg)`"
+        :style="`background-image:url(/img/character/thumbnails/${type}/${item.key.replace(
+          /#/gi,
+          '%23'
+        )}.png)`"
       ></div>
     </div>
   </div>
