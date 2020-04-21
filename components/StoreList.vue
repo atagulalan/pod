@@ -2,14 +2,11 @@
   <div class="storeList">
     <div class="innerWrapper">
       <h1>Mağaza</h1>
-      <div class="coin">
-        <div class="coin__front"></div>
-        <div class="coin__edge">
-          <div v-for="index in 80" :key="index"></div>
-        </div>
-        <div class="coin__back"></div>
-      </div>
-      <h1 class="titleRight">{{ money }}</h1>
+
+      <h1 class="titleRight">
+        <div class="coin"></div>
+        {{ money }}
+      </h1>
       <div class="storeModal">
         <div class="leftButtons">
           <div
@@ -40,18 +37,46 @@
           </div>
         </div>
         <div class="rightSelector">
+          <div class="buttons">
+            <div
+              :class="`left ${buttonVisibility.left ? 'active' : ''}`"
+              @click="goLeft()"
+            >
+              <Icon
+                :size="30"
+                i="chevron-left"
+                stroke="#aaa"
+                stroke-width="3"
+              />
+            </div>
+            <div
+              :class="`right ${buttonVisibility.right ? 'active' : ''}`"
+              @click="goRight()"
+            >
+              <Icon
+                :size="30"
+                i="chevron-right"
+                stroke="#aaa"
+                stroke-width="3"
+              />
+            </div>
+          </div>
           <div
             v-for="part in ['hair', 'eyes', 'shirt', 'shorts', 'shoes', 'skin']"
             :key="part"
             class="part"
           >
             <PartContainer
-              v-if="modalType === part"
+              :is-visible="modalType === part"
               :type="part"
               :weared="changed ? newWorn : weared"
               :wear-item="wearItem"
               :owned="owned"
               :items="computedItems"
+              :update-button-visibility="updateButtonVisibility"
+              :page="page"
+              :set-page="setPage"
+              :items-per-page="window.width <= 1200 ? 8 : 16"
             />
           </div>
         </div>
@@ -123,6 +148,10 @@ export default {
   },
   data() {
     return {
+      window: {
+        width: 0,
+        height: 0,
+      },
       modalType: 'hair',
       newWorn: {
         eyes: -1,
@@ -132,6 +161,11 @@ export default {
         shoes: -1,
         skin: -1,
       },
+      buttonVisibility: {
+        left: false,
+        right: false,
+      },
+      page: 1,
       changed: false,
     }
   },
@@ -168,7 +202,31 @@ export default {
       return sum
     },
   },
+  mounted() {
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize()
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize)
+  },
   methods: {
+    handleResize() {
+      this.window.width = window.innerWidth
+      this.window.height = window.innerHeight
+    },
+    setPage(val) {
+      this.page = val
+    },
+    goLeft() {
+      this.page = this.page - 1
+    },
+    goRight() {
+      this.page = this.page + 1
+    },
+    updateButtonVisibility(left, right) {
+      this.buttonVisibility.left = left
+      this.buttonVisibility.right = right
+    },
     wearItem(type, key) {
       const neutralized = this.newWorn
       Object.keys(this.newWorn).forEach((el) => {
@@ -201,221 +259,414 @@ export default {
 </script>
 
 <style lang="scss">
-.hairContainer,
-.eyesContainer,
-.shirtContainer,
-.shortsContainer,
-.shoesContainer,
-.skinContainer {
-  width: 150px;
-  height: 150px;
-  border-radius: 15px;
-  margin: 15px;
-  float: left;
-  cursor: pointer;
-  background-image: url('/img/item.svg');
-  transition: 0.3s filter;
-  position: relative;
-  filter: drop-shadow(1px 1px 0px transparent)
-    drop-shadow(1px 1px 0px transparent) drop-shadow(-1px -1px 0px transparent)
-    drop-shadow(-1px -1px 0px transparent) drop-shadow(-1px 1px 0px transparent)
-    drop-shadow(-1px 1px 0px transparent) drop-shadow(1px -1px 0px transparent)
-    drop-shadow(1px -1px 0px transparent);
-  .selected {
-    content: '';
-    top: -10px;
-    right: -10px;
-    position: absolute;
-    transform: scale(0);
-    transition: 0.3s transform;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: #87ceeb;
-    border: 4px solid white;
-    line-height: 40px;
-    text-align: center;
-  }
-  &.locked {
-    &.active {
-      filter: drop-shadow(1px 1px 0px #ffc107) drop-shadow(1px 1px 0px #ffc107)
-        drop-shadow(-1px -1px 0px #ffc107) drop-shadow(-1px -1px 0px #ffc107)
-        drop-shadow(-1px 1px 0px #ffc107) drop-shadow(-1px 1px 0px #ffc107)
-        drop-shadow(1px -1px 0px #ffc107) drop-shadow(1px -1px 0px #ffc107);
-      .selected {
-        transform: scale(1);
-      }
-    }
-    .selected {
-      background: #ffc107;
-      transform: scale(0.8);
-      color: white;
-      font-size: 24px;
-      font-weight: 700;
-    }
-  }
-  &.active {
-    filter: drop-shadow(1px 1px 0px skyblue) drop-shadow(1px 1px 0px skyblue)
-      drop-shadow(-1px -1px 0px skyblue) drop-shadow(-1px -1px 0px skyblue)
-      drop-shadow(-1px 1px 0px skyblue) drop-shadow(-1px 1px 0px skyblue)
-      drop-shadow(1px -1px 0px skyblue) drop-shadow(1px -1px 0px skyblue);
-    .selected {
-      transform: scale(1);
-    }
-  }
-  .hairItem,
-  .eyesItem,
-  .shirtItem,
-  .shortsItem,
-  .shoesItem,
-  .skinItem {
-    width: 150px;
-    height: 150px;
-    background-size: 100px;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-}
-
-.skinContainer {
-  background: transparent;
-  .skinItem {
-    background-size: 150px;
-  }
-}
-
-.eyesContainer {
-  width: 150px;
-  height: 75px;
-  .eyesItem {
-    width: 150px;
-    height: 75px;
-  }
-}
-
-.buyWrapper {
-  float: right;
-  margin-top: 20px;
-}
-
-.leftButtons {
-  .button {
-    &.hair {
-      background-image: url('/img/store/buttons/hair.svg');
-    }
-    &.eyes {
-      background-image: url('/img/store/buttons/eyes.svg');
-    }
-    &.shirt {
-      background-image: url('/img/store/buttons/shirt.svg');
-    }
-    &.shorts {
-      background-image: url('/img/store/buttons/shorts.svg');
-    }
-    &.shoes {
-      background-image: url('/img/store/buttons/shoes.svg');
-    }
-    &.skin {
-      .skinCircle {
-        border-radius: 50%;
-        margin: 10px;
-        width: calc(100% - 20px);
-        height: calc(100% - 20px);
-        margin: 10px;
-      }
-    }
-  }
-}
-
-//COININ ANIMASYONU OLABILIR DE OLAMYABILIR DE
-$coin-diameter: 96px;
-$coin-thickness: 8px;
-$coin-color: #ffcc01;
-$coin: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAyMi4wLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjxzdmcgdmVyc2lvbj0iMS4yIiBiYXNlUHJvZmlsZT0idGlueSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiDQoJIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+DQo8Zz4NCgk8Zz4NCgkJPGc+DQoJCQk8Y2lyY2xlIGZpbGw9IiNGRkQ3MTUiIGN4PSIyNTYiIGN5PSIyNTYiIHI9IjI1NiIvPg0KCQk8L2c+DQoJCTxnPg0KCQkJPGNpcmNsZSBmaWxsPSIjRkZDQzAxIiBjeD0iMjU2IiBjeT0iMjU2IiByPSIyMTcuMyIvPg0KCQk8L2c+DQoJPC9nPg0KCTxwYXRoIGZpbGw9IiNFNjlBMjQiIGQ9Ik0zNTEuNywxNzljMS43LTUuMywyLjYtMTAuOSwyLjYtMTYuOGMwLTI4LjgtMjEuNy01Mi41LTQ5LjYtNTUuNmMtMTAtMTUuMy0yNy4zLTI1LjUtNDctMjUuNQ0KCQljLTE5LjUsMC0zNi43LDEwLTQ2LjgsMjUuMmMtMjkuNiwxLjUtNTMuMiwyNi01My4yLDU2YzAsNS44LDAuOSwxMS41LDIuNiwxNi44Yy05LjksMTAuMS0xNi4xLDI0LTE2LjEsMzkuM2MwLDMwLjksMjUuMSw1Niw1Niw1Ng0KCQljMS45LDAsMy43LTAuMSw1LjUtMC4zYzQuMSwxMC4xLDExLjEsMTguOCwxOS45LDI1djEwMy4yYzAsNy4zLDUuOSwxMy4zLDEzLjMsMTMuM2gzNC4xYzcuMywwLDEzLjMtNS45LDEzLjMtMTMuM1YzMDEuMg0KCQljMTAuNC02LjIsMTguNi0xNS42LDIzLjItMjdjMC43LDAsMS41LDAuMSwyLjIsMC4xYzMwLjksMCw1Ni0yNS4xLDU2LTU2QzM2Ny44LDIwMywzNjEuNywxODkuMSwzNTEuNywxNzl6Ii8+DQo8L2c+DQo8L3N2Zz4NCg==);
-$edge-faces: 80;
-$edge-face-length: 3.14 * $coin-diameter/$edge-faces;
-$turn-time: 8s;
-
-.coin {
-  padding-top: 12px;
-  float: right;
-  position: relative;
-  width: $coin-diameter;
-  height: $coin-diameter;
-  margin: 0px auto;
-  transform-style: preserve-3d;
-  animation: rotate3d $turn-time linear infinite;
-  transition: all 0.3s;
-  display: inline-block;
-}
-
-.coin__front,
-.coin__back {
+.storeList {
+  width: 60vw;
+  min-width: 920px;
+  height: 100vh;
   position: absolute;
-  width: $coin-diameter;
-  height: $coin-diameter;
-  border-radius: 50%;
-  overflow: hidden;
-  background-color: $coin-color;
-
-  &:after {
-    content: '';
+  top: 0;
+  right: 0;
+  transform: scale(1);
+  transform-origin: right center;
+  margin-right: 40px;
+  z-index: 2;
+  transition: 0.3s transform;
+  .innerWrapper {
+    max-width: 921px;
+    width: 100%;
+    height: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     position: absolute;
-    left: -$coin-diameter/2;
-    bottom: 100%;
-    display: block;
-    height: $coin-diameter/1.5;
-    width: $coin-diameter * 2;
-    background: #fff;
-    opacity: 0.3;
-    animation: shine linear $turn-time/2 infinite;
-  }
-}
+    h1 {
+      font-size: 96px;
+      color: #505668;
+      line-height: 120px;
+      margin-bottom: 40px;
+      display: inline-block;
+    }
+    h1.titleRight {
+      float: right;
+      margin-right: 10px;
+      .coin {
+        display: inline-block;
+        width: 70px;
+        height: 70px;
+        background: #ffc107;
+        border-radius: 50%;
+      }
+    }
+    .storeModal {
+      width: 100%;
+      height: 780px;
+      .leftButtons {
+        width: 120px;
+        height: 100%;
+        margin-right: 36px;
+        float: left;
+        .button {
+          width: 120px;
+          height: 120px;
+          background-color: #9ccc66;
+          border-radius: 50%;
+          margin: 0 0 10px;
+          text-align: center;
+          line-height: 120px;
+          color: white;
+          transition: 0.3s filter, 0.3s border, 0.3s background-color;
+          cursor: pointer;
+          font-size: 30pt;
+          padding: 10px;
+          &:hover {
+            filter: brightness(1.1);
+          }
+          &.active {
+            background-color: #c1e498;
+            border: 4px solid #9ccc66;
+          }
+        }
+      }
+      .leftButtons {
+        .button {
+          &.hair {
+            background-image: url('/img/store/buttons/hair.svg');
+          }
+          &.eyes {
+            background-image: url('/img/store/buttons/eyes.svg');
+          }
+          &.shirt {
+            background-image: url('/img/store/buttons/shirt.svg');
+          }
+          &.shorts {
+            background-image: url('/img/store/buttons/shorts.svg');
+          }
+          &.shoes {
+            background-image: url('/img/store/buttons/shoes.svg');
+          }
+          &.skin {
+            .skinCircle {
+              border-radius: 50%;
+              margin: 10px;
+              width: calc(100% - 20px);
+              height: calc(100% - 20px);
+              margin: 10px;
+            }
+          }
+        }
+      }
+      .rightSelector {
+        width: calc(100% - 156px);
+        height: 100%;
+        float: left;
+        border-radius: 30px;
+        background: url(/img/store.svg);
+        padding: 20px;
+        position: relative;
+        .buttons {
+          .left,
+          .right {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border: 5px solid #f0f0f0;
+            border-radius: 50px;
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            line-height: 45px;
+            text-align: center;
+            transition: 0.3s all;
+            opacity: 0;
+            cursor: pointer;
+            pointer-events: none;
+            &:hover {
+              filter: brightness(0.9);
+            }
+            &.active {
+              opacity: 1;
+              pointer-events: initial;
+            }
+          }
+          .right {
+            left: initial;
+            right: -30px;
+          }
+        }
+        .part {
+          .subpart {
+            overflow: hidden;
+            width: calc(100% - 40px);
+            height: calc(100% - 40px);
+            position: absolute;
+          }
+          .hairContainer,
+          .eyesContainer,
+          .shirtContainer,
+          .shortsContainer,
+          .shoesContainer,
+          .skinContainer {
+            width: 150px;
+            height: 150px;
+            border-radius: 15px;
+            margin: 15px;
+            float: left;
+            cursor: pointer;
+            background-image: url('/img/item.svg');
+            transition: 0.3s filter;
+            position: relative;
+            filter: drop-shadow(2px 2px 0px transparent)
+              drop-shadow(-2px -2px 0px transparent)
+              drop-shadow(-2px 2px 0px transparent)
+              drop-shadow(2px -2px 0px transparent);
+            .selected {
+              content: '';
+              top: -10px;
+              right: -10px;
+              position: absolute;
+              transform: scale(0);
+              transition: 0.3s transform;
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              background: #87ceeb;
+              border: 4px solid white;
+              line-height: 40px;
+              text-align: center;
+            }
+            &.locked {
+              &.active {
+                filter: drop-shadow(2px 2px 0px #ffc107)
+                  drop-shadow(-2px -2px 0px #ffc107)
+                  drop-shadow(-2px 2px 0px #ffc107)
+                  drop-shadow(2px -2px 0px #ffc107);
+                .selected {
+                  transform: scale(1);
+                }
+              }
+              .selected {
+                background: #ffc107;
+                transform: scale(0.8);
+                color: white;
+                font-size: 24px;
+                font-weight: 700;
+              }
+            }
+            &.active {
+              filter: drop-shadow(2px 2px 0px skyblue)
+                drop-shadow(-2px -2px 0px skyblue)
+                drop-shadow(-2px 2px 0px skyblue)
+                drop-shadow(2px -2px 0px skyblue);
+              .selected {
+                transform: scale(1);
+              }
+            }
+            .hairItem,
+            .eyesItem,
+            .shirtItem,
+            .shortsItem,
+            .shoesItem,
+            .skinItem {
+              width: 150px;
+              height: 150px;
+              background-size: 100px;
+              background-position: center;
+              background-repeat: no-repeat;
+            }
+          }
 
-.coin__front {
-  background-image: $coin;
-  background-size: cover;
-  transform: translateZ($coin-thickness/2);
-}
-.coin__back {
-  background-image: $coin;
-  background-size: cover;
-  transform: translateZ(-$coin-thickness/2) rotateY(180deg);
-}
+          .skinContainer {
+            background: transparent;
+            .skinItem {
+              background-size: 150px;
+            }
+          }
 
-.coin__edge {
-  @for $i from 1 through $edge-faces {
-    div:nth-child(#{$i}) {
-      position: absolute;
-      height: $edge-face-length;
-      width: $coin-thickness;
-      background: $coin-color;
-      transform: translateY(#{$coin-diameter/2-$edge-face-length/2})
-        translateX(#{$coin-diameter/2-$coin-thickness/2})
-        rotateZ(360deg / $edge-faces * $i + 90)
-        translateX(#{$coin-diameter/2})
-        rotateY(90deg);
+          .eyesContainer {
+            width: 150px;
+            height: 75px;
+            .eyesItem {
+              width: 150px;
+              height: 75px;
+            }
+          }
+        }
+      }
+    }
+    .buyWrapper {
+      float: right;
+      margin-top: 20px;
     }
   }
 }
 
-@keyframes rotate3d {
-  0% {
-    transform: perspective(1000px) rotateY(0deg);
-  }
-
-  100% {
-    transform: perspective(1000px) rotateY(360deg);
+@media only screen and (max-height: 1080px) {
+  .storeList {
+    transform: scale(0.9);
   }
 }
 
-@keyframes shine {
-  0%,
-  15% {
-    transform: translateY($coin-diameter * 2) rotate(-40deg);
+/* WIDTH */
+
+@media only screen and (max-width: 1600px), screen and (max-height: 950px) {
+  .storeList {
+    transform: scale(0.8);
   }
-  50% {
-    transform: translateY(-$coin-diameter) rotate(-40deg);
+}
+
+@media only screen and (max-width: 1500px) {
+  .storeList {
+    transform: scale(0.75);
+  }
+}
+
+@media only screen and (max-width: 1400px), screen and (max-height: 850px) {
+  .storeList {
+    transform: scale(0.7);
+  }
+}
+
+@media only screen and (max-width: 1300px) {
+  .storeList {
+    transform: scale(0.65);
+  }
+}
+
+@media only screen and (max-height: 750px) {
+  .storeList {
+    transform: scale(0.6);
+  }
+}
+
+@media only screen and (max-width: 1200px) and (orientation: landscape) {
+  .storeList {
+    bottom: 0;
+    top: initial;
+    right: 0;
+    margin-right: 0px;
+    height: 100%;
+    min-height: 580px;
+    top: 50%;
+    transform: translateY(-50%) scale(0.7);
+    .innerWrapper {
+      max-width: 780px;
+      .storeModal {
+        float: right;
+        width: 540px;
+        .leftButtons {
+          margin-right: 20px;
+        }
+        .rightSelector {
+          width: 400px;
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 1200px) and (orientation: portrait) {
+  .storeList {
+    width: 100vw;
+    bottom: 0;
+    top: initial;
+    left: 0;
+    transform-origin: bottom center;
+    margin-bottom: 30px;
+    margin-right: 0px;
+    height: 650px;
+    min-height: 580px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    .innerWrapper {
+      max-width: 780px;
+      h1 {
+        display: none;
+      }
+      .storeModal {
+        height: 530px;
+        .leftButtons {
+          width: 100%;
+          height: 130px;
+          float: left;
+          .button {
+            float: left;
+            margin-right: 10px;
+            margin-bottom: 10px;
+          }
+        }
+        .rightSelector {
+          width: 100%;
+          height: 400px;
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 768px) and (orientation: portrait) {
+  .storeList {
+    transform: translateX(-50%) scale(0.7);
+  }
+}
+
+@media only screen and (max-width: 768px) and (orientation: landscape),
+  screen and (max-height: 768px) and (max-width: 1200px) and (orientation: landscape) {
+  .storeList {
+    transform: translateY(-50%) scale(0.5);
+  }
+}
+
+@media only screen and (max-width: 666px) and (orientation: portrait) {
+  .storeList {
+    transform: translateX(-50%) scale(0.666);
+  }
+}
+@media only screen and (max-width: 650px) and (orientation: portrait) {
+  .storeList {
+    transform: translateX(-50%) scale(0.6);
+  }
+}
+@media only screen and (max-width: 550px) and (orientation: portrait) {
+  .storeList {
+    transform: translateX(-50%) scale(0.54);
+  }
+}
+
+@media only screen and (max-width: 550px) and (orientation: landscape),
+  screen and (max-height: 550px) and (max-width: 1200px) and (orientation: landscape) {
+  .storeList {
+    transform: translateY(-50%) scale(0.4);
+  }
+}
+
+@media only screen and (max-width: 500px) and (orientation: portrait) {
+  .storeList {
+    transform: translateX(-50%) scale(0.49);
+  }
+}
+@media only screen and (max-width: 450px) and (orientation: portrait) {
+  .storeList {
+    transform: translateX(-50%) scale(0.44);
+  }
+}
+
+@media only screen and (max-width: 450px) and (orientation: landscape),
+  screen and (max-height: 450px) and (max-width: 1200px) and (orientation: landscape) {
+  .storeList {
+    transform: translateY(-50%) scale(0.3);
+  }
+}
+
+@media only screen and (max-width: 400px) and (orientation: portrait) {
+  .storeList {
+    transform: translateX(-50%) scale(0.4);
+  }
+}
+@media only screen and (max-width: 360px) and (orientation: portrait) {
+  .storeList {
+    transform: translateX(-50%) scale(0.36);
   }
 }
 </style>

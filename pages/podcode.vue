@@ -301,177 +301,177 @@ JMP 3`,
   justify-content: stretch;
   padding: 50px;
   height: 100vh;
-}
 
-.baseWrapper {
-  width: 230px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
-  height: 510px;
-  .smooth-dnd-container {
-    padding: 5px;
-  }
-}
-
-.buttons {
-  width: 300px;
-  padding: 10px;
-
-  button {
-    width: 80px;
-    height: 80px;
-  }
-}
-
-.game {
-  .box {
-    width: 30px;
-    height: 30px;
-    background: #ccc;
-    margin: 5px;
-    display: inline-block;
-    line-height: 30px;
-    text-align: center;
-  }
-}
-
-.codeWrapper {
-  margin-left: 10px;
-  width: 400px;
-  height: 100%;
-  overflow: auto;
-  position: relative;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
-  .lineNumbers {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 50px;
-    height: auto;
-    z-index: 3;
-    line-height: 62px;
-    text-align: center;
-    color: gray;
-    font-family: 'Quicksand', sans-serif;
-    margin-left: 20px;
-    .item {
-      font-size: 18pt;
-      width: 50px;
-      height: 62px;
-      position: relative;
-      .arrow {
-        position: absolute;
-        width: 25px;
-        height: 31px;
-        left: -20px;
-        top: 12.5px;
-        background-image: url('/img/playButton.png');
-        background-size: contain;
-      }
+  .baseWrapper {
+    width: 230px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    height: 510px;
+    .smooth-dnd-container {
+      padding: 5px;
     }
   }
-  .returnSymbols {
-    position: absolute;
-    left: 50px;
-    top: 0;
-    width: 50px;
-    height: auto;
-    z-index: 3;
-    line-height: 62px;
-    text-align: center;
-    color: gray;
-    font-family: 'Quicksand', sans-serif;
-    .item {
-      font-size: 18pt;
+
+  .buttons {
+    width: 300px;
+    padding: 10px;
+
+    button {
+      width: 80px;
+      height: 80px;
+    }
+  }
+
+  .game {
+    .box {
+      width: 30px;
+      height: 30px;
+      background: #ccc;
+      margin: 5px;
+      display: inline-block;
+      line-height: 30px;
+      text-align: center;
+    }
+  }
+
+  .codeWrapper {
+    margin-left: 10px;
+    width: 400px;
+    height: 100%;
+    overflow: auto;
+    position: relative;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    .lineNumbers {
+      position: absolute;
+      left: 0;
+      top: 0;
       width: 50px;
-      height: 62px;
-      position: relative;
-      .shape {
-        position: absolute;
-        width: 30px;
-        height: 30px;
-        left: 10px;
-        top: 15px;
-        background-size: contain;
-        @for $i from 1 through 14 {
-          &.i#{$i} {
-            background-image: url('/img/symbols/#{$i}.png');
+      height: auto;
+      z-index: 3;
+      line-height: 62px;
+      text-align: center;
+      color: gray;
+      font-family: 'Quicksand', sans-serif;
+      margin-left: 20px;
+      .item {
+        font-size: 18pt;
+        width: 50px;
+        height: 62px;
+        position: relative;
+        .arrow {
+          position: absolute;
+          width: 25px;
+          height: 31px;
+          left: -20px;
+          top: 12.5px;
+          background-image: url('/img/playButton.png');
+          background-size: contain;
+        }
+      }
+    }
+    .returnSymbols {
+      position: absolute;
+      left: 50px;
+      top: 0;
+      width: 50px;
+      height: auto;
+      z-index: 3;
+      line-height: 62px;
+      text-align: center;
+      color: gray;
+      font-family: 'Quicksand', sans-serif;
+      .item {
+        font-size: 18pt;
+        width: 50px;
+        height: 62px;
+        position: relative;
+        .shape {
+          position: absolute;
+          width: 30px;
+          height: 30px;
+          left: 10px;
+          top: 15px;
+          background-size: contain;
+          @for $i from 1 through 14 {
+            &.i#{$i} {
+              background-image: url('/img/symbols/#{$i}.png');
+            }
+          }
+        }
+        &:before {
+          content: '';
+          background: #f3f3f3;
+          border: 2px solid grey;
+          border-radius: 50%;
+          height: 40px;
+          width: 40px;
+          display: block;
+          left: 5px;
+          top: 10px;
+          position: absolute;
+          z-index: -1;
+          opacity: 0;
+          transition: 0.3s opacity;
+        }
+        &.hover {
+          &:before {
+            opacity: 1;
           }
         }
       }
-      &:before {
-        content: '';
-        background: #f3f3f3;
-        border: 2px solid grey;
-        border-radius: 50%;
-        height: 40px;
-        width: 40px;
-        display: block;
-        left: 5px;
-        top: 10px;
-        position: absolute;
-        z-index: -1;
-        opacity: 0;
-        transition: 0.3s opacity;
+    }
+    .smooth-dnd-container {
+      background: transparent;
+      min-height: 100%;
+      padding: 0px;
+      margin-left: 100px;
+    }
+  }
+
+  .draggable-item {
+    height: 62px;
+    .cmd,
+    .deger {
+      text-align: left;
+      display: inline-block;
+      background-color: #c6c6c6;
+      outline: 0;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      cursor: default;
+      width: auto;
+      padding: 0 20px 4px;
+      margin: 3px 0;
+      border-radius: 500px;
+      color: white;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 18pt;
+      font-weight: bold;
+      letter-spacing: -1px;
+      text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
+      line-height: 50px;
+      overflow: visible;
+      transition: 0.2s transform;
+      cursor: grab;
+    }
+
+    .smooth-dnd-ghost .cmd {
+      cursor: grabbing !important;
+    }
+
+    .deger {
+      width: 56px;
+      text-align: center;
+      cursor: pointer;
+      &:hover {
+        transform: rotateZ(15deg);
       }
-      &.hover {
-        &:before {
-          opacity: 1;
-        }
+      &.dontshow {
+        display: none;
       }
-    }
-  }
-  .smooth-dnd-container {
-    background: transparent;
-    min-height: 100%;
-    padding: 0px;
-    margin-left: 100px;
-  }
-}
-
-.draggable-item {
-  height: 62px;
-  .cmd,
-  .deger {
-    text-align: left;
-    display: inline-block;
-    background-color: #c6c6c6;
-    outline: 0;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    cursor: default;
-    width: auto;
-    padding: 0 20px 4px;
-    margin: 3px 0;
-    border-radius: 500px;
-    color: white;
-    font-family: 'Quicksand', sans-serif;
-    font-size: 18pt;
-    font-weight: bold;
-    letter-spacing: -1px;
-    text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
-    line-height: 50px;
-    overflow: visible;
-    transition: 0.2s transform;
-    cursor: grab;
-  }
-
-  .smooth-dnd-ghost .cmd {
-    cursor: grabbing !important;
-  }
-
-  .deger {
-    width: 56px;
-    text-align: center;
-    cursor: pointer;
-    &:hover {
-      transform: rotateZ(15deg);
-    }
-    &.dontshow {
-      display: none;
-    }
-    &.active {
-      transform: rotateZ(25deg) scale(0.9);
+      &.active {
+        transform: rotateZ(25deg) scale(0.9);
+      }
     }
   }
 }

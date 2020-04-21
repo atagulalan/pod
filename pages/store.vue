@@ -222,91 +222,64 @@ export default {
       top: 50%;
       transform: translateY(-50%);
       position: absolute;
+      height: 100%;
+      width: 100%;
     }
   }
-  .storeList {
-    width: 60vw;
-    height: 100vh;
-    float: left;
-    position: relative;
-    z-index: 2;
-    .innerWrapper {
-      max-width: 921px;
-      width: 100%;
-      height: auto;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      position: absolute;
-      h1 {
-        font-size: 96px;
-        color: #505668;
-        line-height: 120px;
-        margin-bottom: 40px;
-        display: inline-block;
-      }
-      h1.titleRight {
-        float: right;
-        margin-right: 10px;
-      }
-      .storeModal {
-        width: 100%;
-        height: 780px;
-        .leftButtons {
-          width: 120px;
-          height: 100%;
-          margin-right: 36px;
-          float: left;
-          .button {
-            width: 120px;
-            height: 120px;
-            background-color: #9ccc66;
-            border-radius: 50%;
-            margin: 0 0 10px;
-            text-align: center;
-            line-height: 120px;
-            color: white;
-            transition: 0.3s filter, 0.3s border, 0.3s background-color;
-            cursor: pointer;
-            font-size: 30pt;
-            padding: 10px;
-            &:hover {
-              filter: brightness(1.1);
-            }
-            &.active {
-              background-color: #c1e498;
-              border: 4px solid #9ccc66;
-            }
-          }
-        }
-        .rightSelector {
-          width: calc(100% - 156px);
-          height: 100%;
-          float: left;
-          border-radius: 30px;
-          background: url(/img/store.svg);
-          padding: 20px;
-        }
-      }
-      .store-decline {
-        float: right;
-        width: 60px;
-        height: 60px;
-        margin-right: 36px;
-        svg {
-          stroke: #ce3e5d;
-        }
-      }
-      .store-confirm {
-        float: right;
-        width: 60px;
-        height: 60px;
-        margin-right: 36px;
-        svg {
-          stroke: #9ccc66;
-        }
+}
+
+@media only screen and (max-width: 1200px) and (orientation: portrait) {
+  .storeWrapper {
+    .character {
+      width: 100vw;
+      height: calc(100vh - 600px);
+      svg {
+        top: initial;
+        left: 50%;
+        transform: translateX(-50%);
       }
     }
+  }
+}
+
+@media only screen and (max-width: 768px) and (orientation: portrait) {
+  .storeWrapper .character {
+    height: calc(100vh - 520px);
+  }
+}
+@media only screen and (max-width: 666px) and (orientation: portrait) {
+  .storeWrapper .character {
+    height: calc(100vh - 480px);
+  }
+}
+@media only screen and (max-width: 650px) and (orientation: portrait) {
+  .storeWrapper .character {
+    height: calc(100vh - 440px);
+  }
+}
+@media only screen and (max-width: 550px) and (orientation: portrait) {
+  .storeWrapper .character {
+    height: calc(100vh - 400px);
+  }
+}
+@media only screen and (max-width: 500px) and (orientation: portrait) {
+  .storeWrapper .character {
+    height: calc(100vh - 340px);
+  }
+}
+@media only screen and (max-width: 450px) and (orientation: portrait) {
+  .storeWrapper .character {
+    height: calc(100vh - 340px);
+  }
+}
+@media only screen and (max-width: 400px) and (orientation: portrait) {
+  .storeWrapper .character {
+    height: calc(100vh - 320px);
+  }
+}
+@media only screen and (max-width: 360px) and (orientation: portrait) {
+  .storeWrapper .character {
+    height: calc(100vh - 300px);
   }
 }
 </style>
