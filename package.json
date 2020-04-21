@@ -13,14 +13,14 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.9.7",
+    "@nuxtjs/axios": "^5.10.0",
     "@nuxtjs/pwa": "^3.0.0-0",
-    "@nuxtjs/svg": "^0.1.7",
+    "@nuxtjs/svg": "^0.1.11",
     "@nuxtjs/svg-sprite": "^0.4.10",
     "nuxt": "^2.12.2",
     "nuxt-vuex-localstorage": "^1.2.6",
     "vue-full-loading": "^1.2.1",
-    "vue-js-modal": "^1.3.33",
+    "vue-js-modal": "^1.3.34",
     "vue-smooth-dnd": "^0.8.1",
     "vue-svgicon": "^3.2.6",
     "vuebar": "0.0.20"
@@ -31,12 +31,12 @@
     "@nuxtjs/router": "^1.5.0",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.1",
+    "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-nuxt": ">=0.5.2",
-    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-prettier": "^3.1.3",
     "node-sass": "^4.13.1",
-    "prettier": "^2.0.4",
-    "raw-loader": "^4.0.0",
+    "prettier": "^2.0.5",
+    "raw-loader": "^4.0.1",
     "sass-loader": "^8.0.2"
   }
 }

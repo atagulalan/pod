@@ -1,10 +1,5 @@
 <template>
-  <div class="storeWrapper">
-    <style>
-      .skin {
-        fill: {{ skinColor }};
-      }
-    </style>
+  <div class="storeWrapper" :style="`--skin-color: ${skinColor};`">
     <transition name="fade">
       <div v-if="!loaded" class="loadingWrapper">
         <div class="infinityChrome">
