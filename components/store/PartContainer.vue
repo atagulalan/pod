@@ -2,16 +2,15 @@
   <div v-if="isVisible" :class="`subpart ${type} ${isVisible ? 'active' : ''}`">
     <div id="scroller" ref="scroller" class="scroller" @scroll="handleScroll">
       <div
-        v-for="(p, a) in Math.ceil(
-          items.filter((el) => el.type === type).length / itemsPerPage
-        )"
+        v-for="(p, a) in Math.ceil(part.length / itemsPerPage)"
         :key="`${type}-page${a}`"
         class="scrollable"
       >
         <div
-          v-for="(item, i) in items
-            .filter((el) => el.type === type)
-            .slice(0 + a * itemsPerPage, a * itemsPerPage + itemsPerPage)"
+          v-for="(item, i) in part.slice(
+            0 + a * itemsPerPage,
+            a * itemsPerPage + itemsPerPage
+          )"
           :key="`${type}-${i}`"
           :class="`${type}Container ${
             weared[type] === item.key ? 'active' : ''
@@ -102,18 +101,20 @@ export default {
   },
   computed: {
     totalPages() {
-      const das = this
-      return Math.ceil(
-        this.items.filter((el) => el.type === das.type).length /
-          das.itemsPerPage
-      )
+      return Math.ceil(this.part.length / this.itemsPerPage)
+    },
+    part() {
+      return this.items
+        .filter((el) => el.type === this.type)
+        .sort(function (a, b) {
+          return a.key - b.key
+        })
     },
   },
   watch: {
     isVisible(newVal, oldVal) {
       if (newVal) {
         this.setPage(1)
-        console.log(this.page, this.totalPages)
         this.updateButtonVisibility(
           this.page !== 1,
           this.page !== this.totalPages
@@ -148,16 +149,10 @@ export default {
         calculatedPage !== this.totalPages
       )
     },
-    easing(time, startpos, endpos) {
-      return function (t) {
-        return (t * (endpos - startpos)) / time + startpos // linear easing
-      }
-    },
     changePage(val) {
       const galleryItemSize = document
         .querySelector('#scroller')
         .querySelector('.scrollable').clientWidth
-      console.log(val * galleryItemSize)
       document.querySelector('#scroller').scrollBy({
         top: 0,
         left: val * galleryItemSize,

@@ -10,25 +10,15 @@
       <div class="storeModal">
         <div class="leftButtons">
           <div
-            :class="`button hair ${modalType === 'hair' ? 'active' : ''}`"
-            @click="changeTo('hair')"
-          ></div>
-          <div
-            :class="`button eyes ${modalType === 'eyes' ? 'active' : ''}`"
-            @click="changeTo('eyes')"
-          ></div>
-          <div
-            :class="`button shirt ${modalType === 'shirt' ? 'active' : ''}`"
-            @click="changeTo('shirt')"
-          ></div>
-          <div
-            :class="`button shorts ${modalType === 'shorts' ? 'active' : ''}`"
-            @click="changeTo('shorts')"
-          ></div>
-          <div
-            :class="`button shoes ${modalType === 'shoes' ? 'active' : ''}`"
-            @click="changeTo('shoes')"
-          ></div>
+            v-for="part in ['hair', 'eyes', 'shirt', 'shorts', 'shoes']"
+            :key="part"
+            class="buttonWrapper"
+          >
+            <div
+              :class="`button ${part} ${modalType === part ? 'active' : ''}`"
+              @click="changeTo(part)"
+            ></div>
+          </div>
           <div
             :class="`button skin ${modalType === 'skin' ? 'active' : ''}`"
             @click="changeTo('skin')"
@@ -69,7 +59,7 @@
             <PartContainer
               :is-visible="modalType === part"
               :type="part"
-              :weared="changed ? newWorn : weared"
+              :weared="newWorn"
               :wear-item="wearItem"
               :owned="owned"
               :items="computedItems"
@@ -84,19 +74,37 @@
       <div class="buyWrapper">
         <Button
           size="big"
-          :background="wearingLoading === 2 ? '#9ccc66' : '#C345FF'"
+          :background="
+            wearingLoading === 2
+              ? '#9ccc66'
+              : wearingLoading === 3
+              ? '#ff0066'
+              : '#C345FF'
+          "
           :disabled="money < totalCost"
           :loading="wearingLoading === 1"
           @click="purchase()"
         >
           <Icon
             :size="48"
-            :i="wearingLoading === 2 ? 'save' : 'basket'"
+            :i="
+              wearingLoading === 2
+                ? 'save'
+                : wearingLoading === 3
+                ? 'close'
+                : 'basket'
+            "
             stroke="#fff"
             stroke-width="1.5"
           />
           <span v-if="totalCost === 0">
-            {{ wearingLoading === 2 ? 'Kaydedildi' : 'Kuşan' }}
+            {{
+              wearingLoading === 2
+                ? 'Kaydedildi'
+                : wearingLoading === 3
+                ? 'Hata Oluştu'
+                : 'Kuşan'
+            }}
           </span>
           <span v-else>Satın Al ({{ totalCost }} Altın)</span>
         </Button>
@@ -166,7 +174,6 @@ export default {
         right: false,
       },
       page: 1,
-      changed: false,
     }
   },
   computed: {
@@ -183,26 +190,25 @@ export default {
       })
       return Object.values(results)
     },
-    weared() {
-      const result = {}
-      this.worn.forEach((el) => {
-        result[el.type] = el.key
-      })
-      return result
-    },
     totalCost() {
-      const ha = this.changed ? this.newWorn : this.weared
       let sum = 0
-      Object.keys(ha).forEach((key) => {
+      Object.keys(this.newWorn).forEach((key) => {
         const selectedItem = this.items.find(
-          (item) => item.type === key && item.key === ha[key] && !item.owned
+          (item) =>
+            item.type === key && item.key === this.newWorn[key] && !item.owned
         )
         sum += selectedItem ? selectedItem.cost : 0
       })
       return sum
     },
   },
+  watch: {
+    worn(newVal) {
+      this.newWorn = this.itemArrayToObject(this.worn)
+    },
+  },
   mounted() {
+    this.newWorn = { ...this.newWorn, ...this.itemArrayToObject(this.worn) }
     window.addEventListener('resize', this.handleResize)
     this.handleResize()
   },
@@ -210,6 +216,20 @@ export default {
     window.removeEventListener('resize', this.handleResize)
   },
   methods: {
+    itemArrayToObject(arr) {
+      const result = {}
+      arr.forEach((el) => {
+        result[el.type] = el.key
+      })
+      return result
+    },
+    itemObjectToArray(obj) {
+      const result = []
+      Object.keys(obj).forEach((key) => {
+        result.push({ type: key, key: obj[key] })
+      })
+      return result
+    },
     handleResize() {
       this.window.width = window.innerWidth
       this.window.height = window.innerHeight
@@ -228,31 +248,17 @@ export default {
       this.buttonVisibility.right = right
     },
     wearItem(type, key) {
-      const neutralized = this.newWorn
-      Object.keys(this.newWorn).forEach((el) => {
-        if (neutralized[el] === -1) {
-          delete neutralized[el]
-        }
-      })
-
-      this.changed = true
-      this.newWorn = { ...this.weared, ...neutralized }
       if (this.validateItem(type, key)) {
         this.newWorn[type] = key
+        console.log(this.newWorn)
       }
     },
     changeTo(type) {
-      console.log(type)
       this.modalType = type
     },
     purchase() {
       console.log('Satin Alindi | Tutar : ', this.totalCost)
-      const worn = this.changed ? this.newWorn : this.weared
-      const wornArray = []
-      Object.keys(worn).forEach((key) => {
-        wornArray.push({ type: key, key: worn[key] })
-      })
-      this.wearItems.bind(this)(wornArray)
+      this.wearItems.bind(this)(this.itemObjectToArray(this.newWorn))
     },
   },
 }
@@ -480,15 +486,6 @@ export default {
             background: transparent;
             .skinItem {
               background-size: 150px;
-            }
-          }
-
-          .eyesContainer {
-            width: 150px;
-            height: 75px;
-            .eyesItem {
-              width: 150px;
-              height: 75px;
             }
           }
         }
