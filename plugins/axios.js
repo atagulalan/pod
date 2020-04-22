@@ -1,8 +1,27 @@
 export default function (obj) {
-  obj.$axios.onError((error) => {
-    const code = parseInt(error.response && error.response.status)
-    if (code === 401) {
-      obj.app.accessiblePluginModal.show('authModal')
+  function waitLogin(ms) {
+    return new Promise((resolve) => {
+      const waitForInitialize = setInterval(() => {
+        if (obj.app.store.state.localStorage.user.initialized) {
+          clearInterval(waitForInitialize)
+          resolve()
+        }
+      }, ms)
+    })
+  }
+
+  obj.$axios.interceptors.response.use(null, (error) => {
+    obj.app.store.commit('localStorage/resetUser')
+    obj.app.accessiblePluginModal.show('authModal')
+
+    if (error.config && error.response && error.response.status === 401) {
+      return waitLogin(200).then(() => {
+        error.config.headers.Authorization =
+          'Bearer: ' + obj.app.store.state.localStorage.user.bearer
+        return obj.$axios.request(error.config)
+      })
     }
+
+    return Promise.reject(error)
   })
 }
