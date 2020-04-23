@@ -2,15 +2,7 @@ export const wearItems = async function (willWear) {
   console.log('Buying an Item')
   this.wearingLoading = 1
   await this.$axios
-    .$post(
-      '/api/store/wear',
-      { willWear },
-      {
-        headers: {
-          Authorization: `Bearer: ${this.$store.state.localStorage.user.bearer}`,
-        },
-      }
-    )
+    .$post('/api/store/wear', { willWear })
     .then((response) => {
       // TODO
       if (response.success) {
@@ -35,11 +27,7 @@ export const wearItems = async function (willWear) {
 
 export const listItems = async function () {
   await this.$axios
-    .$get('/api/store/list', {
-      headers: {
-        Authorization: `Bearer: ${this.$store.state.localStorage.user.bearer}`,
-      },
-    })
+    .$get('/api/store/list')
     .then((response) => {
       if (response.success) {
         this.items = response.data.items || {}

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ErrorModal />
     <AuthModal />
     <nuxt />
   </div>
@@ -7,9 +8,11 @@
 
 <script>
 import AuthModal from '~/components/modals/AuthModal.vue'
+import ErrorModal from '~/components/modals/ErrorModal.vue'
 export default {
   components: {
     AuthModal,
+    ErrorModal,
   },
 }
 </script>
