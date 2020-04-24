@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 export const commands = {
   INP: {
     text: 'giris',
@@ -130,6 +132,7 @@ export const baseCodes = generateItems(Object.keys(commands).length, (i) => ({
 }))
 
 export const sanitizeCode = function (nonSanitizedCode) {
+  if (!nonSanitizedCode) return []
   const sanitized = new PodCode(nonSanitizedCode)
     .removeSpecial()
     .onlyOneSpace()
@@ -141,6 +144,8 @@ export const sanitizeCode = function (nonSanitizedCode) {
     .code.split('\n')
   return sanitized
 }
+
+let n = 0
 
 export const nextLine = function (arr, dont) {
   if (arr[this.lineNumber] === undefined) {
@@ -154,6 +159,7 @@ export const nextLine = function (arr, dont) {
     console.log('bravo')
     return
   }
+  n++
   const commandAndValue = arr[this.lineNumber].split(' ')
   const next = function (newLineNumber) {
     if (!isNaN(newLineNumber)) {
@@ -165,7 +171,7 @@ export const nextLine = function (arr, dont) {
     // document.getElementById('line').style.top = lineNumber * 18 + 'px'
     // document.getElementById('hand').textContent = onHand
     console.log(
-      'Durum:',
+      'Aşama ' + n + ':',
       this.lineNumber,
       this.onHand,
       this.jumpBacks,
@@ -180,6 +186,8 @@ export const nextLine = function (arr, dont) {
   }.bind(this)
   const fns = {
     CME(e) {
+      // if indicator is on jump ends, do not count it as exec
+      n--
       next()
     },
     INP: () => {
@@ -203,14 +211,18 @@ export const nextLine = function (arr, dont) {
     },
     CPY: (e) => {
       console.log('Kopyalıyorum')
-      this.middleSection[e] = this.onHand
+      Vue.set(this.middleSection, e, this.onHand)
       next()
     },
     SUB: (e) => {
       if (this.onHand !== undefined) {
-        console.log('Çıkartıyorum')
-        this.onHand -= this.middleSection[e]
-        next()
+        if (this.middleSection[e] !== undefined) {
+          console.log('Çıkartıyorum')
+          this.onHand -= this.middleSection[e]
+          next()
+        } else {
+          this.error('Çıkartılacak kutu bulunamadı.')
+        }
       } else {
         this.error('Ellerim bomboş')
       }
