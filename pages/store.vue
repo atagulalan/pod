@@ -9,6 +9,13 @@
         </div>
       </div>
       <span v-else>
+        <div class="mobileMenu">
+          <h1>Mağaza</h1>
+          <h1 class="titleRight">
+            <div class="coin"></div>
+            {{ money }}
+          </h1>
+        </div>
         <Character
           :skin-color="skinColor"
           :eyes="eyes"
@@ -123,6 +130,33 @@ export default {
     opacity: 0;
   }
 
+  .mobileMenu {
+    height: 100px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    overflow: hidden;
+    line-height: 100px;
+    display: none;
+    padding: 0 40px;
+    h1 {
+      float: left;
+    }
+    .titleRight {
+      float: right;
+      .coin {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background: #ffc107;
+        border-radius: 50%;
+        vertical-align: text-top;
+      }
+    }
+  }
+
   .loadingWrapper {
     width: 100%;
     height: 100%;
@@ -225,9 +259,13 @@ export default {
 
 @media only screen and (max-width: 1200px) and (orientation: portrait) {
   .storeWrapper {
+    .mobileMenu {
+      display: block;
+    }
     .character {
       width: 100vw;
       height: calc(100vh - 600px);
+      border-top: 100px solid transparent;
       svg {
         top: initial;
         left: 50%;
