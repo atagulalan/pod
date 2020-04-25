@@ -1,16 +1,16 @@
 <template>
   <div class="forestsWrapper">
     <Globe />
-    <ForestSelector :percentage="50" background="#46CB92">
+    <ForestSelector :percentage="100" background="#46CB92">
       Belgrad
     </ForestSelector>
     <ForestSelector :percentage="20" background="#FF3448">
       Redwood
     </ForestSelector>
-    <ForestSelector :percentage="0" background="#00CDE8">
+    <ForestSelector :percentage="55" background="#00CDE8">
       Monteverde
     </ForestSelector>
-    <ForestSelector :percentage="10" background="#FFCF00">
+    <ForestSelector :percentage="80" background="#FFCF00">
       Crooked
     </ForestSelector>
   </div>

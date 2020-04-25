@@ -6,12 +6,15 @@
     >
       <div
         class="percentage"
-        :style="`width: ${percentage}%;background:${background};`"
-      ></div>
+        :style="`width: ${percentage * 1.01}%;background:${background};`"
+      >
+        <div class="tip" :style="`background-color: ${background};`"></div>
+      </div>
       <span class="slot">
         <slot />
       </span>
       <div class="fade"></div>
+      <div class="text">{{ percentage }}%</div>
     </button>
   </div>
 </template>
@@ -70,16 +73,36 @@ export default {
       left: 0;
       top: 0;
       z-index: 1;
+      margin-left: -10px;
+      .tip {
+        left: 100%;
+        top: 0;
+        position: absolute;
+        mask-image: url(/img/perc.svg);
+        width: 16px;
+        height: 100%;
+        margin-left: -2px;
+      }
     }
 
     .fade {
-      content: '';
       width: 100%;
       height: 100%;
       position: absolute;
       left: 0;
       top: 0;
       background: rgba(255, 255, 255, 0.4);
+    }
+
+    .text {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      text-align: right;
+      padding: 17pt 32pt;
+      z-index: 2;
     }
 
     .slot {
