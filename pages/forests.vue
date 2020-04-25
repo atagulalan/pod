@@ -1,17 +1,15 @@
 <template>
   <div class="forestsWrapper">
-    <Globe />
-    <ForestSelector :percentage="100" background="#46CB92">
-      Belgrad
-    </ForestSelector>
-    <ForestSelector :percentage="20" background="#FF3448">
-      Redwood
-    </ForestSelector>
-    <ForestSelector :percentage="55" background="#00CDE8">
-      Monteverde
-    </ForestSelector>
-    <ForestSelector :percentage="80" background="#FFCF00">
-      Crooked
+    <Globe :forests="forests" />
+
+    <ForestSelector
+      v-for="(forest, i) in forests"
+      :key="`forest-${i}`"
+      :percentage="percentages[forest.name]"
+      :background="forest.color"
+      @click="selectForest(forest.chapterId)"
+    >
+      {{ forest.name }}
     </ForestSelector>
   </div>
 </template>
@@ -19,6 +17,7 @@
 <script>
 import Globe from '~/components/forests/Globe.vue'
 import ForestSelector from '~/components/atomic/ForestSelector.vue'
+import { getForests } from '~/middleware/game'
 
 export default {
   components: {
@@ -26,10 +25,43 @@ export default {
     ForestSelector,
   },
   data() {
-    return {}
+    return {
+      forests: [],
+      completedEpisodes: [],
+      percentages: {},
+    }
   },
-  mounted() {},
-  methods: {},
+  watch: {
+    completedEpisodes(ceps) {
+      this.forests.forEach((forest) => {
+        if (!forest.episodes.length) {
+          this.percentages[forest.name] = 0
+        } else {
+          let y = 0
+          ceps.forEach((cep) => {
+            const ep = forest.episodes.find((ep) => ep.id === cep.id)
+            if (ep) {
+              y++
+              if (ep.lowestExec === cep.exec) y++
+              if (ep.lowestLines === cep.lines) y++
+            }
+          })
+
+          this.percentages[forest.name] = Math.ceil(
+            (y * 100) / (forest.episodes.length * 3)
+          )
+        }
+      })
+    },
+  },
+  mounted() {
+    getForests.bind(this)()
+  },
+  methods: {
+    selectForest(id) {
+      this.$router.push(`/forests/${id}`)
+    },
+  },
 }
 </script>
 

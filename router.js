@@ -5,6 +5,7 @@ import Home from '~/pages/index'
 import PodCode from '~/pages/podcode'
 import Store from '~/pages/store'
 import Forests from '~/pages/forests'
+import Episodes from '~/pages/episode'
 
 Vue.use(Router)
 
@@ -41,6 +42,11 @@ export function createRouter() {
         name: 'Forests',
         path: '/forests',
         component: Forests,
+      },
+      {
+        name: 'Episodes',
+        path: '/forests/:id',
+        component: Episodes,
       },
       {
         name: 'PodCode',

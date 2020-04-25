@@ -10,7 +10,7 @@
       </div>
       <span v-else>
         <div class="mobileMenu">
-          <h1>Mağaza</h1>
+          <h1>Dolap</h1>
           <h1 class="titleRight">
             <div class="coin"></div>
             {{ money }}

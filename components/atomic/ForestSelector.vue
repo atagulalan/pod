@@ -1,5 +1,5 @@
 <template>
-  <div :style="[`width:${width};`]" :class="['buttonWrapper']">
+  <div :style="[`width:${width};`]" :class="['forestSelectorWrapper']">
     <button
       :style="[`color:${color};`, `background:${background};`].join(' ')"
       @click="emitClick"
@@ -52,7 +52,7 @@ export default {
 </script>
 
 <style lang="scss">
-.buttonWrapper {
+.forestSelectorWrapper {
   button {
     border: 0;
     border-radius: 500px;
