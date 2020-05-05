@@ -8,7 +8,7 @@
         :style="{ backgroundColor: '#46cb92' }"
         @click="selectSection('forests')"
       >
-        Başla
+        Harita
       </button>
       <button
         :style="{ backgroundColor: '#ff3448' }"
