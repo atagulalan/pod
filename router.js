@@ -6,6 +6,7 @@ import PodCode from '~/pages/podcode'
 import Store from '~/pages/store'
 import Forests from '~/pages/forests'
 import Episodes from '~/pages/episode'
+import Init from '~/pages/init'
 
 Vue.use(Router)
 
@@ -57,6 +58,11 @@ export function createRouter() {
         name: 'Store',
         path: '/store',
         component: Store,
+      },
+      {
+        name: 'Init',
+        path: '/init',
+        component: Init,
       },
     ],
   })
