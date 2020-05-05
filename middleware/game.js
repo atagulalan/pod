@@ -21,15 +21,44 @@ export const getForests = /* async */ function () {
         {
           name: 'Belgrad',
           color: '#46CB92',
-          chapterId: '2565d31289',
+          chapterId: 'b',
           episodes: [
             {
-              id: 256589,
+              id: '1',
+              lowestExec: 14,
+              lowestLines: 11,
+              mission: 'Görev: Kutu Taşıma',
+              info:
+                'İçinde robot parçaları olan üç kutu var. Bunları taşımama yardım eder misin?',
+            },
+            {
+              id: '2',
+              lowestExec: 14,
+              lowestLines: 11,
+              mission: 'Görev: Daha Çok Kutu',
+              info:
+                'Birkaç tane daha kutum var, ancak kaç tane olduğunu hatırlayamadım.',
+            },
+            {
+              id: '3-1',
+              lowestExec: 14,
+              lowestLines: 11,
+              mission: 'Görev: Döndür',
+              info:
+                'Bize gelen kutular yanlış sıralanmış. Her iki kutunun yerini değiştirmen gerekiyor. Yapabilir misin?',
+            },
+            {
+              id: '3-2',
               lowestExec: 14,
               lowestLines: 11,
             },
             {
-              id: 21231232,
+              id: '4',
+              lowestExec: 14,
+              lowestLines: 11,
+            },
+            {
+              id: '5',
               lowestExec: 14,
               lowestLines: 11,
             },
@@ -37,19 +66,19 @@ export const getForests = /* async */ function () {
         },
         {
           name: 'Redwood',
-          chapterId: '2565d31242',
+          chapterId: 'r',
           color: '#FF3448',
           episodes: [],
         },
         {
           name: 'Monteverde',
-          chapterId: '2565d31232',
+          chapterId: 'm',
           color: '#00CDE8',
           episodes: [],
         },
         {
           name: 'Crooked',
-          chapterId: '2565d31222',
+          chapterId: 'c',
           color: '#FFCF00',
           episodes: [],
         },
@@ -57,14 +86,9 @@ export const getForests = /* async */ function () {
       user: {
         completedEpisodes: [
           {
-            id: 256589,
+            id: 'b-1',
             exec: 14,
-            lines: 15,
-          },
-          {
-            id: 21231232,
-            exec: 14,
-            lines: 16,
+            lines: 11,
           },
         ],
       },

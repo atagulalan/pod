@@ -7,7 +7,7 @@
     x="0px"
     y="0px"
     viewBox="0 0 512 512"
-    style="enable-background:new 0 0 512 512;"
+    style="enable-background: new 0 0 512 512;"
     xml:space="preserve"
   >
     <style type="text/css">
@@ -42,7 +42,7 @@
         />
       </defs>
       <clipPath id="SVGID_1_">
-        <use xlink:href="#SVGID_3_" style="overflow:visible;" />
+        <use xlink:href="#SVGID_3_" style="overflow: visible;" />
       </clipPath>
       <path
         class="st0"
@@ -76,8 +76,8 @@ export default {
   props: {
     color: {
       type: String,
-      default: '#6f9941'
-    }
-  }
+      default: '#6f9941',
+    },
+  },
 }
 </script>

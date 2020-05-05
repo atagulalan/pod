@@ -19,7 +19,9 @@
             :percentage="percentages[forest.name]"
             :background="forest.color"
             :locked="locked[forest.name]"
-            @click="selectForest(forest.chapterId)"
+            @click="
+              selectForest(forest.chapterId + '-' + lastBranch[forest.name])
+            "
           >
             {{ forest.name }}
           </ForestSelector>
@@ -47,18 +49,47 @@ export default {
       completedEpisodes: [],
       percentages: {},
       locked: {},
+      lastBranch: {},
     }
   },
   watch: {
     completedEpisodes(ceps) {
       this.forests.forEach((forest) => {
+        let link = []
+
         if (!forest.episodes.length) {
           this.percentages[forest.name] = 0
           this.locked[forest.name] = true
         } else {
+          // latest preq rearrange
+          link = forest.episodes.concat().sort((a, b) => {
+            return a.id.replace('-', '.') - b.id.replace('-', '.')
+          })
+
+          let latest = -1
+
+          if (ceps.length === 0) {
+            this.lastBranch[forest.name] = '0'
+          } else {
+            // find latest branch of the tree
+            ceps.forEach((cep) => {
+              const newLatest = link.findIndex((l) => {
+                return l.id === cep.id.split('-').slice(1).join('-')
+              })
+              latest = newLatest > latest ? newLatest : latest
+            })
+
+            this.lastBranch[forest.name] = link[latest].id.split('-')[0]
+          }
+
+          // console.log(link, ceps, link[latest])
+
+          // calculate percentage
           let y = 0
           ceps.forEach((cep) => {
-            const ep = forest.episodes.find((ep) => ep.id === cep.id)
+            const ep = forest.episodes.find(
+              (ep) => ep.id === cep.id.split('-').slice(1).join('-')
+            )
             if (ep) {
               y++
               if (ep.lowestExec >= cep.exec) y++
@@ -90,9 +121,25 @@ export default {
   width: 100vw;
   height: 100vh;
   position: relative;
-  background: #f7f6f2;
+  background: url(/img/memphis-colorful.png);
   overflow: auto;
   text-align: center;
+  &:before {
+    content: '';
+    background: white;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      white 75%,
+      white 100%
+    );
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+  }
 }
 
 @media only screen and (max-width: 1279px) {

@@ -98,28 +98,28 @@ export default {
   opacity: 0;
 }
 
-.spacer {
-  width: 1px;
-  display: block;
-  transition: 0.3s all;
-}
-
-.mobileModalExitButton {
-  display: none;
-}
-
-.modalInnerWrapper {
-  display: block;
-  left: 0;
-  top: 0;
-  width: 100%;
-  transform: scale(1.5);
-  transform-origin: top;
-  position: absolute;
-}
-
 .authModalWrapper,
 .resetPassModalWrapper {
+  .spacer {
+    width: 1px;
+    display: block;
+    transition: 0.3s all;
+  }
+
+  .mobileModalExitButton {
+    display: none;
+  }
+
+  .modalInnerWrapper {
+    display: block;
+    left: 0;
+    top: 0;
+    width: 100%;
+    transform: scale(1.5);
+    transform-origin: top;
+    position: absolute;
+  }
+
   .scale-enter-active,
   .scale-leave-active {
     transition: all 0.4s;
@@ -186,7 +186,7 @@ export default {
   .authModalWrapper .authModal h1 {
     padding-top: 0;
   }
-  .modalInnerWrapper {
+  .authModalWrapper .modalInnerWrapper {
     transform: scale(1) translate(-50%, -50%);
     top: 50% !important;
     left: 50% !important;
@@ -194,10 +194,10 @@ export default {
     transform-origin: center;
     padding: 0 10px;
   }
-  .spacer {
+  .authModalWrapper .spacer {
     display: none;
   }
-  .mobileModalExitButton {
+  .authModalWrapper .mobileModalExitButton {
     width: 50px;
     height: 50px;
     background-color: #ffb4ae;
@@ -210,7 +210,7 @@ export default {
     text-align: center;
     display: block;
   }
-  .authModalWrapper .subText {
+  .authModalWrapper .authModalWrapper .subText {
     font-size: 12pt;
   }
 }

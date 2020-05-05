@@ -1,17 +1,21 @@
 <template>
-  <div class="errorModalWrapper">
+  <div class="convertModalWrapper">
     <modal
-      name="errorModal"
+      name="convertModal"
       transition="scale"
-      class="errorModal"
+      class="convertModal"
       width="400"
       height="auto"
       @before-close="beforeClose"
     >
-      <div class="mobileModalExitButton" @click="$modal.hide('errorModal')">
+      <div class="buttons">
+        <textarea id v-model="code" name="paste" cols="15" rows="10">
+        </textarea>
+        <button @click="convert(code)">CONVERT</button>
+      </div>
+      <div class="mobileModalExitButton" @click="$modal.hide('convertModal')">
         <Icon :size="36" i="close" stroke="#f00" />
       </div>
-      <h1>Bir hata meydana geldi.</h1>
     </modal>
   </div>
 </template>
@@ -23,6 +27,16 @@ export default {
   components: {
     Icon,
   },
+  props: {
+    code: {
+      type: String,
+      default: '',
+    },
+    convert: {
+      type: Function,
+      default: () => {},
+    },
+  },
   methods: {
     beforeClose() {
       this.modalType = 'login'
@@ -32,7 +46,11 @@ export default {
 </script>
 
 <style lang="scss">
-.errorModalWrapper {
+.convertModalWrapper {
+  .mobileModalExitButton {
+    display: none;
+  }
+
   .modalInnerWrapper {
     display: block;
     left: 0;
@@ -41,10 +59,6 @@ export default {
     transform: scale(1.5);
     transform-origin: top;
     position: absolute;
-  }
-
-  .mobileModalExitButton {
-    display: none;
   }
 
   .scale-enter-active,
@@ -60,7 +74,7 @@ export default {
     transform: translateY(-50px);
   }
 
-  .errorModal {
+  .convertModal {
     .v--modal {
       box-shadow: none;
       background-image: url('/img/popup.svg');
@@ -90,7 +104,7 @@ export default {
   }
 }
 @media only screen and (max-width: 767px) {
-  .errorModalWrapper .errorModal .v--modal {
+  .convertModalWrapper .convertModal .v--modal {
     width: 100% !important;
     height: 100vh !important;
     left: 0 !important;
@@ -98,13 +112,13 @@ export default {
     transform: translate(0, 0);
     background: white;
   }
-  .errorModalWrapper .errorModal h1 {
+  .convertModalWrapper .convertModal h1 {
     position: absolute;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
   }
-  .errorModalWrapper .modalInnerWrapper {
+  .convertModalWrapper .modalInnerWrapper {
     transform: scale(1) translate(-50%, -50%);
     top: 50% !important;
     left: 50% !important;
@@ -112,7 +126,7 @@ export default {
     transform-origin: center;
     padding: 0 10px;
   }
-  .errorModalWrapper .mobileModalExitButton {
+  .convertModalWrapper .mobileModalExitButton {
     width: 50px;
     height: 50px;
     background-color: #ffb4ae;

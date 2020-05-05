@@ -51,6 +51,11 @@ export function createRouter() {
       },
       {
         name: 'PodCode',
+        path: '/code/:id',
+        component: PodCode,
+      },
+      {
+        name: 'PodCodeNoID',
         path: '/code',
         component: PodCode,
       },

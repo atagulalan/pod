@@ -1,38 +1,52 @@
 <template>
   <div class="gameWrapper">
+    <div class="codeMenu">
+      <div class="info">
+        <h1>Görev: Döndür</h1>
+        <h2>
+          Bize gelen kutular yanlış sıralanmış. Her iki kutunun yerini
+          değiştirmen gerekiyor. Yapabilir misin?
+        </h2>
+        <div class="ada"></div>
+      </div>
+      <Code
+        :code-lines="codeLines"
+        :on-drop="onDrop"
+        :active-item="activeItem"
+        :line-number="lineNumber"
+        :hover="hover"
+        :set-hover="(i) => (hover = i)"
+        :set-active="setActive"
+      />
+      <div class="buttons">
+        <button class="run" @click="run()"></button>
+        <button class="step" @click="step()"></button>
+        <button class="reset" @click="reset()"></button>
+        <button class="clear" @click="clear()"></button>
+      </div>
+    </div>
     <OpCode :opcodes="opcodes" />
-    <Code
-      :code-lines="codeLines"
-      :on-drop="onDrop"
-      :active-item="activeItem"
-      :line-number="lineNumber"
-      :hover="hover"
-      :set-hover="(i) => (hover = i)"
-      :set-active="setActive"
-    />
     <div class="gameArea">
+      <div v-if="activeItem !== null" class="focusHelper"></div>
       <InputRoller :input="inputSection" />
-      <MiddleSection :set-value="setValue" :n="6" :items="middleSection" />
+      <MiddleSection
+        :set-value="setValue"
+        :n="6"
+        :width-limit="3"
+        :items="middleSection"
+        :focus="activeItem !== null"
+      />
       <OutputRoller :output="outputSection" />
+      <Character
+        :skin-color="`#fce6de`"
+        :eyes="'0'"
+        :hair="'0'"
+        :shirt="'0'"
+        :shorts="'0'"
+        :shoes="'0'"
+      />
     </div>
-
-    <div class="buttons">
-      <button @click="run()">RUN</button>
-      <button @click="step()">STEP</button>
-      <button @click="reset()">RESET</button>
-      <button @click="clear()">CLEAR</button>
-      <button @click="convert()">CONVERT</button>
-      <textarea
-        id
-        v-model="codeString"
-        name="get"
-        cols="15"
-        rows="10"
-        disabled
-      ></textarea>
-      <textarea id v-model="pasteCode" name="paste" cols="15" rows="10">
-      </textarea>
-    </div>
+    <ConvertModal :code="codeString" />
   </div>
 </template>
 
@@ -44,11 +58,21 @@ import OpCode from '~/components/game/OpCode'
 import MiddleSection from '~/components/game/MiddleSection'
 import InputRoller from '~/components/game/InputRoller'
 import OutputRoller from '~/components/game/OutputRoller'
+import ConvertModal from '~/components/modals/ConvertModal'
+import Character from '~/components/Character.vue'
 
 let uniqueCounter = 0
 export default {
   name: 'Copy',
-  components: { OpCode, Code, MiddleSection, InputRoller, OutputRoller },
+  components: {
+    OpCode,
+    Code,
+    MiddleSection,
+    InputRoller,
+    OutputRoller,
+    ConvertModal,
+    Character,
+  },
   data() {
     return {
       opcodes: baseCodes,
@@ -63,18 +87,7 @@ export default {
       outputSection: [],
       winCondition: [4, 6, 1],
       sanitizedArray: [],
-      pasteCode: `CME 3
-                  CME 2
-                  INP 0
-                  CPY 0
-                  INP 0
-                  SUB 0
-                  JPZ 1
-                  JMP 2
-                  CME 1
-                  GET 0
-                  OUT 0
-                  JMP 3`,
+      pasteCode: ``,
     }
   },
   computed: {
@@ -86,7 +99,9 @@ export default {
     onDrop(collection, dropResult) {
       if (dropResult.removedIndex === null && dropResult.addedIndex !== null) {
         // ilk birakilma, eger deger varsa aktiflestir
-        this.activeItem = dropResult.addedIndex
+        if (dropResult.payload.show) {
+          this.activeItem = dropResult.addedIndex
+        }
       }
       if (
         dropResult.removedIndex !== null &&
@@ -123,10 +138,10 @@ export default {
         this.activeItem = null
       }
     },
-    convert() {
+    convert(pasteCode) {
       // converts text to visual
       console.log('converting to visuals')
-      this.sanitizedArray = sanitizeCode(this.pasteCode)
+      this.sanitizedArray = sanitizeCode(pasteCode)
       this.reset()
       const results = []
       const returns = []
@@ -203,13 +218,86 @@ export default {
   padding: 50px;
   height: 100vh;
 
-  .buttons {
-    width: 300px;
-    padding: 10px;
+  .codeMenu {
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    overflow: hidden;
 
-    button {
-      width: 80px;
-      height: 80px;
+    .info {
+      height: 200px;
+      background: rgba(0, 0, 0, 0.05);
+      margin-bottom: 5px;
+      position: relative;
+      padding: 10px 20px;
+
+      h1 {
+        color: #83828c;
+      }
+      h2 {
+        color: #636368;
+        width: 320px;
+        font-weight: 500;
+      }
+
+      .ada {
+        width: 80px;
+        height: 80px;
+        background: url(/img/game/ada/normal1.svg);
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+    }
+
+    .buttons {
+      padding: 10px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.05);
+      button {
+        width: 80px;
+        height: 80px;
+        background-color: #9ccc66;
+        border-radius: 50%;
+        margin: 0 0 10px;
+        text-align: center;
+        color: white;
+        transition: 0.3s filter, 0.3s border, 0.3s background-color;
+        cursor: pointer;
+        border: 4px solid transparent;
+        &:hover {
+          background-color: #c1e498;
+          border: 4px solid #9ccc66;
+        }
+        &:active {
+          background-color: #9ccc66;
+        }
+
+        &.run {
+          background-image: url(/img/game/buttons/run.svg);
+        }
+        &.step {
+          background-image: url(/img/game/buttons/step.svg);
+        }
+        &.reset {
+          background-image: url(/img/game/buttons/reset.svg);
+        }
+        &.clear {
+          background-image: url(/img/game/buttons/clear.svg);
+        }
+      }
+    }
+  }
+
+  .gameArea {
+    .focusHelper {
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 33;
+      left: 0;
+      top: 0;
+      position: absolute;
+      backdrop-filter: blur(2px);
     }
   }
 

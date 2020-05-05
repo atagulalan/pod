@@ -1,5 +1,5 @@
 <template>
-  <div class="storeWrapper" :style="`--skin-color: ${skinColor};`">
+  <div class="storeWrapper">
     <transition name="fade">
       <div v-if="!loaded" class="loadingWrapper">
         <div class="infinityChrome">

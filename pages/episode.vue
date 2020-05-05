@@ -1,8 +1,14 @@
 <template>
   <div class="noscroll">
     <div id="episodeWrapper" class="episodeWrapper">
+      <EpisodeModal
+        :stars="stars"
+        :info="info"
+        :mission="mission"
+        :active-episode="activeEpisode"
+      />
       <MobileMenu
-        title="Belgrad"
+        :title="forest.name"
         :back="
           () => {
             this.$router.go(-1)
@@ -26,11 +32,13 @@
 
 <script>
 import MobileMenu from '~/components/atomic/MobileMenu.vue'
+import EpisodeModal from '~/components/modals/EpisodeModal.vue'
 import { getForests } from '~/middleware/game'
 
 export default {
   components: {
     MobileMenu,
+    EpisodeModal,
   },
   props: {
     type: {
@@ -40,11 +48,25 @@ export default {
   },
   data() {
     return {
+      forest: {},
+      forests: [],
+      completedEpisodes: [],
       id: 0,
       componentLoader: '',
       scrollBehaviour: 'desktop',
       forestHeight: 10000,
+      stars: [0, 0, 0],
+      info: '',
+      mission: '',
+      activeEpisode: '',
     }
+  },
+  watch: {
+    completedEpisodes(ceps) {
+      this.forest = this.forests.find((forest) => {
+        return forest.chapterId === this.id.split('-')[0]
+      })
+    },
   },
   mounted() {
     this.componentLoader = () =>
@@ -99,7 +121,34 @@ export default {
       const id = e.srcElement.parentElement.id
       if (id.startsWith('OPEN-')) {
         const episodeId = id.substring(5)
-        console.log('OPENING EPISODE', episodeId)
+        const episode = this.forest.episodes.find((el) => el.id === episodeId)
+        if (episode) {
+          const userStats = this.completedEpisodes.find((el) => {
+            return el.id === this.forest.chapterId + '-' + episodeId
+          })
+          console.log('OPENING EPISODE', episodeId)
+          console.log('USER STATS: ', userStats)
+          console.log('EPISODE: ', episode)
+
+          // User already played this episode
+          if (userStats) {
+            this.stars = [
+              true,
+              episode.lowestLines >= userStats.lines,
+              episode.lowestExec >= userStats.exec,
+            ]
+            console.log('STARS: ', this.stars)
+          } else {
+            this.stars = [0, 0, 0]
+          }
+
+          this.info = episode.info
+          this.mission = episode.mission
+          this.activeEpisode = this.forest.chapterId + '-' + episodeId
+
+          // TODO change modal
+          this.$modal.show('episodeModal')
+        }
       }
     },
   },

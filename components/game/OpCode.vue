@@ -41,11 +41,10 @@ export default {
 <style lang="scss">
 .baseWrapper {
   width: 230px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
   border-radius: 20px;
   height: 510px;
   .smooth-dnd-container {
-    padding: 5px;
+    padding-left: 10px;
   }
 }
 </style>

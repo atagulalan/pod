@@ -1,5 +1,10 @@
 <template>
-  <div :class="`middleSection`" :style="`min-Width:${80 * n}px`">
+  <div
+    :class="[`middleSection`, focus ? 'focus' : '']"
+    :style="`min-Width:${80 * widthLimit}px;height: ${
+      80 * Math.ceil(n / widthLimit)
+    }px;`"
+  >
     <button v-for="(e, i) in 6" :key="'button' + i" @click="setValue(i)">
       <div v-if="items[i]" class="box">{{ items[i] }}</div>
       <span v-else>{{ e }}</span>
@@ -22,24 +27,62 @@ export default {
       type: Array,
       default: () => [],
     },
+    focus: {
+      type: Boolean,
+      default: false,
+    },
+    widthLimit: {
+      type: [Number, String],
+      default: 6,
+    },
   },
 }
 </script>
 
 <style lang="scss">
+@keyframes breathing {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .middleSection {
   width: 0px;
-  height: 80px;
-  background: gray;
   overflow: hidden;
+  position: relative;
+  border-radius: 10px;
+  &.focus {
+    z-index: 9999;
+    button span {
+      background: rgba(255, 255, 255, 0.5);
+      border: 2px dashed #4caf50;
+      line-height: 66px;
+      animation: breathing 3s ease-in-out infinite normal;
+    }
+  }
   button {
-    background: darkgray;
+    background: rgba(0, 0, 0, 0.1);
     width: 80px;
     height: 80px;
     border: none;
     line-height: 80px;
     text-align: center;
     float: left;
+    span {
+      width: 70px;
+      height: 70px;
+      display: inline-block;
+      margin: 5px;
+      line-height: 70px;
+      border-radius: 10px;
+      font-size: 24px;
+    }
     .box {
       width: 80px;
       height: 80px;

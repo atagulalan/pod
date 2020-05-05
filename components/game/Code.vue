@@ -51,7 +51,7 @@
             "
             @click="setActive(index)"
           >
-            {{ item.value }}
+            {{ item.value + 1 }}
           </div>
         </div>
       </Draggable>
@@ -109,11 +109,9 @@ export default {
 .codeWrapper {
   margin-left: 10px;
   width: 400px;
-  height: 100%;
+  height: calc(100% - 305px);
   overflow: auto;
   position: relative;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  border-radius: 20px;
 
   .lineNumbers {
     position: absolute;

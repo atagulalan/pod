@@ -84,6 +84,12 @@ export default {
     }
   }
 
+  &.fit {
+    button {
+      padding: 8pt 20pt;
+    }
+  }
+
   &.huge {
     button {
       font-size: 36pt;

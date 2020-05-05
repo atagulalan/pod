@@ -57,22 +57,22 @@ const $ = {
     pushPinBase: '#969799',
     pushPin: '#EA526F',
     land: {
-      southamerica: '#23D35B',
-      northamerica: '#23D35B',
-      greenland: '#fac648',
-      japan: '#fac648',
-      africa: '#23D35B',
-      australia: '#fac648',
-      asia: '#fac648',
-      indonesia: '#23D35B',
-      europe: '#fac648',
-      britain: '#fac648',
-      madagaskar: '#23D35B',
-      papua: '#fac648',
-      nz: '#fac648',
+      southamerica: '#31b256',
+      northamerica: '#31b256',
+      greenland: '#31b256',
+      japan: '#31b256',
+      africa: '#31b256',
+      australia: '#31b256',
+      asia: '#31b256',
+      indonesia: '#31b256',
+      europe: '#31b256',
+      britain: '#31b256',
+      madagaskar: '#31b256',
+      papua: '#31b256',
+      nz: '#31b256',
     },
-    landShade: '#20A5C2',
-    ocean: '#23B5D3',
+    landShade: '#35bfbc',
+    ocean: '#44d6d3',
   },
   complexShapes: {
     // put complex shapes here
@@ -593,8 +593,7 @@ const animateLoop = (time) => {
   updateState($.timing.delta)
 
   // clear
-  $.ctx.fillStyle = '#f7f6f2'
-  $.ctx.fillRect(0, 0, 2000, 1600)
+  $.ctx.clearRect(0, 0, 2000, 1600)
 
   drawMarkers($.ctx, $.markers, false)
 
@@ -769,7 +768,9 @@ export default {
   max-width: 100vw;
   margin: 0 auto;
   overflow: hidden;
-  background: #f7f6f2;
+  background: transparent;
+  z-index: 2;
+  position: relative;
 
   .globe {
     height: 100vmin;
