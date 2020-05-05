@@ -58,6 +58,22 @@ body {
   overflow: hidden;
 }
 
+.noscroll {
+  ::-webkit-scrollbar {
+    width: 0px !important;
+    height: 0px !important;
+    background: transparent !important;
+  }
+  ::-webkit-scrollbar-thumb {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  ::-webkit-scrollbar-track {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
 /*
   ---------------------------------------------
   Parallax base styles

@@ -2,8 +2,12 @@
   <div :style="[`width:${width};`]" :class="['forestSelectorWrapper']">
     <button
       :style="[`color:${color};`, `background:${background};`].join(' ')"
+      :disabled="locked"
       @click="emitClick"
     >
+      <div v-if="locked" class="lockedOverlay">
+        <Icon :size="44" i="lock" stroke="#fff" stroke-width="2" />
+      </div>
       <div
         class="percentage"
         :style="`width: ${percentage * 1.01}%;background:${background};`"
@@ -20,7 +24,10 @@
 </template>
 
 <script>
+import Icon from '~/components/atomic/Icon.vue'
+
 export default {
+  components: { Icon },
   props: {
     width: {
       type: String,
@@ -42,6 +49,10 @@ export default {
       type: Number,
       default: 0,
     },
+    locked: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     emitClick() {
@@ -53,6 +64,12 @@ export default {
 
 <style lang="scss">
 .forestSelectorWrapper {
+  &.locked {
+    button {
+      background: gray !important;
+    }
+  }
+
   button {
     border: 0;
     border-radius: 500px;
@@ -67,6 +84,19 @@ export default {
     text-align: left;
     overflow: hidden;
     max-width: 500px;
+
+    .lockedOverlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      line-height: 70px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 4;
+    }
+
     .percentage {
       height: 100%;
       position: absolute;

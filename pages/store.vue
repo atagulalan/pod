@@ -9,13 +9,19 @@
         </div>
       </div>
       <span v-else>
-        <div class="mobileMenu">
-          <h1>Dolap</h1>
+        <MobileMenu
+          title="Dolap"
+          :back="
+            () => {
+              this.$router.go(-1)
+            }
+          "
+        >
           <h1 class="titleRight">
             <div class="coin"></div>
             {{ money }}
           </h1>
-        </div>
+        </MobileMenu>
         <Character
           :skin-color="skinColor"
           :eyes="eyes"
@@ -42,12 +48,14 @@
 <script>
 import Character from '~/components/Character.vue'
 import StoreList from '~/components/StoreList.vue'
+import MobileMenu from '~/components/atomic/MobileMenu.vue'
 import { listItems, wearItems } from '~/middleware/store'
 
 export default {
   components: {
     Character,
     StoreList,
+    MobileMenu,
   },
   data() {
     return {
@@ -128,33 +136,6 @@ export default {
   .fade-enter,
   .fade-leave-to {
     opacity: 0;
-  }
-
-  .mobileMenu {
-    height: 100px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 3;
-    width: 100%;
-    overflow: hidden;
-    line-height: 100px;
-    display: none;
-    padding: 0 40px;
-    h1 {
-      float: left;
-    }
-    .titleRight {
-      float: right;
-      .coin {
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        background: #ffc107;
-        border-radius: 50%;
-        vertical-align: text-top;
-      }
-    }
   }
 
   .loadingWrapper {
@@ -239,6 +220,20 @@ export default {
     }
     100% {
       transform: translate(32px, -8px) scale(0);
+    }
+  }
+
+  .mobileMenu {
+    .titleRight {
+      float: right;
+      .coin {
+        display: inline-block;
+        width: 40px;
+        height: 40px;
+        background: #ffc107;
+        border-radius: 50%;
+        vertical-align: text-top;
+      }
     }
   }
 

@@ -739,7 +739,7 @@ const drawMapPushPin = (ctx, pos, color) => {
 export default {
   components: {},
   props: {
-    codeLines: {
+    forests: {
       type: Array,
       default: () => [],
     },
@@ -780,6 +780,24 @@ export default {
 
   .globe--dragging {
     cursor: grabbing;
+  }
+}
+
+@media only screen and (min-width: 1280px) {
+  .worldWrapper {
+    max-height: 100vh;
+    width: 60vh;
+    max-width: 680px;
+    float: left;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    .globe {
+      max-height: 100vh;
+      max-width: 60vh;
+      max-width: 680px;
+      height: auto;
+    }
   }
 }
 </style>

@@ -1,34 +1,52 @@
 <template>
-  <div class="forestsWrapper">
-    <Globe :forests="forests" />
-
-    <ForestSelector
-      v-for="(forest, i) in forests"
-      :key="`forest-${i}`"
-      :percentage="percentages[forest.name]"
-      :background="forest.color"
-      @click="selectForest(forest.chapterId)"
-    >
-      {{ forest.name }}
-    </ForestSelector>
+  <div class="noscroll">
+    <div class="forestsWrapper">
+      <div class="center">
+        <MobileMenu
+          title="Harita"
+          :back="
+            () => {
+              this.$router.go(-1)
+            }
+          "
+        >
+        </MobileMenu>
+        <Globe :forests="forests" />
+        <div class="forestButtonsWrapper">
+          <ForestSelector
+            v-for="(forest, i) in forests"
+            :key="`forest-${i}`"
+            :percentage="percentages[forest.name]"
+            :background="forest.color"
+            :locked="locked[forest.name]"
+            @click="selectForest(forest.chapterId)"
+          >
+            {{ forest.name }}
+          </ForestSelector>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Globe from '~/components/forests/Globe.vue'
 import ForestSelector from '~/components/atomic/ForestSelector.vue'
+import MobileMenu from '~/components/atomic/MobileMenu.vue'
 import { getForests } from '~/middleware/game'
 
 export default {
   components: {
     Globe,
     ForestSelector,
+    MobileMenu,
   },
   data() {
     return {
       forests: [],
       completedEpisodes: [],
       percentages: {},
+      locked: {},
     }
   },
   watch: {
@@ -36,20 +54,22 @@ export default {
       this.forests.forEach((forest) => {
         if (!forest.episodes.length) {
           this.percentages[forest.name] = 0
+          this.locked[forest.name] = true
         } else {
           let y = 0
           ceps.forEach((cep) => {
             const ep = forest.episodes.find((ep) => ep.id === cep.id)
             if (ep) {
               y++
-              if (ep.lowestExec === cep.exec) y++
-              if (ep.lowestLines === cep.lines) y++
+              if (ep.lowestExec >= cep.exec) y++
+              if (ep.lowestLines >= cep.lines) y++
             }
           })
 
           this.percentages[forest.name] = Math.ceil(
             (y * 100) / (forest.episodes.length * 3)
           )
+          this.locked[forest.name] = false
         }
       })
     },
@@ -73,5 +93,32 @@ export default {
   background: #f7f6f2;
   overflow: auto;
   text-align: center;
+}
+
+@media only screen and (max-width: 1279px) {
+  .forestsWrapper {
+    padding-top: 100px;
+    .mobileMenu {
+      display: block;
+    }
+  }
+}
+
+@media only screen and (min-width: 1280px) {
+  .forestsWrapper {
+    .center {
+      margin: 0 auto;
+      width: calc(680px + 600px);
+      height: 100vh;
+    }
+    .forestButtonsWrapper {
+      width: 50vw;
+      max-width: 600px;
+      float: left;
+      top: 50%;
+      position: relative;
+      transform: translateY(-50%);
+    }
+  }
 }
 </style>
