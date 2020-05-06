@@ -601,6 +601,9 @@ export default {
     transform: translateX(-50%) scale(0.8);
     .innerWrapper {
       max-width: 780px;
+      .backButton {
+        display: none;
+      }
       h1 {
         display: none;
       }
