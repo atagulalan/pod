@@ -55,6 +55,64 @@ export default {
 </script>
 
 <style lang="scss">
+/*
+  ---------------------------------------------
+  Default Styles
+  ---------------------------------------------
+*/
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #fcfcfc;
+  overflow: hidden;
+}
+
+.noscroll {
+  ::-webkit-scrollbar {
+    width: 0px !important;
+    height: 0px !important;
+    background: transparent !important;
+  }
+  ::-webkit-scrollbar-thumb {
+    box-shadow: none !important;
+    border: none !important;
+  }
+  ::-webkit-scrollbar-track {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
+/*
+  ---------------------------------------------
+  Global Animations
+  ---------------------------------------------
+*/
+
+.hvr-bob {
+  display: inline-block;
+  transform: perspective(1px) translateZ(0);
+  animation-name: hvr-bob-float, hvr-bob;
+  animation-duration: 0.3s, 1.5s;
+  animation-timing-function: ease-out, ease-in-out;
+  animation-delay: 0s, 0.3s;
+  animation-iteration-count: 1, infinite;
+  animation-direction: normal, alternate;
+  box-shadow: 0 0 1px transparent;
+  animation-fill-mode: forwards;
+}
+
+/*
+  ---------------------------------------------
+  Page Transitions
+  ---------------------------------------------
+*/
+
 @keyframes getInLeft {
   0% {
     height: auto;
@@ -113,33 +171,6 @@ export default {
 }
 .layout-leave-active {
   animation: getOutLeft 0.2s ease-in 0s;
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  background: #fcfcfc;
-  overflow: hidden;
-}
-
-.noscroll {
-  ::-webkit-scrollbar {
-    width: 0px !important;
-    height: 0px !important;
-    background: transparent !important;
-  }
-  ::-webkit-scrollbar-thumb {
-    box-shadow: none !important;
-    border: none !important;
-  }
-  ::-webkit-scrollbar-track {
-    box-shadow: none !important;
-    border: none !important;
-  }
 }
 
 /*

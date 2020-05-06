@@ -1,11 +1,11 @@
 <template>
   <div class="gameWrapper">
+    <div v-if="activeItem !== null" class="focusHelper"></div>
     <div class="codeMenu">
       <div class="info">
-        <h1>Görev: Döndür</h1>
+        <h1>{{ mission }}</h1>
         <h2>
-          Bize gelen kutular yanlış sıralanmış. Her iki kutunun yerini
-          değiştirmen gerekiyor. Yapabilir misin?
+          {{ info }}
         </h2>
         <div class="ada"></div>
       </div>
@@ -25,26 +25,29 @@
         <button class="clear" @click="clear()"></button>
       </div>
     </div>
-    <OpCode :opcodes="opcodes" />
+    <OpCode class="opCodeMenu" :opcodes="opcodes" />
     <div class="gameArea">
-      <div v-if="activeItem !== null" class="focusHelper"></div>
-      <InputRoller :input="inputSection" />
-      <MiddleSection
-        :set-value="setValue"
-        :n="6"
-        :width-limit="3"
-        :items="middleSection"
-        :focus="activeItem !== null"
-      />
-      <OutputRoller :output="outputSection" />
-      <Character
-        :skin-color="`#fce6de`"
-        :eyes="'0'"
-        :hair="'0'"
-        :shirt="'0'"
-        :shorts="'0'"
-        :shoes="'0'"
-      />
+      <div class="scaler">
+        <InputRoller :input="inputSection" />
+        <MiddleSection
+          :set-value="setValue"
+          :n="6"
+          :width-limit="3"
+          :items="middleSection"
+          :focus="activeItem !== null"
+        />
+        <OutputRoller :output="outputSection" />
+        <Character
+          :skin-color="`#fce6de`"
+          :eyes="'0'"
+          :hair="'0'"
+          :shirt="'0'"
+          :shorts="'0'"
+          :shoes="'0'"
+          :holding="onHand"
+          :class="characterAt"
+        />
+      </div>
     </div>
     <ConvertModal :code="codeString" />
   </div>
@@ -75,7 +78,6 @@ export default {
   },
   data() {
     return {
-      opcodes: baseCodes,
       codeLines: [],
       activeItem: null,
       hover: -1,
@@ -86,13 +88,24 @@ export default {
       middleSection: [],
       outputSection: [],
       winCondition: [4, 6, 1],
+      tests: [], // TODO
       sanitizedArray: [],
       pasteCode: ``,
+      mission: 'Görev: Döndür',
+      info:
+        'Bize gelen kutular yanlış sıralanmış. Her iki kutunun yerini değiştirmen gerekiyor. Yapabilir misin?',
+      restrictedCodeBlocks: ['INP', 'OUT', 'CPY', 'GET', 'JMP'],
+      characterAt: '',
     }
   },
   computed: {
     codeString() {
       return this.sanitizedArray.join('\n')
+    },
+    opcodes() {
+      return baseCodes.filter((code) =>
+        this.restrictedCodeBlocks.includes(code.data)
+      )
     },
   },
   methods: {
@@ -205,7 +218,13 @@ export default {
       nextLine.bind(this)(this.sanitizedArray)
     },
     step() {
-      nextLine.bind(this)(this.sanitizedArray, true)
+      nextLine.bind(this)(
+        this.sanitizedArray,
+        (e) => {
+          this.characterAt = e[0] + e[1]
+        },
+        true
+      )
     },
   },
 }
@@ -213,16 +232,38 @@ export default {
 
 <style lang="scss">
 .gameWrapper {
-  display: flex;
-  justify-content: stretch;
   padding: 50px;
   height: 100vh;
+
+  .box {
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    float: right;
+    background: #ff4f5b;
+    border: 1px solid #1a2e35;
+    color: white;
+    text-align: center;
+  }
+
+  .focusHelper {
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 33;
+    left: 0;
+    top: 0;
+    position: absolute;
+    backdrop-filter: blur(2px);
+  }
 
   .codeMenu {
     border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     overflow: hidden;
-
+    height: 100%;
+    width: 400px;
+    float: left;
     .info {
       height: 200px;
       background: rgba(0, 0, 0, 0.05);
@@ -288,28 +329,77 @@ export default {
     }
   }
 
-  .gameArea {
-    .focusHelper {
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 33;
-      left: 0;
-      top: 0;
-      position: absolute;
-      backdrop-filter: blur(2px);
-    }
+  .opCodeMenu {
+    float: left;
   }
 
-  .game {
-    .box {
-      width: 30px;
-      height: 30px;
-      background: #ccc;
-      margin: 5px;
-      display: inline-block;
-      line-height: 30px;
-      text-align: center;
+  .gameArea {
+    width: calc(100vw - 700px);
+    height: 100vh;
+    right: 0;
+    top: 0;
+    position: absolute;
+    z-index: 33;
+
+    .scaler {
+      width: 685px;
+      transform: scale(1.5);
+      transform-origin: top left;
+    }
+
+    .character {
+      width: 150px;
+      position: absolute;
+      z-index: 30;
+      transition: 0.2s left, 0.2s top;
+      left: 60px;
+      top: 90px;
+
+      &.INP0 {
+        left: 550px;
+        top: 20px;
+      }
+
+      &.OUT0 {
+        left: 550px;
+        top: 390px;
+      }
+
+      &.GET0,
+      &.CPY0 {
+        left: 170px;
+        top: 100px;
+      }
+
+      &.GET1,
+      &.CPY1 {
+        left: 250px;
+        top: 100px;
+      }
+
+      &.GET2,
+      &.CPY2 {
+        left: 350px;
+        top: 100px;
+      }
+
+      &.GET3,
+      &.CPY3 {
+        left: 100px;
+        top: 250px;
+      }
+
+      &.GET4,
+      &.CPY4 {
+        left: 230px;
+        top: 270px;
+      }
+
+      &.GET5,
+      &.CPY5 {
+        left: 310px;
+        top: 270px;
+      }
     }
   }
 

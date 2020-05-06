@@ -7,7 +7,7 @@
   >
     <button v-for="(e, i) in 6" :key="'button' + i" @click="setValue(i)">
       <div v-if="items[i]" class="box">{{ items[i] }}</div>
-      <span v-else>{{ e }}</span>
+      <span>{{ e }}</span>
     </button>
   </div>
 </template>
@@ -57,6 +57,7 @@ export default {
   overflow: hidden;
   position: relative;
   border-radius: 10px;
+  margin: 80px auto 40px;
   &.focus {
     z-index: 9999;
     button span {
@@ -84,12 +85,9 @@ export default {
       font-size: 24px;
     }
     .box {
-      width: 80px;
-      height: 80px;
-      background: black;
-      color: white;
-      text-align: center;
-      line-height: 80px;
+      position: absolute;
+      margin: 6px 20px 20px 24px;
+      transform: rotateZ(-2deg);
     }
   }
 }

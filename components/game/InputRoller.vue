@@ -1,8 +1,10 @@
 <template>
-  <div :class="`inputRoller ${type}`">
+  <div :class="`inputRoller ${type} ${animateBoxes ? 'animateBoxes' : ''}`">
     <div class="inFront"></div>
-    <div v-for="(box, i) in input" :key="`box${i}`" class="box">
-      {{ box }}
+    <div class="boxWrapper">
+      <div v-for="(box, i) in input" :key="`box${i}`" class="box">
+        {{ box }}
+      </div>
     </div>
     <div class="atBack"></div>
   </div>
@@ -20,15 +22,29 @@ export default {
       default: 'wooden',
     },
   },
-  watch: {
-    input(newVal, oldVal) {
-      // bir item alındı, bantı geri sar ve
-      // animasyon ile sağa doğru götür
-    },
+  data() {
+    return {
+      animateBoxes: false,
+      memory: [],
+    }
   },
-  methods: {
-    getOne(e) {
-      console.log('getting one...')
+  watch: {
+    input: {
+      // This will let Vue know to look inside the array
+      deep: true,
+      handler(newVal) {
+        // bir item alındı, bantı geri sar ve
+        // animasyon ile sağa doğru götür
+        console.log('aaa', newVal, this.memory)
+        if (newVal.length < this.memory.length) {
+          this.animateBoxes = true
+          setTimeout(() => {
+            this.animateBoxes = false
+          }, 1000)
+        }
+
+        this.memory = [...newVal]
+      },
     },
   },
 }
@@ -36,14 +52,51 @@ export default {
 
 <style lang="scss">
 .inputRoller {
-  .box {
-    width: 50px;
-    height: 50px;
-    background: black;
-    color: white;
-    text-align: center;
-    line-height: 50px;
-    float: right;
+  width: 685px;
+  height: 161px;
+  background: url('/img/game/rollers/default/normal.svg');
+  position: relative;
+  overflow: hidden;
+
+  @keyframes getBox {
+    0% {
+      transform: translateX(-140px);
+    }
+    100% {
+      transform: translateX(0px);
+    }
+  }
+
+  &.animateBoxes {
+    .boxWrapper {
+      animation: getBox 1s forwards;
+    }
+  }
+
+  .inFront {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 2;
+    background: url('/img/game/rollers/default/inFront.svg');
+  }
+  .atBack {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    background: url('/img/game/rollers/default/inFront.svg');
+  }
+  .boxWrapper {
+    width: 10000px;
+    right: 0;
+    top: 23px;
+    height: 40px;
+    position: absolute;
+    padding-right: 20px;
+    .box {
+      margin: 0 0 0 100px;
+    }
   }
 }
 </style>

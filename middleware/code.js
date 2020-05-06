@@ -147,7 +147,7 @@ export const sanitizeCode = function (nonSanitizedCode) {
 
 let n = 0
 
-export const nextLine = function (arr, dont) {
+export const nextLine = function (arr, callback = () => {}, dont) {
   if (arr[this.lineNumber] === undefined) {
     console.log('bitti')
     return
@@ -156,6 +156,7 @@ export const nextLine = function (arr, dont) {
     JSON.stringify(this.winCondition) === JSON.stringify(this.outputSection) &&
     this.inputSection.length === 0
   ) {
+    // send backend the code
     console.log('bravo')
     return
   }
@@ -179,6 +180,8 @@ export const nextLine = function (arr, dont) {
       this.middleSection,
       this.outputSection
     )
+
+    callback(commandAndValue)
 
     if (!dont) {
       nextLine.bind(this)(arr)

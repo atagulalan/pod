@@ -1,5 +1,8 @@
 <template>
-  <div class="character" :style="`--skin-color: ${skinColor};`">
+  <div
+    :class="`character ${holding ? 'holding' : ''}`"
+    :style="`--skin-color: ${skinColor};`"
+  >
     <svg
       version="1.1"
       xmlns="http://www.w3.org/2000/svg"
@@ -16,6 +19,7 @@
       <RightHand />
       <Head :skinColor="skinColor" :eyes="eyes" :hair="hair" />
     </svg>
+    <div class="box">{{ holding }}</div>
   </div>
 </template>
 
@@ -59,6 +63,10 @@ export default {
       type: String,
       default: '0',
     },
+    holding: {
+      type: [Number, String],
+      default: 0,
+    },
   },
 }
 </script>
@@ -93,29 +101,40 @@ export default {
   }
 }
 
-.hvr-bob {
-  display: inline-block;
-  transform: perspective(1px) translateZ(0);
-  animation-name: hvr-bob-float, hvr-bob;
-  animation-duration: 0.3s, 1.5s;
-  animation-timing-function: ease-out, ease-in-out;
-  animation-delay: 0s, 0.3s;
-  animation-iteration-count: 1, infinite;
-  animation-direction: normal, alternate;
-  box-shadow: 0 0 1px transparent;
-  animation-fill-mode: forwards;
-}
+.character {
+  .look-around {
+    display: inline-block;
+    transform: perspective(1px) translateZ(0);
+    animation-name: look-around;
+    animation-duration: 10s;
+    animation-timing-function: ease-in-out;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    box-shadow: 0 0 1px transparent;
+    animation-fill-mode: forwards;
+  }
 
-.look-around {
-  display: inline-block;
-  transform: perspective(1px) translateZ(0);
-  animation-name: look-around;
-  animation-duration: 10s;
-  animation-timing-function: ease-in-out;
-  animation-delay: 0s;
-  animation-iteration-count: infinite;
-  animation-direction: normal;
-  box-shadow: 0 0 1px transparent;
-  animation-fill-mode: forwards;
+  .box {
+    display: none;
+    position: absolute;
+    left: 80px;
+    top: 90px;
+    transform: rotateZ(-6deg) scale(0.7);
+  }
+
+  &.holding {
+    #Left_Hand {
+      transform: translateX(30px) !important;
+      animation: none;
+    }
+    #Right_Hand {
+      transform: translateX(160px) !important;
+      animation: none;
+    }
+    .box {
+      display: block;
+    }
+  }
 }
 </style>
