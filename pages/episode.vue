@@ -11,7 +11,7 @@
         :title="forest.name"
         :back="
           () => {
-            this.$router.go(-1)
+            this.$router.push('/forests')
           }
         "
         :sticky="true"

@@ -6,7 +6,7 @@
           title="Harita"
           :back="
             () => {
-              this.$router.go(-1)
+              this.$router.push('/init')
             }
           "
         >
@@ -124,6 +124,11 @@ export default {
   background: url(/img/memphis-colorful.png);
   overflow: auto;
   text-align: center;
+
+  .mobileMenu {
+    display: block;
+  }
+
   &:before {
     content: '';
     background: white;
@@ -145,9 +150,6 @@ export default {
 @media only screen and (max-width: 1279px) {
   .forestsWrapper {
     padding-top: 100px;
-    .mobileMenu {
-      display: block;
-    }
   }
 }
 

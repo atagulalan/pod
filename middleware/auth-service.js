@@ -10,10 +10,11 @@ export const logout = async function () {
   console.log(logoutResult)
   if (logoutResult.success) {
     this.$store.commit('localStorage/resetUser')
+    this.$router.push('/')
   }
 }
 
-export const login = async function (email, pass) {
+export const login = async function (email, pass, callback = () => {}) {
   await this.$axios
     .$post('/api/auth/login', { email, pass })
     .then((response) => {
@@ -28,6 +29,7 @@ export const login = async function (email, pass) {
           anonymous: false,
         })
         this.$modal.hide('authModal')
+        callback()
       }
     })
     .catch((error) => {

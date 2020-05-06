@@ -38,10 +38,7 @@
       >
         Jenerik
       </button>
-      <button
-        :style="{ backgroundColor: '#683F28' }"
-        @click="selectSection('code')"
-      >
+      <button :style="{ backgroundColor: '#683F28' }" @click="logout()">
         Çıkış
       </button>
     </div>
@@ -52,6 +49,8 @@
 import Logo from '~/components/atomic/Logo'
 import ObjectiveModal from '~/components/modals/ObjectiveModal'
 import CreditsModal from '~/components/modals/CreditsModal'
+import { logout } from '~/middleware/auth-service'
+
 export default {
   components: {
     Logo,
@@ -62,6 +61,7 @@ export default {
     selectSection(section) {
       this.$router.push(`/${section}`)
     },
+    logout,
   },
 }
 </script>

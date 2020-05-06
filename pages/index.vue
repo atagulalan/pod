@@ -1,27 +1,35 @@
 <template>
   <div class="container">
     <ResetPassModal />
-    <Hero />
+    <Hero v-if="loaded" />
+    <div v-else class="loader">
+      <Logo class="logo" />
+      Yükleniyor
+    </div>
   </div>
 </template>
 
 <script>
 import Hero from '~/components/Hero.vue'
 import ResetPassModal from '~/components/modals/ResetPassModal.vue'
+import Logo from '~/components/atomic/Logo.vue'
 
 export default {
   components: {
     Hero,
     ResetPassModal,
+    Logo,
   },
   data() {
     return {
       progress: [],
       complete: [],
+      loaded: false,
     }
   },
   mounted() {
     this.$nextTick(function () {
+      this.loaded = true
       if (this.$route.meta.showResetPassModal) {
         this.$modal.show('resetPassModal')
       }
@@ -47,6 +55,66 @@ export default {
 </script>
 
 <style lang="scss">
+@keyframes getInLeft {
+  0% {
+    height: auto;
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    height: auto;
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
+@keyframes getOutLeft {
+  0% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+}
+@keyframes getInRight {
+  0% {
+    height: auto;
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  100% {
+    height: auto;
+    opacity: 1;
+    transform: translateX(0px);
+  }
+}
+@keyframes getOutRight {
+  0% {
+    opacity: 1;
+    transform: translateX(0px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+}
+.default-enter-active,
+.layout-enter-active {
+  height: 0;
+  overflow: hidden;
+  animation: getInRight 0.2s ease-out 0.2s;
+}
+.layout-enter-active {
+  animation: getInLeft 0.2s ease-out 0.2s;
+}
+.default-leave-active {
+  animation: getOutRight 0.2s ease-in 0s;
+}
+.layout-leave-active {
+  animation: getOutLeft 0.2s ease-in 0s;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -191,6 +259,25 @@ body {
         height: 100%;
       }
     }
+  }
+}
+
+/*
+  ---------------------------------------------
+  Loader
+  ---------------------------------------------
+*/
+.loader {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  height: 100vh;
+  width: 100vw;
+  justify-content: center;
+  .logo {
+    width: 200px;
+    height: 200px;
+    flex: 1 0 100%;
   }
 }
 </style>

@@ -209,7 +209,11 @@ export default {
   methods: {
     logout,
     show() {
-      this.$modal.show('authModal')
+      if (this.$store.state.localStorage.user.initialized) {
+        this.$router.push('/init')
+      } else {
+        this.$modal.show('authModal')
+      }
     },
     hide() {
       this.$modal.hide('authModal')

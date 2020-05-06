@@ -101,5 +101,15 @@ export default {
         })
       }
     }
+  },
+  /* Layout Transitions */
+  layoutTransition: {
+    name: "layout",
+    mode: ""
+  },
+  /* Page Transitions */
+  pageTransition: {
+    name: "default",
+    mode: ""
   }
 }

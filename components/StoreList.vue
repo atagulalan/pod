@@ -1,8 +1,17 @@
 <template>
   <div class="storeList">
     <div class="innerWrapper">
+      <div
+        class="backButton"
+        @click="
+          () => {
+            this.$router.push('/init')
+          }
+        "
+      >
+        <Icon :size="44" i="chevron-left" stroke="#fff" stroke-width="2" />
+      </div>
       <h1>Dolap</h1>
-
       <h1 class="titleRight">
         <div class="coin"></div>
         {{ money }}
@@ -285,6 +294,20 @@ export default {
     left: 50%;
     transform: translate(-50%, -50%);
     position: absolute;
+
+    .backButton {
+      float: left;
+      width: 60px;
+      height: 60px;
+      background: #9ccc66;
+      margin: 35px 20px;
+      border-radius: 50%;
+      line-height: 58px;
+      text-align: center;
+      cursor: pointer;
+      margin-left: 0;
+    }
+
     h1 {
       font-size: 96px;
       color: #505668;
