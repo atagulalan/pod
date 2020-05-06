@@ -70,7 +70,8 @@ export default {
 .initContainer {
   width: 100vw;
   height: 100vh;
-  overflow: hidden;
+  background: url(/img/memphis-colorful.png);
+  overflow: auto;
 
   .initWrapper {
     width: 40vw;
