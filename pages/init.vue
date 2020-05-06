@@ -1,5 +1,7 @@
 <template>
   <div class="initContainer">
+    <ObjectiveModal />
+    <CreditsModal />
     <div class="initWrapper">
       <div class="logo">
         <Logo />
@@ -18,13 +20,21 @@
       </button>
       <button
         :style="{ backgroundColor: '#00cde8' }"
-        @click="selectSection('code')"
+        @click="
+          () => {
+            this.$modal.show('objectiveModal')
+          }
+        "
       >
         Amacımız
       </button>
       <button
         :style="{ backgroundColor: '#ffcf00' }"
-        @click="selectSection('code')"
+        @click="
+          () => {
+            this.$modal.show('creditsModal')
+          }
+        "
       >
         Jenerik
       </button>
@@ -39,17 +49,15 @@
 </template>
 
 <script>
-import Logo from '../components/atomic/Logo'
+import Logo from '~/components/atomic/Logo'
+import ObjectiveModal from '~/components/modals/ObjectiveModal'
+import CreditsModal from '~/components/modals/CreditsModal'
 export default {
   components: {
     Logo,
+    ObjectiveModal,
+    CreditsModal,
   },
-  data() {
-    return {
-      money: 0,
-    }
-  },
-  mounted() {},
   methods: {
     selectSection(section) {
       this.$router.push(`/${section}`)
@@ -88,7 +96,6 @@ export default {
       padding: 17pt 32pt;
       width: 90%;
       margin: 0 auto 20px;
-      text-align: left;
       overflow: hidden;
       max-width: 500px;
       text-align: center;
