@@ -113,6 +113,7 @@ export default {
         outputSection: [],
         tests: [],
       },
+      congratz: false,
     }
   },
   computed: {
@@ -244,10 +245,11 @@ export default {
           let testCount = 1
           this.tests.forEach((test, i) => {
             if (i === 0) return
+            console.log('Testing:', test)
             const testInstance = new PodInstance(
               {
-                input: test.input,
-                output: test.output,
+                inputSection: test.input,
+                winCondition: test.output,
                 logs: [],
               },
               (status) => {
@@ -257,14 +259,22 @@ export default {
                 }
               }
             )
+            console.log(testInstance)
             testInstance.nextLine.bind(this)(this.sanitizedArray)
           })
 
           const testsSuccessful = testCount === this.tests.length
 
           // if all tests are good, send backend the code
-          if (testsSuccessful) {
-            sendCode.bind(this)(this.$route.params.id, this.sanitizedArray)
+          if (testsSuccessful && this.congratz === false) {
+            this.congratz = true
+            console.log(this.sanitizedArray)
+            sendCode.bind(this)(
+              this.$route.params.id,
+              this.sanitizedArray.join('\n')
+            )
+          } else if (this.congratz === true) {
+            console.log('Zaten yollandı, istek cevabı bekleniyor...')
           } else {
             // TODO make alternative test main one.
           }

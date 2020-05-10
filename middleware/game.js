@@ -23,9 +23,9 @@ export const getCode = async function (id) {
   return k
 }
 
-export const sendCode = async function (id) {
+export const sendCode = async function (id, code) {
   const k = await this.$axios
-    .$post(`/api/chapter/code/${id}`)
+    .$post(`/api/chapter/code/${id}`, { code })
     .then((response) => {
       if (response.success) {
         return response.data
