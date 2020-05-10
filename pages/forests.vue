@@ -9,8 +9,7 @@
               this.$router.push('/init')
             }
           "
-        >
-        </MobileMenu>
+        ></MobileMenu>
         <Globe :forests="forests" />
         <div class="forestButtonsWrapper">
           <ForestSelector
@@ -22,9 +21,8 @@
             @click="
               selectForest(forest.chapterId + '-' + lastBranch[forest.name])
             "
+            >{{ forest.name }}</ForestSelector
           >
-            {{ forest.name }}
-          </ForestSelector>
         </div>
       </div>
     </div>
@@ -61,9 +59,10 @@ export default {
           this.percentages[forest.name] = 0
           this.locked[forest.name] = true
         } else {
+          console.log('ha?', forest)
           // latest preq rearrange
           link = forest.episodes.concat().sort((a, b) => {
-            return a.id.replace('-', '.') - b.id.replace('-', '.')
+            return a.episodeId.replace('-', '.') - b.episodeId.replace('-', '.')
           })
 
           let latest = -1
@@ -74,12 +73,14 @@ export default {
             // find latest branch of the tree
             ceps.forEach((cep) => {
               const newLatest = link.findIndex((l) => {
-                return l.id === cep.id.split('-').slice(1).join('-')
+                return l.episodeId === cep.id.split('-').slice(1).join('-')
               })
               latest = newLatest > latest ? newLatest : latest
             })
 
-            this.lastBranch[forest.name] = link[latest].id.split('-')[0]
+            console.log(link[latest])
+
+            this.lastBranch[forest.name] = link[latest].episodeId.split('-')[0]
           }
 
           // console.log(link, ceps, link[latest])
@@ -88,12 +89,12 @@ export default {
           let y = 0
           ceps.forEach((cep) => {
             const ep = forest.episodes.find(
-              (ep) => ep.id === cep.id.split('-').slice(1).join('-')
+              (ep) => ep.episodeId === cep.id.split('-').slice(1).join('-')
             )
             if (ep) {
               y++
-              if (ep.lowestExec >= cep.exec) y++
-              if (ep.lowestLines >= cep.lines) y++
+              if (ep.scores.min.exec >= cep.exec) y++
+              if (ep.scores.min.lines >= cep.lines) y++
             }
           })
 

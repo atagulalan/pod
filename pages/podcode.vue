@@ -4,16 +4,14 @@
     <div class="codeMenu">
       <div class="info">
         <h1>{{ mission }}</h1>
-        <h2>
-          {{ info }}
-        </h2>
+        <h2>{{ info }}</h2>
         <div class="ada"></div>
       </div>
       <Code
         :code-lines="codeLines"
         :on-drop="onDrop"
         :active-item="activeItem"
-        :line-number="lineNumber"
+        :line-number="podInstance.lineNumber"
         :hover="hover"
         :set-hover="(i) => (hover = i)"
         :set-active="setActive"
@@ -28,23 +26,23 @@
     <OpCode class="opCodeMenu" :opcodes="opcodes" />
     <div class="gameArea">
       <div class="scaler">
-        <InputRoller :input="inputSection" />
+        <InputRoller :input="podInstance.inputSection" />
         <MiddleSection
           :set-value="setValue"
           :n="6"
           :width-limit="3"
-          :items="middleSection"
+          :items="podInstance.middleSection"
           :focus="activeItem !== null"
         />
-        <OutputRoller :output="outputSection" />
+        <OutputRoller :output="podInstance.outputSection" />
         <Character
-          :skin-color="`#fce6de`"
-          :eyes="'0'"
-          :hair="'0'"
-          :shirt="'0'"
-          :shorts="'0'"
-          :shoes="'0'"
-          :holding="onHand"
+          :skin-color="characterCustomization.skin"
+          :eyes="characterCustomization.eyes"
+          :hair="characterCustomization.hair"
+          :shirt="characterCustomization.shirt"
+          :shorts="characterCustomization.short"
+          :shoes="characterCustomization.shoes"
+          :holding="podInstance.onHand"
           :class="characterAt"
         />
       </div>
@@ -55,7 +53,13 @@
 
 <script>
 import { applyDrag } from '~/middleware/helpers'
-import { baseCodes, commands, sanitizeCode, nextLine } from '~/middleware/code'
+import {
+  baseCodes,
+  commands,
+  sanitizeCode,
+  PodInstance,
+} from '~/middleware/code'
+import { getCode, sendCode } from '~/middleware/game'
 import Code from '~/components/game/Code'
 import OpCode from '~/components/game/OpCode'
 import MiddleSection from '~/components/game/MiddleSection'
@@ -81,21 +85,34 @@ export default {
       codeLines: [],
       activeItem: null,
       hover: -1,
-      lineNumber: 0,
-      onHand: null,
-      jumpBacks: {},
-      inputSection: [4, 4, 7, 6, 6, 6, 1, 1],
-      middleSection: [],
-      outputSection: [],
-      winCondition: [4, 6, 1],
-      tests: [], // TODO
       sanitizedArray: [],
-      pasteCode: ``,
-      mission: 'Görev: Döndür',
-      info:
-        'Bize gelen kutular yanlış sıralanmış. Her iki kutunun yerini değiştirmen gerekiyor. Yapabilir misin?',
+      pasteCode: `CME 1
+      INP 0
+      OUT 0
+      JMP 1`,
+      mission: 'Görev: Yükleniyor...',
+      info: 'Yükleniyor...',
       restrictedCodeBlocks: ['INP', 'OUT', 'CPY', 'GET', 'JMP'],
       characterAt: '',
+      characterCustomization: {
+        skin: '#fce6de',
+        shoes: '0',
+        shorts: '0',
+        eyes: '0',
+        shirt: '0',
+        hair: '0',
+      },
+      tests: [],
+      podInstance: {
+        inputSection: [],
+        lineNumber: 0,
+        middleSection: [],
+        winCondition: [],
+        n: 0,
+        onHand: null,
+        outputSection: [],
+        tests: [],
+      },
     }
   },
   computed: {
@@ -107,6 +124,29 @@ export default {
         this.restrictedCodeBlocks.includes(code.data)
       )
     },
+  },
+  mounted() {
+    getCode
+      .bind(this)(this.$route.params.id)
+      .then((data) => {
+        this.characterCustomization = data.user.worn.reduce(function (
+          result,
+          item
+        ) {
+          const key = item.type
+          result[key] = item.key
+          return result
+        },
+        {})
+
+        this.mission = data.chapter.episodes.mission
+        this.info = data.chapter.episodes.info
+        this.tests = data.chapter.episodes.tests
+
+        this.convert(this.pasteCode)
+
+        console.log('Pod Instance:', this.podInstance)
+      })
   },
   methods: {
     onDrop(collection, dropResult) {
@@ -153,7 +193,6 @@ export default {
     },
     convert(pasteCode) {
       // converts text to visual
-      console.log('converting to visuals')
       this.sanitizedArray = sanitizeCode(pasteCode)
       this.reset()
       const results = []
@@ -180,8 +219,6 @@ export default {
         })
       })
 
-      console.log(returns)
-
       results.map((el) => {
         if (el.data === 'CME') {
           el.style =
@@ -197,28 +234,54 @@ export default {
       this.reset()
     },
     reset() {
-      this.lineNumber = 0
-      this.onHand = null
-      this.jumpBacks = {}
-      this.inputSection = [4, 4, 7, 6, 6, 6, 1, 1]
-      this.middleSection = []
-      this.outputSection = []
-      // Set jumpbacks before launch
-      this.sanitizedArray.forEach((el, idx) => {
-        if (el.split(' ')[0] === 'CME') {
-          this.jumpBacks[el.split(' ')[1]] = idx
-        }
-      })
+      this.podInstance = new PodInstance(
+        {
+          tests: this.tests,
+        },
+        (returnObj) => {
+          console.log(returnObj)
+
+          let testCount = 1
+          this.tests.forEach((test, i) => {
+            if (i === 0) return
+            const testInstance = new PodInstance(
+              {
+                input: test.input,
+                output: test.output,
+                logs: [],
+              },
+              (status) => {
+                if (status.type === 'bravo') {
+                  console.log('Test', i, 'başarılı.')
+                  testCount++
+                }
+              }
+            )
+            testInstance.nextLine.bind(this)(this.sanitizedArray)
+          })
+
+          const testsSuccessful = testCount === this.tests.length
+
+          // if all tests are good, send backend the code
+          if (testsSuccessful) {
+            sendCode.bind(this)(this.$route.params.id, this.sanitizedArray)
+          } else {
+            // TODO make alternative test main one.
+          }
+        },
+        (e) => (this.lineNumber = e),
+        (e) => (this.onHand = e)
+      )
     },
     error(exception) {
       console.log(`ERROR AT LINE ${this.lineNumber} BECAUSE ${exception}`)
     },
     run() {
       this.reset()
-      nextLine.bind(this)(this.sanitizedArray)
+      this.podInstance.nextLine.bind(this)(this.sanitizedArray)
     },
     step() {
-      nextLine.bind(this)(
+      this.podInstance.nextLine.bind(this)(
         this.sanitizedArray,
         (e) => {
           this.characterAt = e[0] + e[1]

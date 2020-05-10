@@ -39,7 +39,6 @@ export default {
       handler(newVal) {
         // bir item alındı, bantı geri sar ve
         // animasyon ile sağa doğru götür
-        console.log('aaa', newVal, this.memory)
         if (newVal.length > this.memory.length) {
           this.animateBoxes = true
           setTimeout(() => {

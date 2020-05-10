@@ -15,8 +15,7 @@
           }
         "
         :sticky="true"
-      >
-      </MobileMenu>
+      ></MobileMenu>
       <div class="ghostHeight" :style="`height: ${forestHeight}px`"></div>
       <div id="episodeInner">
         <component
@@ -121,7 +120,9 @@ export default {
       const id = e.srcElement.parentElement.id
       if (id.startsWith('OPEN-')) {
         const episodeId = id.substring(5)
-        const episode = this.forest.episodes.find((el) => el.id === episodeId)
+        const episode = this.forest.episodes.find(
+          (el) => el.episodeId === episodeId
+        )
         if (episode) {
           const userStats = this.completedEpisodes.find((el) => {
             return el.id === this.forest.chapterId + '-' + episodeId

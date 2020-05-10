@@ -11,7 +11,32 @@ export const buyItem = async function (itemId) {
   })
 }
 
-export const getForests = /* async */ function () {
+export const getCode = async function (id) {
+  const k = await this.$axios
+    .$get(`/api/chapter/code/${id}`)
+    .then((response) => {
+      if (response.success) {
+        return response.data
+      }
+    })
+    .catch(console.log)
+  return k
+}
+
+export const sendCode = async function (id) {
+  const k = await this.$axios
+    .$post(`/api/chapter/code/${id}`)
+    .then((response) => {
+      if (response.success) {
+        return response.data
+      }
+    })
+    .catch(console.log)
+  return k
+}
+
+export const getForests = async function () {
+  /* 
   const response = {
     success: true,
     message: 'Tüm ormanlar listelendi',
@@ -94,21 +119,19 @@ export const getForests = /* async */ function () {
       },
     },
   }
+ */
 
-  this.forests = response.data.chapters
-  this.completedEpisodes = response.data.user.completedEpisodes
-  /*
   await this.$axios
-    .$get('/api/chapters/list')
+    .$get('/api/chapter/list')
     .then((response) => {
       if (response.success) {
-        // TODO
         console.log(response)
+        this.forests = response.data.chapters
+        this.completedEpisodes = response.data.user.completedEpisodes
       }
     })
     .catch((error) => {
       console.log(error)
       // TODO
     })
-  */
 }

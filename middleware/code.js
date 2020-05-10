@@ -145,120 +145,189 @@ export const sanitizeCode = function (nonSanitizedCode) {
   return sanitized
 }
 
-let n = 0
+export class PodInstance {
+  n = 0
+  logs = []
 
-export const nextLine = function (arr, callback = () => {}, dont) {
-  if (arr[this.lineNumber] === undefined) {
-    console.log('bitti')
-    return
-  }
-  if (
-    JSON.stringify(this.winCondition) === JSON.stringify(this.outputSection) &&
-    this.inputSection.length === 0
+  constructor(
+    obj,
+    emitResult = () => {},
+    emitLineNumber = () => {},
+    emitOnHand = () => {}
   ) {
-    // send backend the code
-    console.log('bravo')
-    return
+    this.tests = (obj.tests ? obj.tests : []).concat()
+    this.winCondition = (obj.winCondition
+      ? obj.winCondition
+      : this.tests.length > 0
+      ? this.tests[0].output
+      : []
+    ).concat()
+    this.inputSection = (obj.inputSection
+      ? obj.inputSection
+      : this.tests.length > 0
+      ? this.tests[0].input
+      : []
+    ).concat()
+    this.middleSection = (obj.middleSection ? obj.middleSection : []).concat()
+    this.outputSection = (obj.outputSection ? obj.outputSection : []).concat()
+    this.onHand = obj.onHand ? obj.onHand : null
+    this.lineNumber = obj.lineNumber ? obj.lineNumber : 0
+    this.logs = obj.logs ? obj.logs : ['info', 'error', 'success']
+    this.emitLineNumber = emitLineNumber
+    this.emitOnHand = emitOnHand
+    this.emitResult = emitResult
   }
-  n++
-  const commandAndValue = arr[this.lineNumber].split(' ')
-  const next = function (newLineNumber) {
-    if (!isNaN(newLineNumber)) {
-      this.lineNumber = newLineNumber
-    } else {
-      this.lineNumber = this.lineNumber + 1
+
+  changeLineNumber(newLineNumber) {
+    this.lineNumber = newLineNumber
+    this.emitLineNumber(newLineNumber)
+  }
+
+  setOnHand(box) {
+    this.onHand = box
+    this.emitOnHand(box)
+  }
+
+  printLog = {
+    info: (...args) => {
+      if (this.logs.includes('info')) console.log(...args)
+    },
+    success: (...args) => {
+      if (this.logs.includes('success')) console.log(...args)
+    },
+    error: (...args) => {
+      if (this.logs.includes('error')) console.error(...args)
+    },
+  }
+
+  nextLine = function (arr, callback = () => {}, dont) {
+    if (!this.jumpBacks) {
+      this.jumpBacks = {}
+      // Set jumpbacks before launch
+      arr.forEach((el, idx) => {
+        if (el.split(' ')[0] === 'CME') {
+          this.jumpBacks[el.split(' ')[1]] = idx
+        }
+      })
     }
 
-    // document.getElementById('line').style.top = lineNumber * 18 + 'px'
-    // document.getElementById('hand').textContent = onHand
-    console.log(
-      'Aşama ' + n + ':',
-      this.lineNumber,
-      this.onHand,
-      this.jumpBacks,
-      this.inputSection,
-      this.middleSection,
-      this.outputSection
-    )
-
-    callback(commandAndValue)
-
-    if (!dont) {
-      nextLine.bind(this)(arr)
+    if (arr[this.lineNumber] === undefined) {
+      this.emitResult({
+        type: 'bitti',
+      })
+      return
     }
-  }.bind(this)
-  const fns = {
-    CME(e) {
-      // if indicator is on jump ends, do not count it as exec
-      n--
-      next()
-    },
-    INP: () => {
-      console.log('Kutuyu alıyorum')
-      this.onHand = this.inputSection.shift()
-      if (!this.onHand) {
-        this.error('Alacak hiçbir kutu yok ve problem çözülemedi')
+    if (
+      JSON.stringify(this.winCondition) ===
+        JSON.stringify(this.outputSection) &&
+      this.inputSection.length === 0
+    ) {
+      this.emitResult({
+        type: 'bravo',
+      })
+      return
+    }
+    this.n = this.n + 1
+    const commandAndValue = arr[this.lineNumber].split(' ')
+    const next = function (newLineNumber) {
+      if (!isNaN(newLineNumber)) {
+        this.changeLineNumber(newLineNumber)
       } else {
-        next()
+        this.changeLineNumber(this.lineNumber + 1)
       }
-    },
-    OUT: () => {
-      console.log('Kutuyu Veriyorum')
-      if (this.onHand) {
-        this.outputSection.push(this.onHand)
-        this.onHand = null
-        next()
-      } else {
-        this.error('Ellerim bomboş')
+
+      // document.getElementById('line').style.top = lineNumber * 18 + 'px'
+      // document.getElementById('hand').textContent = onHand
+      this.printLog.info(
+        'Aşama ' + this.n + ':',
+        this.lineNumber,
+        this.onHand,
+        this.jumpBacks,
+        this.inputSection,
+        this.middleSection,
+        this.outputSection,
+        this.winCondition
+      )
+
+      callback(commandAndValue)
+
+      if (!dont) {
+        this.nextLine.bind(this)(arr)
       }
-    },
-    CPY: (e) => {
-      console.log('Kopyalıyorum')
-      Vue.set(this.middleSection, e, this.onHand)
-      next()
-    },
-    SUB: (e) => {
-      if (this.onHand !== undefined) {
-        if (this.middleSection[e] !== undefined) {
-          console.log('Çıkartıyorum')
-          this.onHand -= this.middleSection[e]
+    }.bind(this)
+    const fns = {
+      CME(e) {
+        // if indicator is on jump ends, do not count it as exec
+        this.n = this.n - 1
+        next()
+      },
+      INP: () => {
+        this.printLog.info('Kutuyu alıyorum')
+        this.setOnHand(this.inputSection.shift())
+        if (!this.onHand) {
+          this.printLog.error('Alacak hiçbir kutu yok ve problem çözülemedi')
+        } else {
+          next()
+        }
+      },
+      OUT: () => {
+        this.printLog.info('Kutuyu Veriyorum')
+        if (this.onHand) {
+          this.outputSection.push(this.onHand)
+          this.setOnHand(null)
           next()
         } else {
-          this.error('Çıkartılacak kutu bulunamadı.')
+          this.printLog.error('Ellerim bomboş')
         }
-      } else {
-        this.error('Ellerim bomboş')
-      }
-    },
-    ADD: (e) => {
-      if (this.onHand !== null) {
-        console.log('Ekliyorum')
-        this.onHand += this.middleSection[e]
+      },
+      CPY: (e) => {
+        this.printLog.info('Kopyalıyorum')
+        Vue.set(this.middleSection, e, this.onHand)
         next()
-      } else {
-        this.error('Ellerim bomboş')
-      }
-    },
-    JPZ: (e) => {
-      if (this.onHand === 0) {
-        fns.JMP(e)
-      } else {
-        next()
-      }
-    },
-    JMP: (e) => {
-      console.log('Atlıyorum:', e)
-      console.log(this.jumpBacks[e])
-      next(this.jumpBacks[e])
-    },
-    GET: (e) => {
-      if (this.middleSection[e] !== undefined) {
-        this.onHand = this.middleSection[e]
-        next()
-      } else {
-        this.error()
-      }
-    },
-  }
-  fns[commandAndValue[0]](commandAndValue[1])
+      },
+      SUB: (e) => {
+        if (this.onHand !== undefined) {
+          if (this.middleSection[e] !== undefined) {
+            this.printLog.info('Çıkartıyorum')
+            this.setOnHand(this.onHand - this.middleSection[e])
+            next()
+          } else {
+            this.printLog.error('Çıkartılacak kutu bulunamadı.')
+          }
+        } else {
+          this.printLog.error('Ellerim bomboş')
+        }
+      },
+      ADD: (e) => {
+        if (this.onHand !== null) {
+          this.printLog.info('Ekliyorum')
+          this.setOnHand(this.onHand + this.middleSection[e])
+          next()
+        } else {
+          this.printLog.error('Ellerim bomboş')
+        }
+      },
+      JPZ: (e) => {
+        if (this.onHand === 0) {
+          fns.JMP(e)
+        } else {
+          next()
+        }
+      },
+      JMP: (e) => {
+        this.printLog.info('Atlıyorum:', e)
+        this.printLog.info(this.jumpBacks[e])
+        next(this.jumpBacks[e])
+      },
+      GET: (e) => {
+        if (this.middleSection[e] !== undefined) {
+          this.setOnHand(this.middleSection[e])
+          next()
+        } else {
+          this.printLog.info('error')
+        }
+      },
+    }
+    fns[commandAndValue[0]](commandAndValue[1])
+  }.bind(this)
 }

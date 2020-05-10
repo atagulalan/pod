@@ -1,0 +1,2 @@
+Hatalar:
+Kayıt olunca otomatik yönlendirmiyor
