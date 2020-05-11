@@ -269,10 +269,13 @@ export default {
           if (testsSuccessful && this.congratz === false) {
             this.congratz = true
             console.log(this.sanitizedArray)
-            sendCode.bind(this)(
-              this.$route.params.id,
-              this.sanitizedArray.join('\n')
-            )
+            sendCode
+              .bind(this)(this.$route.params.id, this.sanitizedArray.join('\n'))
+              .then((e) => {
+                if (e.code === 'tests_successful') {
+                  console.log('başardın dostum')
+                }
+              })
           } else if (this.congratz === true) {
             console.log('Zaten yollandı, istek cevabı bekleniyor...')
           } else {
