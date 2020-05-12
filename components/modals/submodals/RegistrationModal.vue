@@ -16,7 +16,7 @@
     />
     <Input
       v-model="registerName"
-      leading="envelope"
+      leading="person"
       name="name"
       placeholder="Adınız"
       type="text"
@@ -127,7 +127,10 @@ export default {
         register.bind(this)(
           this.registerMail,
           this.registerPass,
-          this.registerName
+          this.registerName,
+          () => {
+            this.$router.push('/init')
+          }
         )
       }
     },

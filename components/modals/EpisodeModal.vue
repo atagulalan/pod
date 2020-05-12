@@ -32,18 +32,29 @@
         </div>
         <div class="buttons">
           <Button
-            v-if="stars[0]"
+            v-if="inGame"
             size="fit"
             background="#46cb92"
-            @click="play()"
+            @click="goBack()"
           >
-            <Icon :size="24" i="refresh" stroke="#fff" />
-            Tekrar Oyna
+            <Icon :size="24" i="arrow-left" stroke="#fff" />
+            Ormana Dön
           </Button>
-          <Button v-else size="fit" background="#46cb92" @click="play()">
-            <Icon :size="24" i="play" stroke="#fff" />
-            Oyna
-          </Button>
+          <span v-else class="playWrapper">
+            <Button
+              v-if="stars[0]"
+              size="fit"
+              background="#46cb92"
+              @click="play()"
+            >
+              <Icon :size="24" i="refresh" stroke="#fff" />
+              Tekrar Oyna
+            </Button>
+            <Button v-else size="fit" background="#46cb92" @click="play()">
+              <Icon :size="24" i="play" stroke="#fff" />
+              Oyna
+            </Button>
+          </span>
           <Button
             v-if="stars[0]"
             size="fit"
@@ -99,6 +110,10 @@ export default {
       type: Array,
       default: () => [0, 0, 0],
     },
+    inGame: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -118,6 +133,9 @@ export default {
     },
   },
   methods: {
+    goBack() {
+      this.$router.push('/forests')
+    },
     play() {
       this.$router.push('/code/' + this.activeEpisode)
     },

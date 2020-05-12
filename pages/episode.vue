@@ -118,6 +118,7 @@ export default {
   methods: {
     forestClickHandler(e) {
       const id = e.srcElement.parentElement.id
+      console.log(id)
       if (id.startsWith('OPEN-')) {
         const episodeId = id.substring(5)
         const episode = this.forest.episodes.find(
@@ -125,7 +126,7 @@ export default {
         )
         if (episode) {
           const userStats = this.completedEpisodes.find((el) => {
-            return el.id === this.forest.chapterId + '-' + episodeId
+            return el.episodeId === this.forest.chapterId + '-' + episodeId
           })
           console.log('OPENING EPISODE', episodeId)
           console.log('USER STATS: ', userStats)

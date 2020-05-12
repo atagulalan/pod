@@ -2,7 +2,7 @@
   <div
     :class="[`middleSection`, focus ? 'focus' : '']"
     :style="`min-Width:${80 * widthLimit}px;height: ${
-      80 * Math.ceil(n / widthLimit)
+      n !== 0 ? 80 * Math.ceil(n / widthLimit) : 160
     }px;`"
   >
     <button v-for="(e, i) in 6" :key="'button' + i" @click="setValue(i)">

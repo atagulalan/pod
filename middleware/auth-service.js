@@ -39,7 +39,12 @@ export const login = async function (email, pass, callback = () => {}) {
     })
 }
 
-export const register = async function (email, pass, name) {
+export const register = async function (
+  email,
+  pass,
+  name,
+  callback = () => {}
+) {
   await this.$axios
     .$post('/api/auth/register', { email, pass, name })
     .then((response) => {
@@ -54,6 +59,7 @@ export const register = async function (email, pass, name) {
           anonymous: false,
         })
         this.$modal.hide('authModal')
+        callback()
       }
     })
     .catch((error) => {

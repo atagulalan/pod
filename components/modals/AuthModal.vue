@@ -14,7 +14,7 @@
           modalType === 'login'
             ? 730
             : modalType === 'register'
-            ? 830
+            ? 940
             : modalType === 'forgotPass'
             ? 600
             : 0

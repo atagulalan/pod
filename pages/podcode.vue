@@ -1,5 +1,12 @@
 <template>
   <div class="gameWrapper">
+    <EpisodeModal
+      :stars="stars"
+      :info="`Bravo!`"
+      :mission="`Bölüm Başarılı`"
+      :active-episode="this.$route.params.id"
+      :in-game="true"
+    />
     <div v-if="activeItem !== null" class="focusHelper"></div>
     <div class="codeMenu">
       <div class="info">
@@ -29,8 +36,8 @@
         <InputRoller :input="podInstance.inputSection" />
         <MiddleSection
           :set-value="setValue"
-          :n="6"
-          :width-limit="3"
+          :n="memory[0]"
+          :width-limit="memory[1]"
           :items="podInstance.middleSection"
           :focus="activeItem !== null"
         />
@@ -66,6 +73,7 @@ import MiddleSection from '~/components/game/MiddleSection'
 import InputRoller from '~/components/game/InputRoller'
 import OutputRoller from '~/components/game/OutputRoller'
 import ConvertModal from '~/components/modals/ConvertModal'
+import EpisodeModal from '~/components/modals/EpisodeModal'
 import Character from '~/components/Character.vue'
 
 let uniqueCounter = 0
@@ -78,6 +86,7 @@ export default {
     InputRoller,
     OutputRoller,
     ConvertModal,
+    EpisodeModal,
     Character,
   },
   data() {
@@ -86,13 +95,10 @@ export default {
       activeItem: null,
       hover: -1,
       sanitizedArray: [],
-      pasteCode: `CME 1
-      INP 0
-      OUT 0
-      JMP 1`,
+      pasteCode: ``,
       mission: 'Görev: Yükleniyor...',
       info: 'Yükleniyor...',
-      restrictedCodeBlocks: ['INP', 'OUT', 'CPY', 'GET', 'JMP'],
+      restrictedCodeBlocks: [],
       characterAt: '',
       characterCustomization: {
         skin: '#fce6de',
@@ -114,6 +120,12 @@ export default {
         tests: [],
       },
       congratz: false,
+      minScores: {
+        exec: 0,
+        lines: 0,
+      },
+      stars: [0, 0, 0],
+      memory: [0, 0],
     }
   },
   computed: {
@@ -143,6 +155,9 @@ export default {
         this.mission = data.chapter.episodes.mission
         this.info = data.chapter.episodes.info
         this.tests = data.chapter.episodes.tests
+        this.minScores = data.chapter.episodes.scores.min
+        this.memory = data.chapter.episodes.memory
+        this.restrictedCodeBlocks = data.chapter.episodes.codeBlocks
 
         this.convert(this.pasteCode)
 
@@ -241,45 +256,57 @@ export default {
         },
         (returnObj) => {
           console.log(returnObj)
+          if (returnObj.type === 'bravo') {
+            this.stars = [
+              1,
+              this.minScores.lines >= this.sanitizedArray.length,
+              this.minScores.exec >= returnObj.exec,
+            ]
 
-          let testCount = 1
-          this.tests.forEach((test, i) => {
-            if (i === 0) return
-            console.log('Testing:', test)
-            const testInstance = new PodInstance(
-              {
-                inputSection: test.input,
-                winCondition: test.output,
-                logs: [],
-              },
-              (status) => {
-                if (status.type === 'bravo') {
-                  console.log('Test', i, 'başarılı.')
-                  testCount++
+            let testCount = 1
+            this.tests.forEach((test, i) => {
+              if (i === 0) return
+              console.log('Testing:', test)
+              const testInstance = new PodInstance(
+                {
+                  inputSection: test.input,
+                  winCondition: test.output,
+                  logs: [],
+                },
+                (status) => {
+                  if (status.type === 'bravo') {
+                    console.log('Test', i, 'başarılı.')
+                    testCount++
+                  }
                 }
-              }
-            )
-            console.log(testInstance)
-            testInstance.nextLine.bind(this)(this.sanitizedArray)
-          })
+              )
+              console.log(testInstance)
+              testInstance.nextLine.bind(this)(this.sanitizedArray)
+            })
 
-          const testsSuccessful = testCount === this.tests.length
+            const testsSuccessful = testCount === this.tests.length
 
-          // if all tests are good, send backend the code
-          if (testsSuccessful && this.congratz === false) {
-            this.congratz = true
-            console.log(this.sanitizedArray)
-            sendCode
-              .bind(this)(this.$route.params.id, this.sanitizedArray.join('\n'))
-              .then((e) => {
-                if (e.code === 'tests_successful') {
-                  console.log('başardın dostum')
-                }
-              })
-          } else if (this.congratz === true) {
-            console.log('Zaten yollandı, istek cevabı bekleniyor...')
-          } else {
-            // TODO make alternative test main one.
+            // if all tests are good, send backend the code
+            if (testsSuccessful /* && this.congratz === false */) {
+              this.congratz = true
+              console.log(this.sanitizedArray)
+              sendCode
+                .bind(this)(
+                  this.$route.params.id,
+                  this.sanitizedArray.join('\n')
+                )
+                .then((e) => {
+                  if (e.code === 'tests_successful') {
+                    console.log('başardın dostum')
+                    this.$modal.show('episodeModal')
+                    this.congratz = false
+                  }
+                })
+            } else if (this.congratz === true) {
+              console.log('Zaten yollandı, istek cevabı bekleniyor...')
+            } else {
+              // TODO make alternative test main one.
+            }
           }
         },
         (e) => (this.lineNumber = e),

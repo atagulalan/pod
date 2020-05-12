@@ -73,7 +73,9 @@ export default {
             // find latest branch of the tree
             ceps.forEach((cep) => {
               const newLatest = link.findIndex((l) => {
-                return l.episodeId === cep.id.split('-').slice(1).join('-')
+                return (
+                  l.episodeId === cep.episodeId.split('-').slice(1).join('-')
+                )
               })
               latest = newLatest > latest ? newLatest : latest
             })
@@ -89,7 +91,8 @@ export default {
           let y = 0
           ceps.forEach((cep) => {
             const ep = forest.episodes.find(
-              (ep) => ep.episodeId === cep.id.split('-').slice(1).join('-')
+              (ep) =>
+                ep.episodeId === cep.episodeId.split('-').slice(1).join('-')
             )
             if (ep) {
               y++

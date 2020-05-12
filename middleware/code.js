@@ -211,12 +211,6 @@ export class PodInstance {
       })
     }
 
-    if (arr[this.lineNumber] === undefined) {
-      this.emitResult({
-        type: 'bitti',
-      })
-      return
-    }
     if (
       JSON.stringify(this.winCondition) ===
         JSON.stringify(this.outputSection) &&
@@ -224,6 +218,14 @@ export class PodInstance {
     ) {
       this.emitResult({
         type: 'bravo',
+        exec: this.n,
+        lines: 0, // TODO
+      })
+      return
+    }
+    if (arr[this.lineNumber] === undefined) {
+      this.emitResult({
+        type: 'bitti',
       })
       return
     }
