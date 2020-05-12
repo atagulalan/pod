@@ -39,9 +39,9 @@ export const login = async function (email, pass, callback = () => {}) {
     })
 }
 
-export const register = async function (email, pass) {
+export const register = async function (email, pass, name) {
   await this.$axios
-    .$post('/api/auth/register', { email, pass })
+    .$post('/api/auth/register', { email, pass, name })
     .then((response) => {
       if (response.success) {
         this.$store.commit('localStorage/setUser', {
@@ -49,6 +49,7 @@ export const register = async function (email, pass) {
           id: {
             username: response.data.username,
             email: response.data.email,
+            name,
           },
           anonymous: false,
         })

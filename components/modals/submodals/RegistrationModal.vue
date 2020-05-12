@@ -15,6 +15,16 @@
       @resolveError="resolveError"
     />
     <Input
+      v-model="registerName"
+      leading="envelope"
+      name="name"
+      placeholder="Adınız"
+      type="text"
+      :submit="sendRegisterRequest"
+      center
+      @resolveError="resolveError"
+    />
+    <Input
       v-model="registerPass"
       leading="lock"
       name="pass"
@@ -80,10 +90,12 @@ export default {
   data() {
     return {
       registerMail: '',
+      registerName: '',
       registerPass: '',
       registerPassAgain: '',
       registerMailError: '',
       registerPassError: '',
+      registerNameError: '',
       registerPassAgainError: '',
       registerRememberError: false,
       registerRemember: false,
@@ -97,6 +109,7 @@ export default {
       this.registerMailError = !checkMail(this.registerMail)
         ? 'E-Posta adresiniz hatalı'
         : ''
+
       this.registerPassError =
         this.registerPass.length < 6 ? 'Şifreniz 6 karakterden az olamaz' : ''
       this.registerPassAgainError =
@@ -111,7 +124,11 @@ export default {
         !this.registerPassAgainError &&
         !this.registerRememberError
       ) {
-        register.bind(this)(this.registerMail, this.registerPass)
+        register.bind(this)(
+          this.registerMail,
+          this.registerPass,
+          this.registerName
+        )
       }
     },
     resolveError(errorHandler, newValue) {
