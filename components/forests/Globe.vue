@@ -10,23 +10,23 @@
 const markers = [
   {
     name: 'Redwood',
-    lat: -25,
-    long: 131,
+    lat: 36,
+    long: -120,
   },
   {
     name: 'Monteverde',
-    lat: -13,
-    long: -70,
+    lat: 10,
+    long: -80,
   },
   {
     name: 'Belgrad',
-    lat: 25,
-    long: 32,
+    lat: 38,
+    long: 20,
   },
   {
     name: 'Crooked',
-    lat: 51,
-    long: -2,
+    lat: 53,
+    long: 12,
   },
   // Amazon
   // Juizhaigou
@@ -518,6 +518,10 @@ const continents = {
     { lat: 21, long: 58 },
     { lat: 13, long: 44 },
     { lat: 30, long: 33.5 },
+    { lat: 37, long: 17 },
+    { lat: 39, long: 19 },
+    { lat: 41, long: 19 },
+    { lat: 38, long: 37 },
     { lat: 64, long: 37 },
   ],
   europe: [
