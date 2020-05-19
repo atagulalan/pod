@@ -17,7 +17,79 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+/* Tooltip */
+.popper {
+  width: auto;
+  color: #212121;
+  text-align: center;
+  padding: 2px;
+  display: inline-block;
+  position: absolute;
+  font-size: 14px;
+  font-weight: normal;
+  border: 1px #ebebeb solid;
+  z-index: 200000;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 7px 0;
+  background: white;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: 16pt;
+  z-index: 34;
+  pointer-events: none;
+  .popper__arrow {
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+    margin: 5px;
+  }
+  &[x-placement^='top'] {
+    margin-bottom: 5px;
+    .popper__arrow {
+      border-width: 5px 5px 0 5px;
+      border-color: #fafafa transparent transparent transparent;
+      bottom: -5px;
+      left: calc(50% - 5px);
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+  &[x-placement^='bottom'] {
+    margin-top: 5px;
+    .popper__arrow {
+      border-width: 0 5px 5px 5px;
+      border-color: transparent transparent #fafafa transparent;
+      top: -5px;
+      left: calc(50% - 5px);
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+  &[x-placement^='right'] {
+    margin-left: 5px;
+    .popper__arrow {
+      border-width: 5px 5px 5px 0;
+      border-color: transparent #fafafa transparent transparent;
+      left: -5px;
+      top: calc(50% - 5px);
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+  &[x-placement^='left'] {
+    margin-right: 5px;
+    .popper__arrow {
+      border-width: 5px 0 5px 5px;
+      border-color: transparent transparent transparent #fafafa;
+      right: -5px;
+      top: calc(50% - 5px);
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+}
+
 /* Modal */
 
 .v--modal-block-scroll {

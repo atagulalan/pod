@@ -33,7 +33,7 @@
 import Globe from '~/components/forests/Globe.vue'
 import ForestSelector from '~/components/atomic/ForestSelector.vue'
 import MobileMenu from '~/components/atomic/MobileMenu.vue'
-import { getForests } from '~/middleware/game'
+import { getForests, getLastBranch } from '~/middleware/game'
 
 export default {
   components: {
@@ -53,40 +53,11 @@ export default {
   watch: {
     completedEpisodes(ceps) {
       this.forests.forEach((forest) => {
-        let link = []
-
+        this.lastBranch[forest.name] = getLastBranch(ceps, forest)
         if (!forest.episodes.length) {
           this.percentages[forest.name] = 0
           this.locked[forest.name] = true
         } else {
-          console.log('ha?', forest)
-          // latest preq rearrange
-          link = forest.episodes.concat().sort((a, b) => {
-            return a.episodeId.replace('-', '.') - b.episodeId.replace('-', '.')
-          })
-
-          let latest = -1
-
-          if (ceps.length === 0) {
-            this.lastBranch[forest.name] = '0'
-          } else {
-            // find latest branch of the tree
-            ceps.forEach((cep) => {
-              const newLatest = link.findIndex((l) => {
-                return (
-                  l.episodeId === cep.episodeId.split('-').slice(1).join('-')
-                )
-              })
-              latest = newLatest > latest ? newLatest : latest
-            })
-
-            console.log(link[latest])
-
-            this.lastBranch[forest.name] = link[latest].episodeId.split('-')[0]
-          }
-
-          // console.log(link, ceps, link[latest])
-
           // calculate percentage
           let y = 0
           ceps.forEach((cep) => {
@@ -110,7 +81,13 @@ export default {
     },
   },
   mounted() {
-    getForests.bind(this)()
+    getForests
+      .bind(this)()
+      .then((data) => {
+        console.log(data)
+        this.forests = data.chapters
+        this.completedEpisodes = data.user.completedEpisodes
+      })
   },
   methods: {
     selectForest(id) {

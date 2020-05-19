@@ -3,50 +3,33 @@
     <ObjectiveModal />
     <CreditsModal />
     <div class="initWrapper">
-      <div class="logo">
-        <Logo />
+      <div class="initInner">
+        <div class="logo">
+          <Logo />
+        </div>
+        <MenuButton background="#46cb92" @click="selectSection('forests')">
+          Harita
+        </MenuButton>
+        <MenuButton background="#ff3448" @click="selectSection('store')">
+          Dolap
+        </MenuButton>
+        <MenuButton background="#00cde8" @click="showModal('objectiveModal')">
+          Amacımız
+        </MenuButton>
+        <MenuButton background="#ffcf00" @click="showModal('creditsModal')">
+          Jenerik
+        </MenuButton>
+        <MenuButton background="#683F28" @click="logout()">
+          Çıkış
+        </MenuButton>
       </div>
-      <button
-        :style="{ backgroundColor: '#46cb92' }"
-        @click="selectSection('forests')"
-      >
-        Harita
-      </button>
-      <button
-        :style="{ backgroundColor: '#ff3448' }"
-        @click="selectSection('store')"
-      >
-        Dolap
-      </button>
-      <button
-        :style="{ backgroundColor: '#00cde8' }"
-        @click="
-          () => {
-            this.$modal.show('objectiveModal')
-          }
-        "
-      >
-        Amacımız
-      </button>
-      <button
-        :style="{ backgroundColor: '#ffcf00' }"
-        @click="
-          () => {
-            this.$modal.show('creditsModal')
-          }
-        "
-      >
-        Jenerik
-      </button>
-      <button :style="{ backgroundColor: '#683F28' }" @click="logout()">
-        Çıkış
-      </button>
     </div>
   </div>
 </template>
 
 <script>
 import Logo from '~/components/atomic/Logo'
+import MenuButton from '~/components/atomic/MenuButton'
 import ObjectiveModal from '~/components/modals/ObjectiveModal'
 import CreditsModal from '~/components/modals/CreditsModal'
 import { logout } from '~/middleware/auth-service'
@@ -54,10 +37,14 @@ import { logout } from '~/middleware/auth-service'
 export default {
   components: {
     Logo,
+    MenuButton,
     ObjectiveModal,
     CreditsModal,
   },
   methods: {
+    showModal(modalName) {
+      this.$modal.show(modalName)
+    },
     selectSection(section) {
       this.$router.push(`/${section}`)
     },
@@ -74,36 +61,21 @@ export default {
   overflow: auto;
 
   .initWrapper {
-    width: 40vw;
-    height: 60vh;
-    margin: auto;
-    margin-top: 180px;
-    min-width: 400px;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
 
-    .logo {
-      width: 144px;
-      height: 200px;
-      max-width: 500px;
+    .initInner {
       margin: auto;
-    }
-
-    button {
-      border: 0;
-      border-radius: 500px;
-      cursor: pointer;
-      font-size: 20pt;
-      font-weight: 600;
-      padding: 17pt 32pt;
-      width: 90%;
-      margin: 0 auto 20px;
-      overflow: hidden;
-      max-width: 500px;
       text-align: center;
-      color: #fff;
-
-      &:hover {
-        filter: brightness(1.1);
+      padding: 50px 0;
+      width: 100%;
+      .logo {
+        width: 144px;
+        height: 200px;
+        max-width: 500px;
+        margin: auto;
       }
     }
   }

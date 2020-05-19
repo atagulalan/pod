@@ -48,6 +48,41 @@ export const commands = {
   },
 }
 
+export const positions = {
+  INP: {
+    left: 550,
+    top: 20,
+  },
+  OUT: {
+    left: 550,
+    top: 390,
+  },
+}
+
+export const calculateHypo = (o1, o2) => {
+  return Math.sqrt((o1.left - o2.left) ** 2 + (o1.top - o2.top) ** 2)
+}
+
+export const calculateTime = (distance) => {
+  return Math.floor(distance * 1.4)
+}
+
+export const go = (character, type, setTransition) => {
+  if (character) {
+    const time = calculateTime(
+      calculateHypo(
+        {
+          left: character.offsetLeft,
+          top: character.offsetTop,
+        },
+        positions[type]
+      )
+    )
+    setTransition(time, positions[type])
+    return time
+  }
+}
+
 export class PodCode {
   constructor(code) {
     this.code = code
@@ -148,6 +183,20 @@ export const sanitizeCode = function (nonSanitizedCode) {
 export class PodInstance {
   n = 0
   logs = []
+  lockedUntil = 0
+
+  runDat = (type, cb) => {
+    if (this.noWait) {
+      cb()
+    } else {
+      const dur = go(this.character, type, this.setTransition)
+      this.lockedUntil = dur + +new Date()
+
+      setTimeout(() => {
+        cb(dur)
+      }, dur)
+    }
+  }
 
   constructor(
     obj,
@@ -176,6 +225,9 @@ export class PodInstance {
     this.emitLineNumber = emitLineNumber
     this.emitOnHand = emitOnHand
     this.emitResult = emitResult
+    this.character = obj.character ? obj.character.$el : null
+    this.setTransition = obj.setTransition ? obj.setTransition : () => {}
+    this.noWait = obj.noWait ? obj.noWait : false
   }
 
   changeLineNumber(newLineNumber) {
@@ -257,6 +309,7 @@ export class PodInstance {
         this.nextLine.bind(this)(arr)
       }
     }.bind(this)
+
     const fns = {
       CME(e) {
         // if indicator is on jump ends, do not count it as exec
@@ -265,22 +318,27 @@ export class PodInstance {
       },
       INP: () => {
         this.printLog.info('Kutuyu alıyorum')
-        this.setOnHand(this.inputSection.shift())
-        if (!this.onHand) {
-          this.printLog.error('Alacak hiçbir kutu yok ve problem çözülemedi')
-        } else {
-          next()
-        }
+        this.runDat('INP', () => {
+          this.setOnHand(this.inputSection.shift())
+          if (!this.onHand) {
+            this.printLog.error('Alacak hiçbir kutu yok ve problem çözülemedi')
+          } else {
+            next()
+          }
+        })
       },
       OUT: () => {
         this.printLog.info('Kutuyu Veriyorum')
-        if (this.onHand) {
-          this.outputSection.push(this.onHand)
-          this.setOnHand(null)
-          next()
-        } else {
-          this.printLog.error('Ellerim bomboş')
-        }
+
+        this.runDat('OUT', () => {
+          if (this.onHand) {
+            this.outputSection.push(this.onHand)
+            this.setOnHand(null)
+            next()
+          } else {
+            this.printLog.error('Ellerim bomboş')
+          }
+        })
       },
       CPY: (e) => {
         this.printLog.info('Kopyalıyorum')
@@ -330,6 +388,8 @@ export class PodInstance {
         }
       },
     }
-    fns[commandAndValue[0]](commandAndValue[1])
+    if ((dont && +new Date() > this.lockedUntil) || !dont) {
+      fns[commandAndValue[0]](commandAndValue[1])
+    }
   }.bind(this)
 }

@@ -4,17 +4,45 @@
       name="convertModal"
       transition="scale"
       class="convertModal"
-      width="400"
-      height="auto"
+      width="800"
+      height="800"
       @before-close="beforeClose"
     >
-      <div class="buttons">
-        <textarea id v-model="code" name="paste" cols="15" rows="10">
+      <div class="modalInnerWrapper">
+        <h1>Kodu Kopyala</h1>
+        <p>
+          Buradan halihazırda yazmış olduğun kodu kopyalayabilir, veya kod
+          yapıştırabilirsin.
+        </p>
+        <textarea
+          id
+          v-model="pasteCode"
+          class="codeTextArea"
+          name="paste"
+          cols="15"
+          rows="10"
+        >
         </textarea>
-        <button @click="convert(code)">CONVERT</button>
-      </div>
-      <div class="mobileModalExitButton" @click="$modal.hide('convertModal')">
-        <Icon :size="36" i="close" stroke="#f00" />
+
+        <Button
+          v-clipboard:copy="pasteCode"
+          v-clipboard:success="onCopy"
+          v-clipboard:error="onError"
+          size="fit"
+          :background="copyButton.background"
+          >{{ copyButton.text }}</Button
+        >
+
+        <Button
+          size="fit"
+          :background="saveButton.background"
+          :color="saveButton.color"
+          @click="convertAndClose()"
+          >{{ saveButton.text }}</Button
+        >
+        <div class="mobileModalExitButton" @click="$modal.hide('convertModal')">
+          <Icon :size="36" i="close" stroke="#f00" />
+        </div>
       </div>
     </modal>
   </div>
@@ -22,9 +50,11 @@
 
 <script>
 import Icon from '~/components/atomic/Icon.vue'
+import Button from '~/components/atomic/Button.vue'
 
 export default {
   components: {
+    Button,
     Icon,
   },
   props: {
@@ -37,7 +67,66 @@ export default {
       default: () => {},
     },
   },
+  data() {
+    return {
+      pasteCode: '',
+      copyButton: {
+        background: '#c345ff',
+        text: 'Kodu Kopyala',
+        timeout: null,
+      },
+      saveButton: {
+        background: '#9ccc66',
+        color: '#fff',
+        text: 'Kaydet',
+        timeout: null,
+      },
+    }
+  },
+  watch: {
+    code(newCode) {
+      this.pasteCode = newCode
+    },
+  },
   methods: {
+    convertAndClose() {
+      let error
+      try {
+        this.convert(this.pasteCode)
+      } catch (err) {
+        error = err
+        this.saveButton.text = 'Kaydedilemedi!'
+        this.saveButton.color = '#fff'
+        this.saveButton.background = '#ff4f5b'
+        clearTimeout(this.saveButton.timeout)
+        this.saveButton.timeout = setTimeout(() => {
+          this.saveButton.background = '#9ccc66'
+          this.saveButton.color = '#fff'
+          this.saveButton.text = 'Kaydet'
+        }, 4000)
+      }
+      if (!error) {
+        this.$modal.hide('convertModal')
+      }
+    },
+    onCopy() {
+      this.copyButton.background = '#9ccc66'
+      this.copyButton.text = 'Kopyalandı!'
+      clearTimeout(this.copyButton.timeout)
+      this.copyButton.timeout = setTimeout(() => {
+        this.copyButton.background = '#c345ff'
+        this.copyButton.text = 'Kodu Kopyala'
+      }, 4000)
+    },
+    onError() {
+      this.copyButton.background = '#ff4f5b'
+      this.copyButton.text = 'Hata!'
+      clearTimeout(this.copyButton.timeout)
+      this.copyButton.timeout = setTimeout(() => {
+        this.copyButton.background = '#c345ff'
+        this.copyButton.text = 'Kodu Kopyala'
+      }, 4000)
+    },
     beforeClose() {
       this.modalType = 'login'
     },
@@ -56,9 +145,29 @@ export default {
     left: 0;
     top: 0;
     width: 100%;
-    transform: scale(1.5);
+    transform: scale(1.5) translateX(-33.3%);
     transform-origin: top;
     position: absolute;
+    width: 420px;
+    left: 50%;
+    text-align: center;
+  }
+
+  p {
+    text-align: center;
+  }
+
+  .codeTextArea {
+    width: 100%;
+    border-radius: 20px;
+    border: 1px solid #dddddd;
+    padding: 20px;
+    height: 220px;
+    margin: 20px 0;
+  }
+
+  .buttonWrapper {
+    display: inline-block;
   }
 
   .scale-enter-active,
@@ -87,7 +196,7 @@ export default {
     h1 {
       font-size: 18px;
       padding-top: 70px;
-      padding-bottom: 70px;
+      padding-bottom: 20px;
       color: black;
       font-weight: 500;
       cursor: default;

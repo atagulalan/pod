@@ -125,7 +125,7 @@
 <script>
 import Icon from '~/components/atomic/Icon.vue'
 import Button from '~/components/atomic/Button.vue'
-import PartContainer from '~/components/store/PartContainer'
+import PartContainer from '~/components/store/PartContainer.vue'
 
 export default {
   components: { Icon, PartContainer, Button },

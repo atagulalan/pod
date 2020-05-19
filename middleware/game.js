@@ -23,14 +23,39 @@ export const sendCode = async function (id, code) {
 }
 
 export const getForests = async function () {
-  await this.$axios
+  const k = await this.$axios
     .$get('/api/chapter/list')
     .then((response) => {
       if (response.success) {
-        console.log(response)
-        this.forests = response.data.chapters
-        this.completedEpisodes = response.data.user.completedEpisodes
+        return response.data
       }
     })
     .catch(console.log)
+  return k
+}
+
+export const getLastBranch = function (ceps, forest) {
+  let lastBranch = 0
+  let link = []
+
+  if (forest.episodes.length) {
+    link = forest.episodes.concat().sort((a, b) => {
+      return a.episodeId.replace('-', '.') - b.episodeId.replace('-', '.')
+    })
+
+    let latest = -1
+
+    if (ceps.length !== 0) {
+      // find latest branch of the tree
+      ceps.forEach((cep) => {
+        const newLatest = link.findIndex((l) => {
+          return l.episodeId === cep.episodeId.split('-').slice(1).join('-')
+        })
+        latest = newLatest > latest ? newLatest : latest
+      })
+
+      lastBranch = link[latest].episodeId.split('-')[0]
+    }
+  }
+  return lastBranch
 }

@@ -1,47 +1,39 @@
 <template>
   <div class="storeWrapper">
-    <transition name="fade">
-      <div v-if="!loaded" class="loadingWrapper">
-        <div class="infinityChrome">
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
-      <span v-else>
-        <MobileMenu
-          title="Dolap"
-          :back="
-            () => {
-              this.$router.push('/init')
-            }
-          "
-        >
-          <h1 class="titleRight">
-            <div class="coin"></div>
-            {{ money }}
-          </h1>
-        </MobileMenu>
-        <Character
-          :skin-color="skinColor"
-          :eyes="eyes"
-          :hair="hair"
-          :shirt="shirt"
-          :shorts="shorts"
-          :shoes="shoes"
-        />
-        <StoreList
-          :items="items"
-          :skin-color="skinColor"
-          :validate-item="validateItem"
-          :owned="owned"
-          :money="money"
-          :worn="worn"
-          :wearing-loading="wearingLoading"
-          :wear-items="wear"
-        />
-      </span>
-    </transition>
+    <div :class="`loadingWrapper ${loaded ? 'animate' : ''}`"></div>
+    <span v-if="loaded">
+      <MobileMenu
+        title="Dolap"
+        :back="
+          () => {
+            this.$router.push('/init')
+          }
+        "
+      >
+        <h1 class="titleRight">
+          <div class="coin"></div>
+          {{ money }}
+        </h1>
+      </MobileMenu>
+      <Character
+        :skin-color="skinColor"
+        :eyes="eyes"
+        :hair="hair"
+        :shirt="shirt"
+        :shorts="shorts"
+        :shoes="shoes"
+      />
+      <StoreList
+        :items="items"
+        :skin-color="skinColor"
+        :validate-item="validateItem"
+        :owned="owned"
+        :money="money"
+        :worn="worn"
+        :wearing-loading="wearingLoading"
+        :wear-items="wear"
+      />
+    </span>
   </div>
 </template>
 
@@ -126,101 +118,6 @@ export default {
     width: 100vw;
     height: 100vh;
     z-index: 0;
-  }
-
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.7s;
-    transition-delay: 1s;
-  }
-  .fade-enter,
-  .fade-leave-to {
-    opacity: 0;
-  }
-
-  .loadingWrapper {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-  }
-
-  .infinityChrome {
-    width: 128px;
-    height: 60px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .infinityChrome div {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    background: #ff4c60;
-    box-shadow: 2px 2px 8px rgba(255, 76, 96, 0.09);
-    border-radius: 50%;
-    animation: moveSvg 6.9s linear infinite;
-    -webkit-filter: url(#goo);
-    filter: url(#goo);
-    transform: scaleX(-1);
-    offset-path: path(
-      'M64.3636364,29.4064278 C77.8909091,43.5203348 84.4363636,56 98.5454545,56 C112.654545,56 124,44.4117395 124,30.0006975 C124,15.5896556 112.654545,3.85282763 98.5454545,4.00139508 C84.4363636,4.14996252 79.2,14.6982509 66.4,29.4064278 C53.4545455,42.4803627 43.5636364,56 29.4545455,56 C15.3454545,56 4,44.4117395 4,30.0006975 C4,15.5896556 15.3454545,4.00139508 29.4545455,4.00139508 C43.5636364,4.00139508 53.1636364,17.8181672 64.3636364,29.4064278 Z'
-    );
-  }
-  .infinityChrome div:before,
-  .infinityChrome div:after {
-    content: '';
-    position: absolute;
-    display: block;
-    border-radius: 50%;
-    width: 14px;
-    height: 14px;
-    background: inherit;
-    top: 50%;
-    left: 50%;
-    margin: -7px 0 0 -7px;
-    box-shadow: inherit;
-  }
-  .infinityChrome div:before {
-    animation: drop1 0.8s linear infinite;
-  }
-  .infinityChrome div:after {
-    animation: drop2 0.8s linear infinite 0.4s;
-  }
-  .infinityChrome div:nth-child(2) {
-    animation-delay: -2.3s;
-  }
-  .infinityChrome div:nth-child(3) {
-    animation-delay: -4.6s;
-  }
-  @keyframes moveSvg {
-    0% {
-      offset-distance: 0%;
-    }
-    25% {
-      background: #6c6ce5;
-    }
-    75% {
-      background: #ffd15c;
-    }
-    100% {
-      offset-distance: 100%;
-    }
-  }
-  @keyframes drop1 {
-    100% {
-      transform: translate(32px, 8px) scale(0);
-    }
-  }
-  @keyframes drop2 {
-    0% {
-      transform: translate(0, 0) scale(0.9);
-    }
-    100% {
-      transform: translate(32px, -8px) scale(0);
-    }
   }
 
   .mobileMenu {

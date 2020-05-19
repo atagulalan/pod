@@ -6,13 +6,34 @@
       :mission="`Bölüm Başarılı`"
       :active-episode="this.$route.params.id"
       :in-game="true"
+      :forest="this.$route.params.id"
     />
     <div v-if="activeItem !== null" class="focusHelper"></div>
     <div class="codeMenu">
       <div class="info">
         <h1>{{ mission }}</h1>
         <h2>{{ info }}</h2>
-        <div class="ada"></div>
+        <popper
+          ref="adaRef"
+          trigger="focus"
+          :force-show="force"
+          :disabled="false"
+          :options="{
+            trigger: 'hover',
+            placement: 'left',
+            modifiers: { offset: { offset: '0px' } },
+          }"
+        >
+          <div class="popper adaSays" @click="showNextLine()">
+            <span>{{ adaSays.text[adaSays.line] }}</span>
+            <small v-if="adaSays.text.length - 1 === adaSays.line"
+              >Kapatmak için tıkla</small
+            >
+            <small v-else>Devam etmek için tıkla</small>
+          </div>
+
+          <div slot="reference" class="ada" @click="showNextLine()"></div>
+        </popper>
       </div>
       <Code
         :code-lines="codeLines"
@@ -28,11 +49,12 @@
         <button class="step" @click="step()"></button>
         <button class="reset" @click="reset()"></button>
         <button class="clear" @click="clear()"></button>
+        <button class="text" @click="getText()"></button>
       </div>
     </div>
     <OpCode class="opCodeMenu" :opcodes="opcodes" />
-    <div class="gameArea">
-      <div class="scaler">
+    <div ref="gameArea" class="gameArea">
+      <div ref="scaler" class="scaler" :style="`transform:scale(${scaleBy})`">
         <InputRoller :input="podInstance.inputSection" />
         <MiddleSection
           :set-value="setValue"
@@ -43,6 +65,7 @@
         />
         <OutputRoller :output="podInstance.outputSection" />
         <Character
+          ref="character"
           :skin-color="characterCustomization.skin"
           :eyes="characterCustomization.eyes"
           :hair="characterCustomization.hair"
@@ -51,10 +74,11 @@
           :shoes="characterCustomization.shoes"
           :holding="podInstance.onHand"
           :class="characterAt"
+          :style="characterStyle"
         />
       </div>
     </div>
-    <ConvertModal :code="codeString" />
+    <ConvertModal :code="codeString" :convert="convert" />
   </div>
 </template>
 
@@ -67,13 +91,13 @@ import {
   PodInstance,
 } from '~/middleware/code'
 import { getCode, sendCode } from '~/middleware/game'
-import Code from '~/components/game/Code'
-import OpCode from '~/components/game/OpCode'
-import MiddleSection from '~/components/game/MiddleSection'
-import InputRoller from '~/components/game/InputRoller'
-import OutputRoller from '~/components/game/OutputRoller'
-import ConvertModal from '~/components/modals/ConvertModal'
-import EpisodeModal from '~/components/modals/EpisodeModal'
+import Code from '~/components/game/Code.vue'
+import OpCode from '~/components/game/OpCode.vue'
+import MiddleSection from '~/components/game/MiddleSection.vue'
+import InputRoller from '~/components/game/InputRoller.vue'
+import OutputRoller from '~/components/game/OutputRoller.vue'
+import ConvertModal from '~/components/modals/ConvertModal.vue'
+import EpisodeModal from '~/components/modals/EpisodeModal.vue'
 import Character from '~/components/Character.vue'
 
 let uniqueCounter = 0
@@ -91,11 +115,18 @@ export default {
   },
   data() {
     return {
+      adaSays: {
+        line: -1,
+        text: [],
+      },
       codeLines: [],
       activeItem: null,
       hover: -1,
       sanitizedArray: [],
-      pasteCode: ``,
+      pasteCode: `CME 0
+      INP 0
+      OUT 0
+      JMP 0`,
       mission: 'Görev: Yükleniyor...',
       info: 'Yükleniyor...',
       restrictedCodeBlocks: [],
@@ -109,6 +140,7 @@ export default {
         hair: '0',
       },
       tests: [],
+      activeTest: null,
       podInstance: {
         inputSection: [],
         lineNumber: 0,
@@ -126,6 +158,10 @@ export default {
       },
       stars: [0, 0, 0],
       memory: [0, 0],
+      force: false,
+      characterStyle: ``,
+      scaleBy: 1,
+      isRunning: false,
     }
   },
   computed: {
@@ -138,7 +174,13 @@ export default {
       )
     },
   },
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize)
+  },
   mounted() {
+    window.addEventListener('resize', this.handleResize)
+    this.handleResize()
+
     getCode
       .bind(this)(this.$route.params.id)
       .then((data) => {
@@ -155,16 +197,52 @@ export default {
         this.mission = data.chapter.episodes.mission
         this.info = data.chapter.episodes.info
         this.tests = data.chapter.episodes.tests
+        this.activeTest = this.tests[0]
+        this.adaSays.text = this.activeTest.text
+        this.adaSays.line = 0
         this.minScores = data.chapter.episodes.scores.min
         this.memory = data.chapter.episodes.memory
         this.restrictedCodeBlocks = data.chapter.episodes.codeBlocks
 
         this.convert(this.pasteCode)
 
+        this.force = true
+        this.$refs.adaRef.doShow()
+        console.log('Ada:', this.$refs.adaRef)
+
         console.log('Pod Instance:', this.podInstance)
       })
   },
   methods: {
+    handleResize() {
+      if (this.$refs.gameArea && this.$refs.scaler) {
+        const wrapper = this.$refs.gameArea.getBoundingClientRect()
+        const content = {
+          width: this.$refs.scaler.offsetWidth,
+          height: this.$refs.scaler.offsetHeight,
+        }
+        const s = Math.min(
+          wrapper.width / content.width,
+          wrapper.height / content.height
+        )
+        this.scaleBy = s
+      }
+    },
+    setTransition(t, o) {
+      console.log('Setting time:', t, o)
+      this.characterStyle = `transition: ${t}ms left cubic-bezier(0.4, 0.4, 0.4, 1) 0s, ${t}ms top cubic-bezier(0.4, 0.4, 0.4, 1) 0s; left: ${o.left}px; top: ${o.top}px;`
+    },
+    showNextLine() {
+      if (this.adaSays.line === -1) {
+        this.$refs.adaRef.doShow()
+      }
+      this.adaSays.line = Number(this.adaSays.line + 1)
+      console.log(this.adaSays.line)
+      if (this.adaSays.line === this.adaSays.text.length) {
+        this.$refs.adaRef.doClose()
+        this.adaSays.line = -1
+      }
+    },
     onDrop(collection, dropResult) {
       if (dropResult.removedIndex === null && dropResult.addedIndex !== null) {
         // ilk birakilma, eger deger varsa aktiflestir
@@ -252,7 +330,9 @@ export default {
     reset() {
       this.podInstance = new PodInstance(
         {
-          tests: this.tests,
+          tests: [this.activeTest],
+          character: this.$refs.character,
+          setTransition: this.setTransition,
         },
         (returnObj) => {
           console.log(returnObj)
@@ -272,6 +352,7 @@ export default {
                   inputSection: test.input,
                   winCondition: test.output,
                   logs: [],
+                  noWait: true,
                 },
                 (status) => {
                   if (status.type === 'bravo') {
@@ -285,6 +366,7 @@ export default {
             })
 
             const testsSuccessful = testCount === this.tests.length
+            console.log(testCount, this.tests.length)
 
             // if all tests are good, send backend the code
             if (testsSuccessful /* && this.congratz === false */) {
@@ -317,17 +399,25 @@ export default {
       console.log(`ERROR AT LINE ${this.lineNumber} BECAUSE ${exception}`)
     },
     run() {
-      this.reset()
-      this.podInstance.nextLine.bind(this)(this.sanitizedArray)
+      if (!this.isRunning) {
+        // START
+        this.reset()
+        this.podInstance.nextLine.bind(this)(this.sanitizedArray)
+      } else {
+        // STOP
+      }
     },
     step() {
       this.podInstance.nextLine.bind(this)(
         this.sanitizedArray,
         (e) => {
-          this.characterAt = e[0] + e[1]
+          // this.characterAt = e[0] + e[1]
         },
         true
       )
+    },
+    getText() {
+      this.$modal.show('convertModal')
     },
   },
 }
@@ -337,6 +427,8 @@ export default {
 .gameWrapper {
   padding: 50px;
   height: 100vh;
+  background: #b8d75f;
+  background-size: cover;
 
   .box {
     width: 40px;
@@ -363,13 +455,14 @@ export default {
   .codeMenu {
     border: 2px solid rgba(0, 0, 0, 0.1);
     border-radius: 20px;
-    overflow: hidden;
     height: 100%;
     width: 400px;
     float: left;
+    background: #fff;
     .info {
       height: 200px;
       background: rgba(0, 0, 0, 0.05);
+      border-radius: 20px 20px 0 0;
       margin-bottom: 5px;
       position: relative;
       padding: 10px 20px;
@@ -391,15 +484,27 @@ export default {
         bottom: 0;
         right: 0;
       }
+      .adaSays {
+        max-width: 300px;
+        font-size: 18pt;
+        pointer-events: initial;
+        text-align: left;
+        small {
+          text-align: right;
+          font-size: 10pt;
+          display: block;
+        }
+      }
     }
 
     .buttons {
       padding: 10px;
       text-align: center;
       background: rgba(0, 0, 0, 0.05);
+      border-radius: 0 0 20px 20px;
       button {
-        width: 80px;
-        height: 80px;
+        width: 70px;
+        height: 70px;
         background-color: #9ccc66;
         border-radius: 50%;
         margin: 0 0 10px;
@@ -419,6 +524,9 @@ export default {
         &.run {
           background-image: url(/img/game/buttons/run.svg);
         }
+        &.run.stop {
+          background-image: url(/img/game/buttons/stop.svg);
+        }
         &.step {
           background-image: url(/img/game/buttons/step.svg);
         }
@@ -427,6 +535,9 @@ export default {
         }
         &.clear {
           background-image: url(/img/game/buttons/clear.svg);
+        }
+        &.text {
+          background-image: url(/img/game/buttons/text.svg);
         }
       }
     }
@@ -443,33 +554,24 @@ export default {
     top: 0;
     position: absolute;
     z-index: 33;
+    align-items: center;
+    display: flex;
+    justify-items: center;
 
     .scaler {
       width: 685px;
-      transform: scale(1.5);
-      transform-origin: top left;
+      transform-origin: center left;
     }
 
     .character {
       width: 150px;
       position: absolute;
       z-index: 30;
-      transition: 0.2s left, 0.2s top;
       left: 60px;
       top: 90px;
 
-      &.INP0 {
-        left: 550px;
-        top: 20px;
-      }
-
-      &.OUT0 {
-        left: 550px;
-        top: 390px;
-      }
-
       &.GET0,
-      &.CPY0 {
+      &.PY0 {
         left: 170px;
         top: 100px;
       }

@@ -71,7 +71,13 @@ export default {
     this.componentLoader = () =>
       import(`~/static/img/forests/${this.$route.params.id}.svg?inline`)
     this.id = this.$route.params.id
-    getForests.bind(this)()
+    getForests
+      .bind(this)()
+      .then((data) => {
+        console.log(data)
+        this.forests = data.chapters
+        this.completedEpisodes = data.user.completedEpisodes
+      })
 
     /* SCROLLING START */
     const episodeWrapper = document.getElementById('episodeWrapper')
@@ -136,8 +142,8 @@ export default {
           if (userStats) {
             this.stars = [
               true,
-              episode.lowestLines >= userStats.lines,
-              episode.lowestExec >= userStats.exec,
+              episode.scores.min.lines >= userStats.lines,
+              episode.scores.min.exec >= userStats.exec,
             ]
             console.log('STARS: ', this.stars)
           } else {

@@ -2,7 +2,7 @@
   <div class="container">
     <ResetPassModal />
     <Hero v-if="loaded" />
-    <div v-else class="loader">
+    <div v-show="!loaded" class="loader">
       <Logo class="logo" />
       Yükleniyor
     </div>
@@ -55,6 +55,33 @@ export default {
 </script>
 
 <style lang="scss">
+@keyframes fadein {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  80% {
+    transform: translateY(0px);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.blackLoading {
+  width: 100vw;
+  height: 100vh;
+  animation: fadein 5s;
+  animation-delay: 0.2s;
+  animation-fill-mode: forwards;
+  opacity: 1;
+  background: black;
+  position: absolute;
+  z-index: 9999999;
+  left: 0;
+  top: 0;
+}
+
 /*
   ---------------------------------------------
   Default Styles
@@ -112,67 +139,127 @@ body {
   Page Transitions
   ---------------------------------------------
 */
+@keyframes getIn {
+  0% {
+    transform: translateX(100vw);
+  }
+  100% {
+    transform: translateX(-40vh);
+  }
+}
 
-@keyframes getInLeft {
+@keyframes getOut {
   0% {
-    height: auto;
-    opacity: 0;
-    transform: translateX(-50px);
+    transform: translateX(0);
   }
   100% {
-    height: auto;
-    opacity: 1;
-    transform: translateX(0px);
+    transform: translateX(calc(-100vw - 40vh));
   }
 }
-@keyframes getOutLeft {
-  0% {
-    opacity: 1;
-    transform: translateX(0px);
-  }
+
+@keyframes wait {
   100% {
-    opacity: 0;
-    transform: translateX(50px);
+    transform: translateX(0);
   }
 }
-@keyframes getInRight {
-  0% {
-    height: auto;
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  100% {
-    height: auto;
-    opacity: 1;
-    transform: translateX(0px);
-  }
+
+.default-leave-active::after,
+.layout-leave-active::after,
+.default-enter-active::after,
+.layout-enter-active::after,
+.loadingWrapper {
+  content: '';
+  height: 100vh;
+  left: 0;
+  top: 0;
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
 }
-@keyframes getOutRight {
-  0% {
-    opacity: 1;
-    transform: translateX(0px);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
+
+$loadingColor: rgb(0, 0, 0);
+
+.default-leave-active::after,
+.layout-leave-active::after {
+  width: calc(100vw + 40vh);
+  background: radial-gradient(
+      circle at 80vh center,
+      $loadingColor 0,
+      $loadingColor 80vh,
+      transparent 0,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at 160vh center,
+      $loadingColor 0,
+      $loadingColor 80vh,
+      transparent 0,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at 240vh center,
+      $loadingColor 0,
+      $loadingColor 80vh,
+      transparent 0,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at 320vh center,
+      $loadingColor 0,
+      $loadingColor 80vh,
+      transparent 0,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at 400vh center,
+      $loadingColor 0,
+      $loadingColor 80vh,
+      transparent 0,
+      transparent 100%
+    );
+  animation: getIn 0.333s ease-in 0s;
+  animation-fill-mode: forwards;
 }
+
+.default-enter-active::after,
+.layout-enter-active::after,
+.loadingWrapper {
+  width: calc(100vw + 80vh);
+  background: radial-gradient(
+    circle at right center,
+    transparent 0,
+    transparent 80vh,
+    $loadingColor 0,
+    $loadingColor 100%
+  );
+}
+
+.loadingWrapper.animate {
+  animation: getOut 0.333s ease-out 0s forwards;
+}
+
+.default-enter-active::after,
+.layout-enter-active::after {
+  animation: getOut 0.333s ease-out 0.333s;
+  animation-fill-mode: forwards;
+}
+
 .default-enter-active,
 .layout-enter-active {
-  height: 0;
-  overflow: hidden;
-  animation: getInRight 0.2s ease-out 0.2s;
+  animation: wait 0.333s ease-out 0.333s;
 }
-.layout-enter-active {
-  animation: getInLeft 0.2s ease-out 0.2s;
-}
-.default-leave-active {
-  animation: getOutRight 0.2s ease-in 0s;
-}
+.default-leave-active,
 .layout-leave-active {
-  animation: getOutLeft 0.2s ease-in 0s;
+  animation: wait 0.333s ease-in 0s;
 }
 
+.default-enter-active,
+.layout-enter-active,
+.default-leave-active,
+.layout-leave-active {
+  overflow: hidden !important;
+  width: 100vw;
+}
 /*
   ---------------------------------------------
   Parallax base styles

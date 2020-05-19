@@ -134,6 +134,7 @@ export default {
   }
 
   .authModal {
+    z-index: 1001;
     .v--modal {
       box-shadow: none;
       background-image: url('/img/popup.svg');

@@ -35,7 +35,7 @@
             v-if="inGame"
             size="fit"
             background="#46cb92"
-            @click="goBack()"
+            @click="goForest()"
           >
             <Icon :size="24" i="arrow-left" stroke="#fff" />
             Ormana Dön
@@ -86,6 +86,7 @@
 import Icon from '~/components/atomic/Icon.vue'
 import Button from '~/components/atomic/Button.vue'
 import Star from '~/components/atomic/Star.vue'
+import { getLastBranch, getForests } from '~/middleware/game'
 
 export default {
   components: {
@@ -114,6 +115,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    forest: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -135,6 +140,19 @@ export default {
   methods: {
     goBack() {
       this.$router.push('/forests')
+    },
+    goForest() {
+      getForests
+        .bind(this)()
+        .then((data) => {
+          const k = getLastBranch(
+            data.user.completedEpisodes,
+            data.chapters.find(
+              (el) => el.chapterId === this.forest.slice('-')[0]
+            )
+          )
+          this.$router.push(`/forests/${this.forest.slice('-')[0] + '-' + k}`)
+        })
     },
     play() {
       this.$router.push('/code/' + this.activeEpisode)

@@ -8,19 +8,22 @@
               <div class="imageWithText">
                 <div class="redPlant hvr-bob"></div>
                 <div class="text">
-                  <h1>Bilgisayar mı?<br />Çocuk Oyuncağı!</h1>
+                  <h1>
+                    Bilgisayar mı?
+                    <br />Çocuk Oyuncağı!
+                  </h1>
                   <p>
                     Bilgisayarların nasıl bilgiyi saydığını öğrenin, hem de
                     eğlenceli bir şekilde!
                   </p>
                   <Button size="big" background="#9CCC66" @click="show">
                     <Icon
-                      :size="48"
+                      :size="44"
                       i="video"
                       stroke="#fff"
                       stroke-width="1.5"
                     />
-                    Şimdi Başla!
+                    <span style="vertical-align: middle;">Şimdi Başla!</span>
                   </Button>
                 </div>
               </div>
@@ -43,9 +46,7 @@
           <div class="layer m-150">
             <div class="ceiling">
               <div class="middle" style="width: 100%; max-width: 1200px;">
-                <h2>
-                  Sürekli tekrarlanan işleri robotlar yapsa nasıl olurdu?
-                </h2>
+                <h2>Sürekli tekrarlanan işleri robotlar yapsa nasıl olurdu?</h2>
               </div>
             </div>
             <div class="string"></div>
@@ -113,9 +114,7 @@
           <div class="layer m0 priceCeiling">
             <div class="text">
               <h1>Tamamen ücretsiz.</h1>
-              <p>
-                Sonsuza kadar ücretsizdir ve ücretsiz kalacaktır.
-              </p>
+              <p>Sonsuza kadar ücretsizdir ve ücretsiz kalacaktır.</p>
             </div>
             <div class="coinWrapper">
               <div class="coin">
@@ -135,17 +134,15 @@
             <div class="middle">
               <div class="text">
                 <h1>Şimdi başla!</h1>
-                <p>
-                  Bilgisayarların dünyasına ilk adımını at.
-                </p>
+                <p>Bilgisayarların dünyasına ilk adımını at.</p>
                 <Button size="big" background="#C345FF" @click="show">
                   <Icon
-                    :size="48"
+                    :size="44"
                     i="entrance"
                     stroke="#fff"
                     stroke-width="1.5"
                   />
-                  Giriş Yap
+                  <span style="vertical-align: middle;">Giriş Yap</span>
                 </Button>
               </div>
             </div>
@@ -849,29 +846,12 @@ export default {
   transform: translate(-50%, -50%);
 }
 
-@keyframes fadein {
-  0% {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  80% {
-    transform: translateY(0px);
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
 .heroWrapper {
   width: 100%;
   height: auto;
   position: relative;
   z-index: 0;
-  animation: fadein 0.5s;
-  animation-delay: 0.2s;
-  animation-fill-mode: forwards;
-  opacity: 0;
-
+  opacity: 1;
   hr {
     border: 0;
     width: 100%;
