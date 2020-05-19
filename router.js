@@ -7,6 +7,7 @@ import Store from '~/pages/store'
 import Forests from '~/pages/forests'
 import Episodes from '~/pages/episode'
 import Init from '~/pages/init'
+import Scoreboard from '~/pages/scoreboard'
 
 Vue.use(Router)
 
@@ -68,6 +69,11 @@ export function createRouter() {
         name: 'Init',
         path: '/init',
         component: Init,
+      },
+      {
+        name: 'Scoreboard',
+        path: '/scoreboard',
+        component: Scoreboard,
       },
     ],
   })
