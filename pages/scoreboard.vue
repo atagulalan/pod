@@ -9,11 +9,21 @@
         </div>
 
         <div class="iconWrapper" @click="isTop5 = true">
-          <Icon :size="26" i="cup" stroke="#fff" stroke-width="2" />
+          <Icon
+            :size="26"
+            i="cup"
+            :stroke="isTop5 ? `#424242` : `#fff`"
+            stroke-width="2"
+          />
           <h1 :class="{ active: isTop5 }">en iyi 5</h1>
         </div>
         <div class="iconWrapper" @click="isTop5 = false">
-          <Icon :size="26" i="swap-vertical" stroke="#fff" stroke-width="2" />
+          <Icon
+            :size="26"
+            i="swap-vertical"
+            :stroke="!isTop5 ? `#424242` : `#fff`"
+            stroke-width="2"
+          />
           <h1 :class="{ active: !isTop5 }">senin çevren</h1>
         </div>
         <div class="iconWrapper">
@@ -141,7 +151,7 @@ export default {
       overflow: visible;
 
       .active {
-        border-bottom: solid 1px red;
+        color: #424242;
       }
       h1 {
         color: #fff;
