@@ -184,6 +184,13 @@ export class PodInstance {
   n = 0
   logs = []
   lockedUntil = 0
+  allowToGoOn = false
+
+  stop = () => {
+    this.n = 0
+    this.lockedUntil = +new Date()
+    this.allowToGoOn = false
+  }
 
   runDat = (type, cb) => {
     if (this.noWait) {
@@ -193,7 +200,9 @@ export class PodInstance {
       this.lockedUntil = dur + +new Date()
 
       setTimeout(() => {
-        cb(dur)
+        if (this.allowToGoOn) {
+          cb(dur)
+        }
       }, dur)
     }
   }
@@ -228,6 +237,7 @@ export class PodInstance {
     this.character = obj.character ? obj.character.$el : null
     this.setTransition = obj.setTransition ? obj.setTransition : () => {}
     this.noWait = obj.noWait ? obj.noWait : false
+    this.allowToGoOn = true
   }
 
   changeLineNumber(newLineNumber) {
@@ -250,6 +260,11 @@ export class PodInstance {
     error: (...args) => {
       if (this.logs.includes('error')) console.error(...args)
     },
+  }
+
+  startFromBeginning = (sanitizedArray) => {
+    this.nextLine.bind(this)(sanitizedArray)
+    this.allowToGoOn = true
   }
 
   nextLine = function (arr, callback = () => {}, dont) {
@@ -389,7 +404,9 @@ export class PodInstance {
       },
     }
     if ((dont && +new Date() > this.lockedUntil) || !dont) {
-      fns[commandAndValue[0]](commandAndValue[1])
+      if (this.allowToGoOn) {
+        fns[commandAndValue[0]](commandAndValue[1])
+      }
     }
   }.bind(this)
 }
