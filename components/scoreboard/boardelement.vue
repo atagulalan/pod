@@ -3,23 +3,51 @@
     <div class="accountWrapper">
       <h1 class="flex:1">{{ rank }}</h1>
       <div>
-        <img :src="avatar" class="avatar" />
+        <Icon
+          v-if="rank === 1"
+          :size="26"
+          i="diamond"
+          stroke="#f1c40f"
+          stroke-width="2"
+        />
+        <Icon
+          v-else-if="rank === 2"
+          :size="26"
+          i="diamond"
+          stroke="#bdc3c7"
+          stroke-width="2"
+        />
+        <Icon
+          v-else-if="rank === 3"
+          :size="26"
+          i="diamond"
+          stroke="#e67e22"
+          stroke-width="2"
+        />
+
+        <Icon
+          v-else
+          :size="26"
+          i="diamond"
+          :stroke="bgColor"
+          stroke-width="2"
+        />
       </div>
       <h1 class="flex:1">{{ username }}</h1>
     </div>
     <div class="resultWrapper">
       <h1 class="element">{{ numofline }}</h1>
       <h1 class="element">{{ numofexec }}</h1>
-      <Stars :star-count="starCount" />
+      <h1 class="element">{{ duration }}</h1>
     </div>
   </div>
 </template>
 
 <script>
-import Stars from '~/components/scoreboard/stars'
+import Icon from '~/components/atomic/Icon'
 export default {
   components: {
-    Stars,
+    Icon,
   },
   props: {
     bgColor: {
@@ -29,10 +57,6 @@ export default {
     rank: {
       type: Number,
       default: 0,
-    },
-    avatar: {
-      type: String,
-      default: '',
     },
     username: {
       type: String,
@@ -46,7 +70,7 @@ export default {
       type: Number,
       default: 0,
     },
-    starCount: {
+    duration: {
       type: Number,
       default: 0,
     },
@@ -70,19 +94,13 @@ export default {
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-
-    .avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 100%;
-    }
   }
 
   .resultWrapper {
     flex: 1;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
   }
 
