@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="modalSVGLoader"></div>
     <ErrorModal />
     <AuthModal />
     <nuxt />
@@ -18,6 +19,10 @@ export default {
 </script>
 
 <style lang="scss">
+.modalSVGLoader {
+  background-image: url('/img/popup.svg');
+}
+
 /* Tooltip */
 .popper {
   width: auto;

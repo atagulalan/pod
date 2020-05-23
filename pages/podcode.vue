@@ -1,84 +1,104 @@
 <template>
   <div class="gameWrapper">
-    <EpisodeModal
-      :stars="stars"
-      :info="`Bravo!`"
-      :mission="`Bölüm Başarılı`"
-      :active-episode="this.$route.params.id"
-      :in-game="true"
-      :forest="this.$route.params.id"
-    />
-    <div v-if="activeItem !== null" class="focusHelper"></div>
-    <div class="codeMenu">
-      <div class="info">
-        <h1>{{ mission }}</h1>
-        <h2>{{ info }}</h2>
-        <popper
-          ref="adaRef"
-          trigger="focus"
-          :force-show="force"
-          :disabled="false"
-          :options="{
-            trigger: 'hover',
-            placement: 'left',
-            modifiers: { offset: { offset: '0px' } },
-          }"
-        >
-          <div class="popper adaSays" @click="showNextLine()">
-            <span>{{ adaSays.text[adaSays.line] }}</span>
-            <small v-if="adaSays.text.length - 1 === adaSays.line"
-              >Kapatmak için tıkla</small
-            >
-            <small v-else>Devam etmek için tıkla</small>
-          </div>
-
-          <div slot="reference" class="ada" @click="showNextLine()"></div>
-        </popper>
-      </div>
-      <Code
-        :code-lines="codeLines"
-        :on-drop="onDrop"
-        :active-item="activeItem"
-        :line-number="podInstance.lineNumber"
-        :hover="hover"
-        :set-hover="(i) => (hover = i)"
-        :set-active="setActive"
+    <div :class="`loadingWrapper ${loaded ? 'animate' : ''}`"></div>
+    <span :class="`pod ${loaded ? 'show' : ''}`">
+      <EpisodeModal
+        :stars="stars"
+        :info="`Bravo!`"
+        :mission="`Bölüm Başarılı`"
+        :active-episode="this.$route.params.id"
+        :in-game="true"
+        :forest="this.$route.params.id"
       />
-      <div class="buttons">
-        <button class="run" @click="run()"></button>
-        <button class="step" @click="step()"></button>
-        <button class="reset" @click="reset()"></button>
-        <button class="clear" @click="clear()"></button>
-        <button class="text" @click="getText()"></button>
-      </div>
-    </div>
-    <OpCode class="opCodeMenu" :opcodes="opcodes" />
-    <div ref="gameArea" class="gameArea">
-      <div ref="scaler" class="scaler" :style="`transform:scale(${scaleBy})`">
-        <InputRoller :input="podInstance.inputSection" />
-        <MiddleSection
-          :set-value="setValue"
-          :n="memory[0]"
-          :width-limit="memory[1]"
-          :items="podInstance.middleSection"
-          :focus="activeItem !== null"
+      <div v-if="activeItem !== null" class="focusHelper"></div>
+      <div class="codeMenu">
+        <div class="info">
+          <h1>{{ mission }}</h1>
+          <h2>{{ info }}</h2>
+          <popper
+            ref="adaRef"
+            trigger="focus"
+            :force-show="force"
+            :disabled="false"
+            :options="{
+              trigger: 'hover',
+              placement: 'right',
+              modifiers: { offset: { offset: '0px' } },
+            }"
+            class="poppy"
+          >
+            <div class="popper adaSays" @click="showNextLine()">
+              <span>{{ adaSays.text[adaSays.line] }}</span>
+              <small v-if="adaSays.text.length - 1 === adaSays.line"
+                >Kapatmak için tıkla</small
+              >
+              <small v-else>Devam etmek için tıkla</small>
+            </div>
+
+            <div slot="reference" class="ada" @click="showNextLine()"></div>
+          </popper>
+        </div>
+        <OpCode class="miniOPCodes" :opcodes="opcodes" />
+        <Code
+          :code-lines="codeLines"
+          :on-drop="onDrop"
+          :active-item="activeItem"
+          :line-number="podInstance.lineNumber"
+          :hover="hover"
+          :set-hover="(i) => (hover = i)"
+          :set-active="setActive"
         />
-        <OutputRoller :output="podInstance.outputSection" />
-        <Character
-          ref="character"
-          :skin-color="characterCustomization.skin"
-          :eyes="characterCustomization.eyes"
-          :hair="characterCustomization.hair"
-          :shirt="characterCustomization.shirt"
-          :shorts="characterCustomization.short"
-          :shoes="characterCustomization.shoes"
-          :holding="podInstance.onHand"
-          :class="characterAt"
-          :style="characterStyle"
-        />
+        <div class="buttons">
+          <button
+            :class="`run ${isRunning ? 'stop' : ''}`"
+            @click="run()"
+          ></button>
+          <button
+            :class="`step ${isRunning ? 'disabled' : ''}`"
+            @click="step()"
+          ></button>
+          <button
+            :class="`reset ${isRunning ? 'disabled' : ''}`"
+            @click="reset()"
+          ></button>
+          <button
+            :class="`clear ${isRunning ? 'disabled' : ''}`"
+            @click="clear()"
+          ></button>
+          <button
+            :class="`text ${isRunning ? 'disabled' : ''}`"
+            @click="getText()"
+          ></button>
+        </div>
       </div>
-    </div>
-    <ConvertModal :code="codeString" :convert="convert" />
+      <OpCode class="opCodeMenu" :opcodes="opcodes" />
+      <div ref="gameArea" class="gameArea">
+        <div ref="scaler" class="scaler" :style="`transform:scale(${scaleBy})`">
+          <InputRoller :input="podInstance.inputSection" />
+          <MiddleSection
+            :set-value="setValue"
+            :n="memory[0]"
+            :width-limit="memory[1]"
+            :items="podInstance.middleSection"
+            :focus="activeItem !== null"
+          />
+          <OutputRoller :output="podInstance.outputSection" />
+          <Character
+            ref="character"
+            :skin-color="characterCustomization.skin"
+            :eyes="characterCustomization.eyes"
+            :hair="characterCustomization.hair"
+            :shirt="characterCustomization.shirt"
+            :shorts="characterCustomization.short"
+            :shoes="characterCustomization.shoes"
+            :holding="podInstance.onHand"
+            :class="characterAt"
+            :style="characterStyle"
+          />
+        </div>
+      </div>
+      <ConvertModal :code="codeString" :convert="convert" />
+    </span>
   </div>
 </template>
 
@@ -115,6 +135,7 @@ export default {
   },
   data() {
     return {
+      loaded: false,
       adaSays: {
         line: -1,
         text: [],
@@ -123,10 +144,10 @@ export default {
       activeItem: null,
       hover: -1,
       sanitizedArray: [],
-      pasteCode: `CME 0
-      INP 0
-      OUT 0
-      JMP 0`,
+      pasteCode: `CME 1
+INP 0
+OUT 0
+JMP 1`,
       mission: 'Görev: Yükleniyor...',
       info: 'Yükleniyor...',
       restrictedCodeBlocks: [],
@@ -211,6 +232,7 @@ export default {
         console.log('Ada:', this.$refs.adaRef)
 
         console.log('Pod Instance:', this.podInstance)
+        this.loaded = true
       })
   },
   methods: {
@@ -319,15 +341,22 @@ export default {
             el.style + ';background:' + commands[returns[el.value]].color
           el.notALine = true
         }
+        return el
       })
 
       this.codeLines = results
     },
     clear() {
+      if (this.isRunning) return
       this.codeLines = []
+      this.pasteCode = ''
+      this.sanitizedArray = []
       this.reset()
     },
     reset() {
+      if (this.isRunning) return
+      if (this.podInstance.stop) this.podInstance.stop()
+      this.isRunning = false
       this.podInstance = new PodInstance(
         {
           tests: [this.activeTest],
@@ -356,8 +385,16 @@ export default {
                 },
                 (status) => {
                   if (status.type === 'bravo') {
+                    this.isRunning = false
                     console.log('Test', i, 'başarılı.')
                     testCount++
+                  } else {
+                    console.error('Test', i, 'hatalı. Ekrana getiriliyor...')
+                    this.activeTest = test
+                    this.adaSays.text = this.activeTest.text
+                    this.adaSays.line = 0
+                    this.$refs.adaRef.doShow()
+                    this.reset()
                   }
                 }
               )
@@ -380,6 +417,7 @@ export default {
                 .then((e) => {
                   if (e.code === 'tests_successful') {
                     console.log('başardın dostum')
+                    this.isRunning = false
                     this.$modal.show('episodeModal')
                     this.congratz = false
                   }
@@ -402,12 +440,16 @@ export default {
       if (!this.isRunning) {
         // START
         this.reset()
-        this.podInstance.nextLine.bind(this)(this.sanitizedArray)
+        this.isRunning = true
+        this.podInstance.startFromBeginning.bind(this)(this.sanitizedArray)
       } else {
         // STOP
+        this.isRunning = false
+        this.reset()
       }
     },
     step() {
+      if (this.isRunning) return
       this.podInstance.nextLine.bind(this)(
         this.sanitizedArray,
         (e) => {
@@ -417,6 +459,7 @@ export default {
       )
     },
     getText() {
+      if (this.isRunning) return
       this.$modal.show('convertModal')
     },
   },
@@ -427,8 +470,25 @@ export default {
 .gameWrapper {
   padding: 50px;
   height: 100vh;
-  background: #b8d75f;
   background-size: cover;
+
+  .pod {
+    &:before {
+      background: black;
+      content: '';
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: 999999;
+      position: absolute;
+    }
+    &.show {
+      &:before {
+        display: none;
+      }
+    }
+  }
 
   .box {
     width: 40px;
@@ -485,14 +545,16 @@ export default {
         right: 0;
       }
       .adaSays {
-        max-width: 300px;
-        font-size: 18pt;
+        max-width: 900px;
+        font-size: 24pt;
         pointer-events: initial;
         text-align: left;
+        font-weight: 500;
         small {
           text-align: right;
-          font-size: 10pt;
+          font-size: 18pt;
           display: block;
+          font-weight: 300;
         }
       }
     }
@@ -519,6 +581,13 @@ export default {
         }
         &:active {
           background-color: #9ccc66;
+        }
+
+        &.disabled,
+        &.disabled:hover,
+        &.disabled:active {
+          background-color: gray;
+          border: 4px solid gray;
         }
 
         &.run {
@@ -650,6 +719,104 @@ export default {
       }
       &.active {
         transform: rotateZ(25deg) scale(0.9);
+      }
+    }
+  }
+
+  .miniOPCodes {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1500px) {
+  .gameWrapper {
+    padding: 0;
+    ::-webkit-scrollbar {
+      width: 0px;
+      height: 0px;
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      box-shadow: none;
+      border: none;
+    }
+    ::-webkit-scrollbar-track {
+      box-shadow: none;
+      border: none;
+    }
+
+    .pod {
+      overflow-y: auto;
+      overflow-x: hidden;
+      height: 100vh;
+      width: 100vw;
+      display: block;
+    }
+
+    .baseWrapper.opCodeMenu {
+      display: none;
+    }
+
+    .codeMenu {
+      width: 100%;
+      position: relative;
+      height: auto;
+      padding-bottom: 50px;
+    }
+
+    .gameArea {
+      width: 100vw;
+      position: fixed;
+      height: 600px;
+      z-index: -5;
+    }
+
+    .codeMenu {
+      width: 100vw;
+      margin-top: 600px;
+      height: auto;
+    }
+
+    .codeMenu .buttons {
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 20px 20px 0 0;
+      width: 100vw;
+    }
+
+    .codeMenu .info {
+      padding-top: 120px;
+      height: 320px;
+    }
+
+    .codeWrapper {
+      height: auto;
+    }
+
+    .baseWrapper.miniOPCodes {
+      width: 100%;
+      height: 82px;
+      background: #f2f2f2;
+      border-radius: 0;
+      padding: 10px 0;
+      margin-bottom: 10px;
+    }
+
+    .baseWrapper .smooth-dnd-container {
+      padding-left: 10px;
+      width: 1000px;
+    }
+
+    .miniOPCodes {
+      display: block;
+      width: 100%;
+      overflow: auto;
+
+      .smooth-dnd-container.vertical > .smooth-dnd-draggable-wrapper {
+        width: auto;
+        display: inline-block;
+        margin-right: 10px;
       }
     }
   }

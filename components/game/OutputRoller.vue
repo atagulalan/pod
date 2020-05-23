@@ -95,10 +95,10 @@ export default {
   .boxWrapper {
     width: 10000px;
     right: 0;
-    top: 23px;
-    height: 40px;
+    top: 21px;
+    height: 44px;
     position: absolute;
-    padding-right: 20px;
+    padding: 2px 20px 2px 0;
     margin-right: 140px;
     .box {
       margin: 0 0 0 100px;
