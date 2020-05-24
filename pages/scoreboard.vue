@@ -73,6 +73,15 @@
           :duration="list[19]"
         />
       </div>
+      <Button
+        size="fit"
+        background="#46cb92"
+        class="button"
+        @click="goForest()"
+      >
+        Ormana Dön
+        <Icon :size="24" i="arrow-right" stroke="#fff" />
+      </Button>
     </div>
   </div>
 </template>
@@ -118,7 +127,11 @@ export default {
       return this.$route.params.id
     },
   },
-  methods: {},
+  methods: {
+    goForest() {
+      this.$router.push(`/forests`)
+    },
+  },
 }
 </script>
 
@@ -136,6 +149,18 @@ export default {
     background-color: #fff;
     max-width: 1200px;
     width: 100%;
+
+    .button {
+      float: right;
+      background-color: #2ecc71;
+      color: #fff;
+      font-size: 14pt;
+      margin-top: 20px;
+      font-family: 'Quicksand', sans-serif;
+      padding: 10px 20px 10px 20px;
+      border-radius: 12px;
+      border: none;
+    }
 
     .titleWrapper {
       width: 100%;
