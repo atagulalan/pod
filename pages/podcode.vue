@@ -805,6 +805,11 @@ export default {
 
     .codeWrapper {
       height: auto;
+      min-height: 300px;
+    }
+
+    .codeWrapper .smooth-dnd-container {
+      min-height: 300px;
     }
 
     .baseWrapper.miniOPCodes {
