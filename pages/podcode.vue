@@ -366,15 +366,10 @@ JMP 1`,
         (returnObj) => {
           console.log(returnObj)
           if (returnObj.type === 'bravo') {
-            this.stars = [
-              1,
-              this.minScores.lines >= this.sanitizedArray.length,
-              this.minScores.exec >= returnObj.exec,
-            ]
-
             let testCount = 1
+            let disableLoop = false
             this.tests.forEach((test, i) => {
-              if (i === 0) return
+              if (i === 0 || disableLoop) return
               console.log('Testing:', test)
               const testInstance = new PodInstance(
                 {
@@ -390,10 +385,12 @@ JMP 1`,
                     testCount++
                   } else {
                     console.error('Test', i, 'hatalı. Ekrana getiriliyor...')
+                    disableLoop = true
                     this.activeTest = test
                     this.adaSays.text = this.activeTest.text
                     this.adaSays.line = 0
                     this.$refs.adaRef.doShow()
+                    this.isRunning = false
                     this.reset()
                   }
                 }
@@ -417,9 +414,28 @@ JMP 1`,
                 .then((e) => {
                   if (e.code === 'tests_successful') {
                     console.log('başardın dostum')
-                    this.isRunning = false
-                    this.$modal.show('episodeModal')
-                    this.congratz = false
+
+                    const lastInstance = new PodInstance(
+                      {
+                        inputSection: this.tests[0].input,
+                        winCondition: this.tests[0].output,
+                        logs: [],
+                        noWait: true,
+                      },
+                      (status) => {
+                        if (status.type === 'bravo') {
+                          this.stars = [
+                            1,
+                            this.minScores.lines >= this.sanitizedArray.length,
+                            this.minScores.exec >= status.exec,
+                          ]
+                          this.isRunning = false
+                          this.$modal.show('episodeModal')
+                          this.congratz = false
+                        }
+                      }
+                    )
+                    lastInstance.nextLine.bind(this)(this.sanitizedArray)
                   }
                 })
             } else if (this.congratz === true) {
