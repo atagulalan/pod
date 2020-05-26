@@ -89,7 +89,7 @@
             :eyes="characterCustomization.eyes"
             :hair="characterCustomization.hair"
             :shirt="characterCustomization.shirt"
-            :shorts="characterCustomization.short"
+            :shorts="characterCustomization.shorts"
             :shoes="characterCustomization.shoes"
             :holding="podInstance.onHand"
             :class="characterAt"
@@ -144,10 +144,7 @@ export default {
       activeItem: null,
       hover: -1,
       sanitizedArray: [],
-      pasteCode: `CME 1
-INP 0
-OUT 0
-JMP 1`,
+      pasteCode: ``,
       mission: 'Görev: Yükleniyor...',
       info: 'Yükleniyor...',
       restrictedCodeBlocks: [],
