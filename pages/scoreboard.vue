@@ -1,6 +1,5 @@
 <template>
   <div class="scoreContainer">
-    <h1>SUKAR TUBLAZI</h1>
     <div class="scoreWrapper">
       <div class="titleWrapper">
         <div class="iconWrapperBig">
@@ -8,55 +7,81 @@
           <h1>Sıralama Tablosu</h1>
         </div>
 
-        <div class="iconWrapper" @click="isTop5 = true">
-          <Icon
-            :size="26"
-            i="cup"
-            :stroke="isTop5 ? `#424242` : `#fff`"
-            stroke-width="2"
-          />
-          <h1 :class="{ active: isTop5 }">en iyi 5</h1>
-        </div>
-        <div class="iconWrapper" @click="isTop5 = false">
-          <Icon
-            :size="26"
-            i="swap-vertical"
-            :stroke="!isTop5 ? `#424242` : `#fff`"
-            stroke-width="2"
-          />
-          <h1 :class="{ active: !isTop5 }">senin çevren</h1>
+        <div class="iconWrapper">
+          <Icon :size="26" i="cup" stroke="#fff" stroke-width="2" />
+          <h1>en iyi 5</h1>
         </div>
         <div class="iconWrapper">
           <Icon :size="26" i="layers" stroke="#fff" stroke-width="2" />
-          <h1 :class="{ active: isLine }">{{ episode }}</h1>
+          <h1>{{ episodeID }}</h1>
         </div>
       </div>
       <div class="labelWrapper">
         <div class="accountWrapper">
           <h1 class="flex:1">Sıralama</h1>
-          <div>
-            <h1 class="flex:1">Avatar</h1>
-          </div>
           <h1 class="flex:1">Kullanıcı Adı</h1>
         </div>
         <div class="resultWrapper">
           <h1 class="element">Satır Sayısı</h1>
           <h1 class="element">İşlem Sayısı</h1>
-          <h1 class="element">Bölüm Başarısı</h1>
+          <h1 class="element">Süre</h1>
         </div>
       </div>
-
-      <div v-for="element in list" :key="element.rank">
+      <div>
         <Element
-          :bg-color="element.rank % 2 === 0 ? '#f2f2f2' : '#fff'"
-          :rank="element.rank"
-          :avatar="element.avatar"
-          :username="element.username"
-          :numofline="element.numofline"
-          :numofexec="element.numofexec"
-          :star-count="element.stars"
+          :bg-color="`#ecf0f1`"
+          :rank="1"
+          :username="list[0]"
+          :numofline="list[1]"
+          :numofexec="list[2]"
+          :duration="list[3]"
+        />
+
+        <Element
+          :bg-color="`#fff`"
+          :rank="2"
+          :username="list[4]"
+          :numofline="list[5]"
+          :numofexec="list[6]"
+          :duration="list[7]"
+        />
+
+        <Element
+          :bg-color="`#ecf0f1`"
+          :rank="3"
+          :username="list[8]"
+          :numofline="list[9]"
+          :numofexec="list[10]"
+          :duration="list[11]"
+        />
+
+        <Element
+          :bg-color="`#fff`"
+          :rank="4"
+          :username="list[12]"
+          :numofline="list[13]"
+          :numofexec="list[14]"
+          :duration="list[15]"
+        />
+
+        <Element
+          :bg-color="`#ecf0f1`"
+          :rank="5"
+          :username="list[16]"
+          :numofline="list[17]"
+          :numofexec="list[18]"
+          :duration="list[19]"
         />
       </div>
+      <Button
+        size="fit"
+        background="#46cb92"
+        class="button"
+        @click="goForest()"
+      >
+        Ormana Dön
+        <Icon :size="24" i="arrow-right" stroke="#fff" />
+      </Button>
     </div>
   </div>
 </template>
@@ -70,60 +95,43 @@ export default {
     Icon,
     Element,
   },
+  props: {},
   data() {
     return {
-      isTop5: true,
-      episode: 'b-12',
       list: [
-        {
-          rank: '1',
-          avatar:
-            'https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885__340.jpg',
-          username: 'username1',
-          numofline: 31,
-          numofexec: 11,
-          stars: 2,
-        },
-        {
-          rank: '2',
-          avatar:
-            'https://p.bigstockphoto.com/GeFvQkBbSLaMdpKXF1Zv_bigstock-Aerial-View-Of-Blue-Lakes-And--227291596.jpg',
-          username: 'username2',
-          numofline: 11,
-          numofexec: 31,
-          stars: 1,
-        },
-        {
-          rank: '3',
-          avatar:
-            'https://upload.wikimedia.org/wikipedia/commons/9/9a/Gull_portrait_ca_usa.jpg',
-          username: 'username1',
-          numofline: 6,
-          numofexec: 26,
-          stars: 2,
-        },
-        {
-          rank: '4',
-          avatar:
-            'https://i2.wp.com/background4free.com/download/blue_yellow_light_115379772.jpg?q=100',
-          username: 'username1',
-          numofline: 55,
-          numofexec: 109,
-          stars: 3,
-        },
-        {
-          rank: '5',
-          avatar:
-            'https://i0.wp.com/office365itpros.com/wp-content/uploads/2019/10/Teams-Custom-Background-Setting.jpg?fit=840%2C439&ssl=1',
-          username: 'username1',
-          numofline: 16,
-          numofexec: 71,
-          stars: 1,
-        },
+        'username1',
+        31,
+        11,
+        2,
+        'username2',
+        11,
+        31,
+        1,
+        'username3',
+        6,
+        26,
+        2,
+        'username4',
+        55,
+        109,
+        3,
+        'username5',
+        16,
+        71,
+        1,
       ],
     }
   },
-  methods: {},
+  computed: {
+    episodeID() {
+      return this.$route.params.id
+    },
+  },
+  methods: {
+    goForest() {
+      this.$router.push(`/forests`)
+    },
+  },
 }
 </script>
 
@@ -133,16 +141,31 @@ export default {
   height: 100vh;
   background: url(/img/memphis-colorful.png);
   overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   .scoreWrapper {
-    background-color: #f2f2f2;
-    width: 60%;
-    margin: auto;
+    background-color: #fff;
+    max-width: 1200px;
+    width: 100%;
+
+    .button {
+      float: right;
+      background-color: #2ecc71;
+      color: #fff;
+      font-size: 14pt;
+      margin-top: 20px;
+      font-family: 'Quicksand', sans-serif;
+      padding: 10px 20px 10px 20px;
+      border-radius: 12px;
+      border: none;
+    }
 
     .titleWrapper {
       width: 100%;
       height: 70px;
-      background-color: #4cd697;
+      background-color: #2ecc71;
       display: flex;
       flex-direction: row;
       justify-content: center;
@@ -150,9 +173,6 @@ export default {
       position: relative;
       overflow: visible;
 
-      .active {
-        color: #424242;
-      }
       h1 {
         color: #fff;
         font-size: 18pt;
@@ -185,13 +205,14 @@ export default {
       h1 {
         font-size: 16pt;
         font-family: 'Quicksand', sans-serif;
+        color: #2c3e50;
       }
 
       .accountWrapper {
         flex: 1;
         display: flex;
         flex-direction: row;
-        justify-content: space-evenly;
+        justify-content: space-around;
         align-items: center;
 
         .avatar {
@@ -205,7 +226,7 @@ export default {
         flex: 1;
         display: flex;
         flex-direction: row;
-        justify-content: space-evenly;
+        justify-content: space-around;
       }
     }
   }

@@ -72,7 +72,7 @@ export function createRouter() {
       },
       {
         name: 'Scoreboard',
-        path: '/scoreboard',
+        path: '/scoreboard/:id',
         component: Scoreboard,
       },
     ],
