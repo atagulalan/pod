@@ -1,8 +1,8 @@
 <template>
   <div class="elementContainer" :style="`background-color: ${bgColor}`">
     <div class="accountWrapper">
-      <h1 class="flex:1">{{ rank }}</h1>
-      <div>
+      <h1 class="rank">{{ rank }}</h1>
+      <div class="iconWrapper">
         <Icon
           v-if="rank === 1"
           :size="26"
@@ -33,12 +33,12 @@
           stroke-width="2"
         />
       </div>
-      <h1 class="flex:1">{{ username }}</h1>
+      <h1>{{ user }}</h1>
     </div>
     <div class="resultWrapper">
-      <h1 class="element">{{ numofline }}</h1>
-      <h1 class="element">{{ numofexec }}</h1>
-      <h1 class="element">{{ duration }}</h1>
+      <h1>{{ line }}</h1>
+      <h1>{{ exec }}</h1>
+      <h1>{{ duration }}</h1>
     </div>
   </div>
 </template>
@@ -58,15 +58,15 @@ export default {
       type: Number,
       default: 0,
     },
-    username: {
+    user: {
       type: String,
       default: '',
     },
-    numofline: {
+    line: {
       type: Number,
       default: 0,
     },
-    numofexec: {
+    exec: {
       type: Number,
       default: 0,
     },
@@ -92,21 +92,39 @@ export default {
     flex: 1;
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
     align-items: center;
+
+    .rank {
+      font-size: 16pt;
+      width: 200px;
+      font-family: 'Quicksand', sans-serif;
+      text-align: center;
+    }
+
+    .iconWrapper {
+      width: 200px;
+    }
+
+    h1 {
+      font-size: 16pt;
+      width: 200px;
+      font-family: 'Quicksand', sans-serif;
+      text-align: left;
+    }
   }
 
   .resultWrapper {
     flex: 1;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
     align-items: center;
-  }
 
-  h1 {
-    font-size: 16pt;
-    font-family: 'Quicksand', sans-serif;
+    h1 {
+      font-size: 16pt;
+      width: 200px;
+      font-family: 'Quicksand', sans-serif;
+      text-align: center;
+    }
   }
 }
 </style>
