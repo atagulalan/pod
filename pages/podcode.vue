@@ -368,7 +368,7 @@ export default {
           tests: [this.activeTest],
           character: this.$refs.character,
           setTransition: this.setTransition,
-          noWait: true,
+          logs: [],
         },
         (returnObj) => {
           console.log(returnObj)
@@ -382,7 +382,7 @@ export default {
                 {
                   inputSection: test.input,
                   winCondition: test.output,
-                  // logs: [],
+                  logs: [],
                   noWait: true,
                 },
                 (status) => {
