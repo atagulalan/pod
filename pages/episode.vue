@@ -127,6 +127,7 @@ export default {
       console.log(id)
       if (id.startsWith('OPEN-')) {
         const episodeId = id.substring(5)
+        console.log(this.forest)
         const episode = this.forest.episodes.find(
           (el) => el.episodeId === episodeId
         )

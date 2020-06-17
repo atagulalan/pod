@@ -139,6 +139,7 @@ export default {
       adaSays: {
         line: -1,
         text: [],
+        refText: [],
       },
       codeLines: [],
       activeItem: null,
@@ -217,10 +218,15 @@ export default {
         this.tests = data.chapter.episodes.tests
         this.activeTest = this.tests[0]
         this.adaSays.text = this.activeTest.text
+        this.adaSays.refText = this.activeTest.text
         this.adaSays.line = 0
         this.minScores = data.chapter.episodes.scores.min
         this.memory = data.chapter.episodes.memory
         this.restrictedCodeBlocks = data.chapter.episodes.codeBlocks
+
+        this.pasteCode = data.user.codes.find(
+          (el) => el.episodeId === this.$route.params.id
+        )?.code
 
         this.convert(this.pasteCode)
 
@@ -259,10 +265,13 @@ export default {
       console.log(this.adaSays.line)
       if (this.adaSays.line === this.adaSays.text.length) {
         this.$refs.adaRef.doClose()
+        this.adaSays.text = [...this.adaSays.refText]
         this.adaSays.line = -1
       }
     },
     onDrop(collection, dropResult) {
+      this.isRunning = false
+      this.reset()
       if (dropResult.removedIndex === null && dropResult.addedIndex !== null) {
         // ilk birakilma, eger deger varsa aktiflestir
         if (dropResult.payload.show) {
@@ -359,6 +368,7 @@ export default {
           tests: [this.activeTest],
           character: this.$refs.character,
           setTransition: this.setTransition,
+          noWait: true,
         },
         (returnObj) => {
           console.log(returnObj)
@@ -372,7 +382,7 @@ export default {
                 {
                   inputSection: test.input,
                   winCondition: test.output,
-                  logs: [],
+                  // logs: [],
                   noWait: true,
                 },
                 (status) => {
@@ -385,6 +395,7 @@ export default {
                     disableLoop = true
                     this.activeTest = test
                     this.adaSays.text = this.activeTest.text
+                    this.adaSays.refText = this.activeTest.text
                     this.adaSays.line = 0
                     this.$refs.adaRef.doShow()
                     this.isRunning = false
@@ -420,6 +431,7 @@ export default {
                         noWait: true,
                       },
                       (status) => {
+                        console.log('finito')
                         if (status.type === 'bravo') {
                           this.stars = [
                             1,
@@ -429,6 +441,8 @@ export default {
                           this.isRunning = false
                           this.$modal.show('episodeModal')
                           this.congratz = false
+                        } else {
+                          console.log('Son instance başarısız.', status.type)
                         }
                       }
                     )
@@ -440,10 +454,27 @@ export default {
             } else {
               // TODO make alternative test main one.
             }
+          } else if (returnObj.type === 'bitti') {
+            this.adaSays.text = [
+              'Giriş bandında hala kutular var! Bunları karşıya taşımalısın.',
+            ]
+            this.adaSays.line = 0
+            this.$refs.adaRef.doShow()
+            this.isRunning = false
           }
         },
         (e) => (this.lineNumber = e),
-        (e) => (this.onHand = e)
+        (e) => {
+          if (e !== null && !isNaN(e)) {
+            this.podInstance.onHand = '' + e
+          }
+        },
+        (...a) => {
+          this.adaSays.text = a
+          this.adaSays.line = 0
+          this.$refs.adaRef.doShow()
+          this.isRunning = false
+        }
       )
     },
     error(exception) {

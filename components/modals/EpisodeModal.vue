@@ -1,6 +1,12 @@
 <template>
   <div class="episodeModalWrapper">
-    <modal name="episodeModal" transition="scale" class="episodeModal" width="1000" height="auto">
+    <modal
+      name="episodeModal"
+      transition="scale"
+      class="episodeModal"
+      width="1000"
+      height="auto"
+    >
       <div class="modalInnerWrapper">
         <h1>{{ mission }}</h1>
         <div class="info">{{ info }}</div>
@@ -14,26 +20,48 @@
             :key="starInfo"
             class="starWrapper"
           >
-            <Star :color="stars[i] ? `#ffc107` : `#eaeaea`">{{ starInfo }}</Star>
+            <Star :color="stars[i] ? `#ffc107` : `#eaeaea`">{{
+              starInfo
+            }}</Star>
           </div>
         </div>
         <div class="tip">{{ tip }}</div>
         <div class="buttons">
-          <Button v-if="inGame" size="fit" background="#46cb92" @click="goForest()">
+          <Button
+            v-if="inGame"
+            size="fit"
+            background="#46cb92"
+            @click="goForest()"
+          >
             <Icon :size="24" i="arrow-left" stroke="#fff" />Ormana Dön
           </Button>
           <span v-else class="playWrapper">
-            <Button v-if="stars[0]" size="fit" background="#46cb92" @click="play()">
+            <Button
+              v-if="stars[0]"
+              size="fit"
+              background="#46cb92"
+              @click="play()"
+            >
               <Icon :size="24" i="refresh" stroke="#fff" />Tekrar Oyna
             </Button>
             <Button v-else size="fit" background="#46cb92" @click="play()">
               <Icon :size="24" i="play" stroke="#fff" />Oyna
             </Button>
           </span>
-          <Button v-if="stars[0]" size="fit" background="#ffcf00" @click="showScores()">
+          <Button
+            v-if="stars[0]"
+            size="fit"
+            background="#ffcf00"
+            @click="showScores()"
+          >
             <Icon :size="24" i="chart" stroke="#fff" />Sıralamayı Gör
           </Button>
-          <Button size="fit" background="#eaeaea" color="#000" @click="hideModal()">
+          <Button
+            size="fit"
+            background="#eaeaea"
+            color="#000"
+            @click="hideModal()"
+          >
             <Icon :size="24" i="close" stroke="#000" />Kapat
           </Button>
         </div>

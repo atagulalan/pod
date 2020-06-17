@@ -57,6 +57,70 @@ export const positions = {
     left: 550,
     top: 390,
   },
+  CPY0: {
+    left: 170,
+    top: 130,
+  },
+  CPY1: {
+    left: 300,
+    top: 100,
+  },
+  CPY2: {
+    left: 160,
+    top: 270,
+  },
+  CPY3: {
+    left: 270,
+    top: 270,
+  },
+  GET0: {
+    left: 170,
+    top: 130,
+  },
+  GET1: {
+    left: 300,
+    top: 100,
+  },
+  GET2: {
+    left: 160,
+    top: 270,
+  },
+  GET3: {
+    left: 270,
+    top: 270,
+  },
+  SUB0: {
+    left: 170,
+    top: 130,
+  },
+  SUB1: {
+    left: 300,
+    top: 100,
+  },
+  SUB2: {
+    left: 160,
+    top: 270,
+  },
+  SUB3: {
+    left: 270,
+    top: 270,
+  },
+  ADD0: {
+    left: 170,
+    top: 130,
+  },
+  ADD1: {
+    left: 300,
+    top: 100,
+  },
+  ADD2: {
+    left: 160,
+    top: 270,
+  },
+  ADD3: {
+    left: 270,
+    top: 270,
+  },
 }
 
 export const calculateHypo = (o1, o2) => {
@@ -69,7 +133,7 @@ export const calculateTime = (distance) => {
 
 export const go = (character, type, setTransition) => {
   if (character) {
-    const time = calculateTime(
+    let time = calculateTime(
       calculateHypo(
         {
           left: character.offsetLeft,
@@ -78,6 +142,7 @@ export const go = (character, type, setTransition) => {
         positions[type]
       )
     )
+    time = time < 1050 ? 1050 : time
     setTransition(time, positions[type])
     return time
   }
@@ -185,6 +250,8 @@ export class PodInstance {
   logs = []
   lockedUntil = 0
   allowToGoOn = false
+  maxJump = 500
+  jump = 0
 
   stop = () => {
     this.n = 0
@@ -196,7 +263,11 @@ export class PodInstance {
     if (this.noWait) {
       cb()
     } else {
-      const dur = go(this.character, type, this.setTransition)
+      let dur = 500
+      if (type !== '') {
+        dur = go(this.character, type, this.setTransition)
+      }
+
       this.lockedUntil = dur + +new Date()
 
       setTimeout(() => {
@@ -211,7 +282,8 @@ export class PodInstance {
     obj,
     emitResult = () => {},
     emitLineNumber = () => {},
-    emitOnHand = () => {}
+    emitOnHand = () => {},
+    emitAda = () => {}
   ) {
     this.tests = (obj.tests ? obj.tests : []).concat()
     this.winCondition = (obj.winCondition
@@ -238,6 +310,13 @@ export class PodInstance {
     this.setTransition = obj.setTransition ? obj.setTransition : () => {}
     this.noWait = obj.noWait ? obj.noWait : false
     this.allowToGoOn = true
+    this.emitAda = emitAda
+
+    // normalize
+    this.inputSection = this.inputSection.map((e) => '' + e)
+    this.outputSection = this.outputSection.map((e) => '' + e)
+    this.middleSection = this.middleSection.map((e) => '' + e)
+    this.winCondition = this.winCondition.map((e) => '' + e)
   }
 
   changeLineNumber(newLineNumber) {
@@ -258,6 +337,7 @@ export class PodInstance {
       if (this.logs.includes('success')) console.log(...args)
     },
     error: (...args) => {
+      this.emitAda(...args)
       if (this.logs.includes('error')) console.error(...args)
     },
   }
@@ -278,10 +358,10 @@ export class PodInstance {
       })
     }
 
+    this.outputSection = this.outputSection.map((e) => '' + e)
+
     if (
-      JSON.stringify(this.winCondition) ===
-        JSON.stringify(this.outputSection) &&
-      this.inputSection.length === 0
+      JSON.stringify(this.winCondition) === JSON.stringify(this.outputSection)
     ) {
       this.emitResult({
         type: 'bravo',
@@ -335,8 +415,8 @@ export class PodInstance {
         this.printLog.info('Kutuyu alıyorum')
         this.runDat('INP', () => {
           this.setOnHand(this.inputSection.shift())
-          if (!this.onHand) {
-            this.printLog.error('Alacak hiçbir kutu yok ve problem çözülemedi')
+          if (this.onHand === undefined) {
+            this.printLog.error('Olmayan bir kutuyu almaya çalışıyorsun sanki?')
           } else {
             next()
           }
@@ -344,63 +424,91 @@ export class PodInstance {
       },
       OUT: () => {
         this.printLog.info('Kutuyu Veriyorum')
-
         this.runDat('OUT', () => {
           if (this.onHand) {
             this.outputSection.push(this.onHand)
             this.setOnHand(null)
             next()
           } else {
-            this.printLog.error('Ellerim bomboş')
+            this.printLog.error(
+              'Elinde kutu yok, neyi çıktı bandına koymak istiyorsun?'
+            )
           }
         })
       },
       CPY: (e) => {
-        this.printLog.info('Kopyalıyorum')
-        Vue.set(this.middleSection, e, this.onHand)
-        next()
+        this.printLog.info('Kopyalıyorum', e)
+        this.runDat('CPY' + e, () => {
+          Vue.set(this.middleSection, e, this.onHand)
+          next()
+        })
       },
       SUB: (e) => {
-        if (this.onHand !== undefined) {
-          if (this.middleSection[e] !== undefined) {
-            this.printLog.info('Çıkartıyorum')
-            this.setOnHand(this.onHand - this.middleSection[e])
-            next()
+        this.runDat('SUB' + e, () => {
+          if (this.onHand !== undefined) {
+            if (this.middleSection[e] !== undefined) {
+              this.printLog.info('Çıkartıyorum')
+              this.setOnHand(
+                Number(this.onHand) - Number(this.middleSection[e])
+              )
+              next()
+            } else {
+              this.printLog.error(
+                'Yerde işlem yapılacak bir kutu yok...',
+                'Öncelikle yere bir kutu koyman gerek.'
+              )
+            }
           } else {
-            this.printLog.error('Çıkartılacak kutu bulunamadı.')
+            this.printLog.error('Elinde kutu yok, neyi çıkartmayı istiyorsun?')
           }
-        } else {
-          this.printLog.error('Ellerim bomboş')
-        }
+        })
       },
       ADD: (e) => {
-        if (this.onHand !== null) {
-          this.printLog.info('Ekliyorum')
-          this.setOnHand(this.onHand + this.middleSection[e])
-          next()
-        } else {
-          this.printLog.error('Ellerim bomboş')
-        }
+        this.runDat('ADD' + e, () => {
+          if (this.onHand !== null) {
+            this.printLog.info('Ekliyorum')
+            this.setOnHand(Number(this.onHand) + Number(this.middleSection[e]))
+            next()
+          } else {
+            this.printLog.error('Elinde kutu yok, neyi eklemeyi istiyorsun?')
+          }
+        })
       },
       JPZ: (e) => {
-        if (this.onHand === 0) {
-          fns.JMP(e)
+        this.printLog.info('Sıfır ise atlıyorum:', e)
+        this.printLog.info('Elimdeki:', this.onHand, this.onHand === 0)
+        if ('' + this.onHand === '0') {
+          this.printLog.info('Sıfır gördüm, atladım')
+          if (this.maxJump > this.jump) {
+            this.jump = this.jump + 1
+            fns.JMP(e)
+          } else {
+            this.printLog.error('Çok fazla atlama yapıyorsun sanki?')
+          }
         } else {
+          this.printLog.info('SIFIR YOK, ELİMDEKİ', this.onHand)
           next()
         }
       },
       JMP: (e) => {
-        this.printLog.info('Atlıyorum:', e)
-        this.printLog.info(this.jumpBacks[e])
-        next(this.jumpBacks[e])
+        if (this.maxJump > this.jump) {
+          this.jump = this.jump + 1
+          this.printLog.info('Atlıyorum:', e)
+          this.printLog.info(this.jumpBacks[e])
+          next(this.jumpBacks[e])
+        } else {
+          this.printLog.error('Çok fazla atlama yapıyorsun sanki?')
+        }
       },
       GET: (e) => {
-        if (this.middleSection[e] !== undefined) {
-          this.setOnHand(this.middleSection[e])
-          next()
-        } else {
-          this.printLog.info('error')
-        }
+        this.runDat('GET' + e, () => {
+          if (this.middleSection[e] !== undefined) {
+            this.setOnHand(this.middleSection[e])
+            next()
+          } else {
+            this.printLog.info('error')
+          }
+        })
       },
     }
     if ((dont && +new Date() > this.lockedUntil) || !dont) {
