@@ -361,7 +361,10 @@ export class PodInstance {
     this.outputSection = this.outputSection.map((e) => '' + e)
 
     if (
-      JSON.stringify(this.winCondition) === JSON.stringify(this.outputSection)
+      JSON.stringify(this.winCondition) ===
+        JSON.stringify(this.outputSection) &&
+      this.inputSection.length === 0 &&
+      !this.onHand
     ) {
       this.emitResult({
         type: 'bravo',
